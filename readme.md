@@ -23,8 +23,7 @@ Different Methods available:
 - CLC: Cloud Cover in a single level. Multi Level
 - CLCT: Total cloud cover with cirrus. Single Level
 - CLCT_MOD: Modified total cloud cover, effective CLC without Cirrus. Greyscale. Single Level. Often Used in media
-
--Meteosat HRV/IR 10.8 Original used Satellite Data
+- Meteosat HRV/IR 10.8 Original used Satellite Data
 
 #### Pressure
 - PS: Surface pressure (not reduced). Single Level
@@ -32,7 +31,7 @@ Different Methods available:
 
 #### Significant weather
 
-WW: Significant weather of the last hour. Single Level
+- WW: Significant weather of the last hour. Single Level
 
 #### Precipitation
 
