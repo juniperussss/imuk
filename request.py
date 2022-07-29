@@ -10,6 +10,7 @@ import os, sys
 from datetime import datetime, timedelta
 from tqdm import tqdm
 import numpy as np
+import glob
 
 # fcst_hr_1 = np.arange(0, 78, 1)
 # fcst_hr_2 = np.arange(78, 181, 3)
@@ -111,7 +112,20 @@ with tqdm(total=len(variables), position=0, leave=True, colour='green') as pbar:
             
             pbar.update()
         
-        # cdo.mergetime(input="*ofile*", output="{}.grib2".format(, kwargs), options='-f grb2')
+        
+        cdo.mergetime(input='*ofile*', output='outfile_merged_{}{}_{}_{}{}_{}.grib2'.format(
+            cdt_yrmoday, init_time_hr,
+            str(fcst_hrs[0]).zfill(3), str(fcst_hrs[-1]).zfill(3), 
+            variables[var][1], str(var).upper(), options='-f grb2'))
+        
+        for ifile in glob.glob('*icosahedral*', recursive=True):
+            print("Removing ", ifile)
+            os.remove(ifile)
+            
+        for ofile in glob.glob('*ofile*', recursive=True):
+            print("Removing ", ofile)
+            os.remove(ofile)
+            
         os.chdir(dir_Parent)
         print(os.path.abspath(os.getcwd()) +" has completed at: ", cdt_date.strftime('%Y-%m-%d  %H:%M:%S'))
     
