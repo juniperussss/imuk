@@ -29,6 +29,9 @@ current_mo = current_date.month
 current_day = current_date.day
 yrmoday = current_date.strftime('%d/%m/%Y')
 
+dir_Produkt = '/media/juniperus/SONY/imuk/database/output/'
+os.chdir(dir_Produkt)
+
 #---- open files and read variables
 
 dir_shp     = os.path.join('/media/juniperus/SONY/imuk/database/shp/')
@@ -101,7 +104,7 @@ wkres.wkForegroundColor = 'white'
 wkres.wkWidth   = 3840                             #-- width of workstation
 wkres.wkHeight  = 2560                             #-- height of workstation
 wks_type        = "png"                             #-- output type of workstation
-wks             =  Ngl.open_wks(wks_type,'rh', wkres)  #-- open workstation
+wks             =  Ngl.open_wks(wks_type,'gph_rh_700', wkres)  #-- open workstation
 
 
 #---- Resources
@@ -451,12 +454,12 @@ Ngl.destroy(wks)
 # im1.save("temp.png", format='png')
 # Ngl.destroy(wks)
 
-#---- Merge Logo
+# #---- Merge Logo
 
-input_1 = "/media/juniperus/SONY/imuk/database/imuk_logo_trans.png"    
-input_2 = '/media/juniperus/SONY/imuk/database/input/icon/temp.png'
-output  = input_2
-cmd = f"composite -geometry 233x198.5+2880+1700 {input_1} {input_2} {output}"
-os.system(cmd)
+# input_1 = "/media/juniperus/SONY/imuk/database/imuk_logo_trans.png"    
+# input_2 = '/media/juniperus/SONY/imuk/database/input/icon/temp.png'
+# output  = input_2
+# cmd = f"composite -geometry 233x198.5+2880+1700 {input_1} {input_2} {output}"
+# os.system(cmd)
 
 print('\EU has finished at: ', datetime.utcnow().strftime('%Y-%m-%d  %H:%M:%S '), u'\u2714' )
