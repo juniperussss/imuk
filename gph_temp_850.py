@@ -43,7 +43,7 @@ lat0      = np.ravel(f0.variables["y"][:])
 segments = f0.variables["segments"]
 
 dir         = os.path.join('/media/juniperus/SONY/imuk/') #path of model output
-fn1          = dir + 'ofile_850_T.grib2' #path name of model output
+fn1          = dir + 'database/input/icon/2022/8/1/00/t/850/outfile_merged_2022080100_000_004_850_T.grib2' #path name of model output
 f1           = Nio.open_file(os.path.join(dir, fn1)) #model output definition
 
 print(f1.variables.keys()) # list of the variables briefly
@@ -52,10 +52,10 @@ for i in f1.variables: # main features of the variables
     
 lon1 = f1.variables['lon_0'][:] - 360
 lat1 = f1.variables['lat_0'][:]
-temp850 = f1.variables['TMP_P0_L100_GLL0'][:] -273.15
+temp850 = f1.variables['TMP_P0_L100_GLL0'][4,:,:] -273.15
 
 dir         = os.path.join('/media/juniperus/SONY/imuk/') #path of model output
-fn2          = dir + 'ofile_850_FI.grib2' #path name of model output
+fn2          = dir + 'database/input/icon/2022/8/1/00/fi/850/outfile_merged_2022080100_000_004_850_FI.grib2' #path name of model output
 f2           = Nio.open_file(os.path.join(dir, fn2)) #model output definition
 
 print(f2.variables.keys()) # list of the variables briefly
@@ -64,7 +64,7 @@ for i in f2.variables: # main features of the variables
     
 lon2 = f2.variables['lon_0'][:] - 360
 lat2 = f2.variables['lat_0'][:]
-gph850 = f2.variables['GP_P0_L100_GLL0'][:] /98.1
+gph850 = f2.variables['GP_P0_L100_GLL0'][4,:,:] /98.1
 
 
 '''fatal:NclGRIB2: Deleting reference to parameter; unable to decode grid template 3.101'''
@@ -90,11 +90,11 @@ init_time_yr = init_time[2][0]
 initial_date = datetime(int(init_time_yr), int(init_time_mo), int(init_time_day), int(init_time_hr))
 initial_time = initial_date.strftime('%d/%m/%Y %H') +'Z'
 
-#---- Valid Time
+# #---- Valid Time
 
-vld_time_residual = int(f1.variables['TMP_P0_L100_GLL0'].attributes['forecast_time'] /60)
-vld_time = initial_date + timedelta(hours=vld_time_residual)
-vld_time = vld_time.strftime('%d/%m/%Y %H') + 'UTC'
+# vld_time_residual = int(f1.variables['TMP_P0_L100_GLL0'].attributes['forecast_time'] /60)
+# vld_time = initial_date + timedelta(hours=vld_time_residual)
+# vld_time = vld_time.strftime('%d/%m/%Y %H') + 'UTC'
 
 #---- Designing a workstation
         
@@ -159,11 +159,11 @@ The coordinates contains Germany:
 ''' 
 
 mpres.mpFillOn               = True  # -- turn on fill for map areas.
-mpres.mpLandFillColor        = "darkslategray"  # -- fill color land -darkslategray
-mpres.mpOceanFillColor       = 'black' # -- fill color ocean -black
-mpres.mpInlandWaterFillColor = 'black'  # -- fill color inland water
+mpres.mpLandFillColor        = "darkturquoise"  # -- fill color land -darkslategray
+mpres.mpOceanFillColor       = 'white' # -- fill color ocean -black
+mpres.mpInlandWaterFillColor = 'white'  # -- fill color inland water
 mpres.mpAreaMaskingOn        = True
-mpres.mpMaskAreaSpecifiers   = 'Germany'
+# mpres.mpMaskAreaSpecifiers   = 'Germany'
 
 # mpres.mpLandFillColor        = "transparent"  # -- fill color land -darkslategray
 # mpres.mpOceanFillColor       = np.array([0,0,0,0.58]) # -- fill color ocean -black
@@ -203,6 +203,7 @@ var1res.nglFrame        =  False
 
 var1res.cnFillOn        =  True
 var1res.cnFillMode      = 'AreaFill' #cell filling typ5
+# var1res.cnLineLabelsOn = False
 # var1res.cnFillMode = not necessary
 var1res.cnLevelFlags = 'LineAndLabel'
 var1res.cnLinesOn = True
@@ -218,9 +219,9 @@ var1res.cnInfoLabelOn = False
 # var1res.cnSmoothingOn = True
 # var1res.cnSmoothingDistanceF = 0.00125
 
-var1res.cnLineLabelInterval = 1
+# var1res.cnLineLabelInterval = 1
 
-var1res.pmLabelBarDisplayMode = 'Always'
+var1res.pmLabelBarDisplayMode = 'Never'
 # var1res.cnFillPalette    = 'BlAqGrYeOrRe' #-- set the0 colormap to be used or 'NCL_default'
 
 cmap_colors = Ngl.read_colormap_file("GMT_wysiwygcont")
@@ -264,6 +265,11 @@ var1res.lbTitleOffsetF           = -0.40 #title distance from the label
 var1res.lbBoxEndCapStyle         = "TriangleBothEnds"
 # var1res.lbLabelStride = 5
 
+# var1res.lbPerimOn = True
+# var1res.lbPerimFill = 'SolidFill'
+# var1res.lbPerimFillColor = np.array([0,0,0,0.83])
+# var1res.lbLabelOffsetF = 0.08
+
 var1res.sfXArray = lon1 # processing of longitudes arrays
 var1res.sfYArray = lat1 # processing of latitudes arrays
 
@@ -288,7 +294,7 @@ var2res.cnInfoLabelOn = False
 # var2res.cnSmoothingOn = True
 # var2res.cnSmoothingDistanceF = 0.00125
 
-var2res.cnLineLabelInterval = 1
+# var2res.cnLineLabelInterval = 1
 
 var2res.pmLabelBarDisplayMode = 'Never'
 
@@ -327,19 +333,25 @@ Ngl.overlay(map, plot2)
 #---- Annotations and Markers
 
 def subtitles(wks, map, left_string, center_string, right_string):
-    ttres = Ngl.Resources()
+    ltres = Ngl.Resources()
     ctres = Ngl.Resources()
-    ttres.nglDraw = False  # Make sure string is just created, not drawn.
+    rtres = Ngl.Resources()
+    ltres.nglDraw = False  # Make sure string is just created, not drawn.
     ctres.nglDraw = False  # Make sure string is just created, not drawn.
+    rtres.nglDraw = False  # Make sure string is just created, not drawn.
     # Retrieve font height of left axis string and use this to calculate
     # size of subtitles.
    
     font_height = Ngl.get_float(map.base, "tiXAxisFontHeightF")
-    ttres.txFontHeightF = font_height * 0.44  # Slightly smaller
-    ctres.txFontHeightF = font_height * 0.70  # Slightly smaller
+    ltres.txFontHeightF = font_height * 0.24  # Slightly smaller
+    rtres.txFontHeightF = font_height * 0.44  # Slightly smaller
+    ctres.txFontHeightF = font_height * 1.717  # Slightly smaller
     #ttres.txFont = 'complex_roman'
-    ttres.txFontThicknessF = 5
-   
+    ltres.txFontThicknessF = 5
+    rtres.txFontThicknessF = 5
+    
+    # ttres.txBackgroundFillColor = np.array([0,0,0,0.55])
+    ctres.txBackgroundFillColor = np.array([1,1,1,0.1])
    
     # Set some some annotation resources to describe how close text
     # is to be attached to plot.
@@ -352,19 +364,19 @@ def subtitles(wks, map, left_string, center_string, right_string):
     # smaller font height than the axis titles.
    
     if left_string != "":
-     txidl = Ngl.text(wks, map, left_string, mpres.mpLambertMeridianF, 51., ttres)
+     txidl = Ngl.text(wks, map, left_string, mpres.mpLambertMeridianF, 51., ltres)
    
      amres.amJust = "TopLeft"
      amres.amParallelPosF = -0.5  # Left-justified
-     amres.amOrthogonalPosF = -0.55
+     amres.amOrthogonalPosF = 0.56 #-0.55
      annoidl = Ngl.add_annotation(map, txidl, amres)
      
      if left_string != "":
-      txidl = Ngl.text(wks, map, left_string_2, mpres.mpLambertMeridianF, 51., ttres)
+      txidl = Ngl.text(wks, map, left_string_2, mpres.mpLambertMeridianF, 51., ltres)
     
       amres.amJust = "BottomLeft"
       amres.amParallelPosF = -0.5  # Left-justified
-      amres.amOrthogonalPosF = -0.56
+      amres.amOrthogonalPosF = 0.55 #-0.56
       annoidl = Ngl.add_annotation(map, txidl, amres)
    
     if center_string != "":
@@ -372,24 +384,24 @@ def subtitles(wks, map, left_string, center_string, right_string):
    
      amres.amJust = "TopCenter"
      amres.amParallelPosF = 0.0  # Centered
-     amres.amOrthogonalPosF = -0.65
+     amres.amOrthogonalPosF = 0.501 #-0.65
      annoidc = Ngl.add_annotation(map, txidc, amres)
    
     if right_string != "":
-     txidr = Ngl.text(wks, map, right_string, mpres.mpLambertMeridianF, 51., ttres)
+     txidr = Ngl.text(wks, map, right_string, mpres.mpLambertMeridianF, 51., rtres)
    
      amres.amJust = "TopRight"
      amres.amParallelPosF = 0.5  # Right-justifed
-     amres.amOrthogonalPosF = -0.55
+     amres.amOrthogonalPosF = 0.54 #-0.55
      annoidr = Ngl.add_annotation(map, txidr, amres)
      
-    if right_string != "":
-     txidr = Ngl.text(wks, map, right_string_2, mpres.mpLambertMeridianF, 51., ttres)
+    # if right_string != "":
+    #  txidr = Ngl.text(wks, map, right_string_2, mpres.mpLambertMeridianF, 51., rtres)
    
-     amres.amJust = "BottomRight"
-     amres.amParallelPosF = 0.5  # Right-justifed
-     amres.amOrthogonalPosF = -0.56
-     annoidr = Ngl.add_annotation(map, txidr, amres)
+    #  amres.amJust = "BottomRight"
+    #  amres.amParallelPosF = 0.5  # Right-justifed
+    #  amres.amOrthogonalPosF = 0.55 #-0.56
+    #  annoidr = Ngl.add_annotation(map, txidr, amres)
      
     return
  
@@ -425,11 +437,11 @@ def subtitles(wks, map, left_string, center_string, right_string):
 # annores.txBackgroundFillColor = 'black'
 # annotation               = Ngl.add_text(wks, map, 'O.K. Mihliardic', mpres.mpLambertMeridianF, mpres.mpMinLatF+(domain_area/100), annores) #citys text locations
 
-left_string_2   = f1.variables['TMP_P0_L100_GLL0'].attributes['long_name'] + ' 850 hPa' #model output info
-left_string   = 'ICON-13' #model output info
-center_string = '' #center information bar
-right_string_2 = 'Init: ' + str(initial_time) 
-right_string  = 'Valid: ' + vld_time #model time information
+left_string_2   = '850 hPa: ' + f1.variables['TMP_P0_L100_GLL0'].attributes['long_name'] +' & '+ f2.variables['GP_P0_L100_GLL0'].attributes['long_name'] #model output info
+left_string   = 'ICON-Lauf: ' + 'Init: ' + str(initial_time) #model output info
+center_string = '                                               ' #center information bar
+# right_string_2 = 'Init: ' + str(initial_time) 
+right_string  = 'Valid: ' #+ vld_time #model time information
 subtitles(wks, map, left_string, center_string, right_string) #assigning to main map
 
 
