@@ -59,11 +59,15 @@ class p(object):
 #               "fi": ['pressure-level', '_700']}
 
 variables = {p('t'): ['pressure-level', '_500'],
+             p('t'): ['pressure-level', '_700'],
+             p('t'): ['pressure-level', '_850'],
+             p('clct_mod'): ['single-level', ''],
              p('u'): ['pressure-level', '_300'],
              p('v'): ['pressure-level', '_300'],
              p('relhum'): ['pressure-level', '_700'],
-             p('fi'): ['pressure-level', '_850'],
-             p('t'): ['pressure-level', '_700']}
+             p('fi'): ['pressure-level', '_500'],
+             p('fi'): ['pressure-level', '_700'],
+             p('fi'): ['pressure-level', '_850']}
 
 #same variable issue for temperature and geopotential height !
 
