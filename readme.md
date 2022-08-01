@@ -2,6 +2,13 @@
 
 Using opendata from the dwd to visualize and display synoptic Data
 
+## Colorscale for 300 hPa
+
+- 1-30:Transparent 
+- 31-40 : Green #33ff00
+- 41-50:  Cyan #21e8ff
+- >50 : Magenta #fe00fe
+
 ## Parameters for Groundlevel
 Here are different parameters used to display the groundlevel documented.
 
