@@ -67,8 +67,10 @@ variables = {p('t'): ['pressure-level', '_500'],
              p('relhum'): ['pressure-level', '_700'],
              p('fi'): ['pressure-level', '_500'],
              p('fi'): ['pressure-level', '_700'],
-             p('fi'): ['pressure-level', '_850']}
-
+             p('fi'): ['pressure-level', '_850'],
+             p("ww"): ['single-level', ''],
+             p("pmsl"): ['single-level', ''],
+             p("tot_prec"): ['single-level', '']}
 #same variable issue for temperature and geopotential height !
 
 url_base = 'https://opendata.dwd.de/weather/nwp/icon/grib/'
