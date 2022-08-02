@@ -29,12 +29,13 @@ current_mo = current_date.month
 current_day = current_date.day
 yrmoday = current_date.strftime('%d/%m/%Y')
 
-dir_Produkt = '/media/juniperus/SONY/imuk/database/output/'
+dir_origin = os.getcwd()
+dir_Produkt = 'database/output/'
 os.chdir(dir_Produkt)
 
 #---- open files and read variables
 
-dir_shp     = os.path.join('/media/juniperus/SONY/imuk/database/shp/')
+dir_shp     = os.path.join( dir_origin+'/database/shp/')
 fn_shp      = dir_shp + 'DEU/gadm36_DEU_1.shp'
 f0 = Nio.open_file(os.path.join(dir_shp, fn_shp), "r")   # Open shapefile
 
@@ -42,8 +43,8 @@ lon0     = np.ravel(f0.variables["x"][:])
 lat0      = np.ravel(f0.variables["y"][:])
 segments = f0.variables["segments"]
 
-dir         = os.path.join('/media/juniperus/SONY/imuk/') #path of model output
-fn1          = dir + 'database/input/icon/2022/7/31/00/clct_mod/outfile_merged_2022073100_000_004_CLCT_MOD.grib2' #path name of model output
+dir         = os.path.join(dir_origin) #path of model output
+fn1          = dir + '/database/input/icon/2022/8/2/00/clct_mod/outfile_merged_2022080200_000_004_CLCT_MOD.grib2' #path name of model output
 f1           = Nio.open_file(os.path.join(dir, fn1)) #model output definition
 
 print(f1.variables.keys()) # list of the variables briefly

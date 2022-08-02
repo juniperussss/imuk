@@ -29,12 +29,13 @@ current_mo = current_date.month
 current_day = current_date.day
 yrmoday = current_date.strftime('%d/%m/%Y')
 
-dir_Produkt = '/media/juniperus/SONY/imuk/database/output/'
+dir_origin = os.getcwd()
+dir_Produkt = 'database/output/'
 os.chdir(dir_Produkt)
 
 #---- open files and read variables
 
-dir_shp     = os.path.join('/media/juniperus/SONY/imuk/database/shp/')
+dir_shp     = os.path.join( dir_origin+'/database/shp/')
 fn_shp      = dir_shp + 'DEU/gadm36_DEU_1.shp'
 f0 = Nio.open_file(os.path.join(dir_shp, fn_shp), "r")   # Open shapefile
 
@@ -42,8 +43,8 @@ lon0     = np.ravel(f0.variables["x"][:])
 lat0      = np.ravel(f0.variables["y"][:])
 segments = f0.variables["segments"]
 
-dir         = os.path.join('/media/juniperus/SONY/imuk/') #path of model output
-fn1          = dir + 'database/input/icon/2022/8/1/00/relhum/700/outfile_merged_2022080100_000_004_700_RELHUM.grib2' #path name of model output
+dir         = os.path.join(dir_origin) #path of model output
+fn1          = dir + '/database/input/icon/2022/8/2/00/relhum/700/outfile_merged_2022080200_000_004_700_RELHUM.grib2' #path name of model output
 f1           = Nio.open_file(os.path.join(dir, fn1)) #model output definition
 
 print(f1.variables.keys()) # list of the variables briefly
@@ -54,8 +55,8 @@ lon1 = f1.variables['lon_0'][:] - 360
 lat1 = f1.variables['lat_0'][:]
 rh700 = f1.variables['RH_P0_L100_GLL0'][4,:,:]
 
-dir         = os.path.join('/media/juniperus/SONY/imuk/') #path of model output
-fn2          = dir + 'database/input/icon/2022/8/1/00/fi/700/outfile_merged_2022080100_000_004_700_FI.grib2' #path name of model output
+dir         = os.path.join(dir_origin) #path of model output
+fn2          = dir + '/database/input/icon/2022/8/2/00/fi/700/outfile_merged_2022080200_000_004_700_FI.grib2' #path name of model output
 f2           = Nio.open_file(os.path.join(dir, fn2)) #model output definition
 
 print(f2.variables.keys()) # list of the variables briefly
@@ -206,12 +207,12 @@ var1res.cnFillMode      = 'AreaFill' #cell filling typ5
 # var1res.cnLineLabelsOn = False
 # var1res.cnFillMode = not necessary
 var1res.cnLevelFlags = 'LineAndLabel'
-var1res.cnLinesOn = True
-var1res.cnLineThicknessF = 4.5
+var1res.cnLinesOn = False
+var1res.cnLineThicknessF = 0
 var1res.cnLineColor = 'chocolate3'
 var1res.cnLineLabelBackgroundColor = -1
 var1res.cnLineLabelFontColor = 'chocolate3'
-var1res.cnLineLabelsOn = True
+var1res.cnLineLabelsOn = False
 var1res.cnLineLabelFontHeightF = 0.006
 var1res.cnInfoLabelOn = False
 # var1res.cnConstFEnableFill = False
@@ -224,31 +225,17 @@ var1res.cnInfoLabelOn = False
 var1res.pmLabelBarDisplayMode = 'Never'
 # var1res.cnFillPalette    = 'BlAqGrYeOrRe' #-- set the0 colormap to be used or 'NCL_default'
 
-cmap_colors = Ngl.read_colormap_file("GMT_wysiwygcont")
+cmap_colors =("(/0.99,1,0.27,1 /)",
+                 "(/0.99,0.99,0.52,1/)", "(/0.99,0.99,0.87,1/)","(/0.99,0.99,0.95/)","(/1,1,1,0/)", "(/0.22,0.85,.22/)", "(/0,0.74,0.06/)",
+                 "(/0,0.6,0/)", "(/0,0.41,0.09/)", "(/0,0.64,0.54/)", "(/0,0.47,0.62/)") # Colors from the OLD IMUK Presciption Level
 cmap_colors_lower = cmap_colors[78:108:6]
 cmap_colors_upper = cmap_colors[132:-12:12]
-cmap_colors = np.concatenate((cmap_colors_lower, cmap_colors_upper), axis=0)
-# cmap = np.delete(cmap, [1,5,11], axis=0)
-# cmap_colors = np.insert(cmap_colors, 15, [0,0,0,0], axis=0)
-cmap_colors = np.insert(cmap_colors, 5, [0,0,0,0], axis=0)
 
-
-# cmap_colors[1:6] + martin_colors[5:9]
-
-# cmap_martin = ("(/0,0,0/)",
-#                 "(/0,0,.2/)", "(/0,0,.4/)", "(/0,0,.6/)", "(/0,0,.8/)", "(/0,0,1/)",\
-#                 "(/0,.3,1/)", "(/0,.45,1/)", "(/0,.6,1/)", "(/0,.8,1/)", "(/0,1,1/)",\
-#                 "(/0,1,.85/)", "(/0,1,.7/)", "(/0,1,.4/)", "(/.4,1,.2/)", "(/.8,1,.4/)",\
-#                 "(/1,1,.65/)", "(/1,1,.55/)", "(/1,1,.4/)", "(/1,1,.2/)", "(/1,1,0/)",\
-#                 "(/1,.8,.2/)", "(/1,.7,0/)", "(/1,.6,0/)", "(/1,.4,.05/)", "(/1,.3,.1/)",\
-#                 "(/1,0,0/)", "(/.85,0,0/)", "(/0.7,0,0/)", "(/.55,0,0/)", "(/.4,0,0/)",\
-#                 "(/.25,0,0/)") #(R, G, B) Values
-    
 
 var1res.cnFillPalette    = cmap_colors #-- set the0 colormap to be used or 'NCL_default'
 
 var1res.cnLevelSelectionMode = "ExplicitLevels"
-var1res.cnLevels             = [0, 5, 10, 15, 30, 70, 85, 90, 95, 100]
+var1res.cnLevels             = [7.5, 15,22.5, 30, 60,67.5,75,82.5, 90, 92, 95]
 # var1res.cnMinLevelValF       = 0
 # var1res.cnMaxLevelValF       = 100
 # var1res.cnLevelSpacingF      = 5 

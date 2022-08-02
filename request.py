@@ -23,23 +23,23 @@ cdt_yr = cdt_date.year
 cdt_mo = cdt_date.month
 cdt_day = cdt_date.day
 cdt_yrmoday = cdt_date.strftime('%Y%m%d')
-
-dir_Parent = '/media/juniperus/SONY/imuk/database/input/icon/' 
+dir_origin= os.getcwd()
+dir_Parent = 'database/input/icon/'
 os.chdir(dir_Parent)
 
 init_time_hr = input('Enter the model run time ')
 
-if not os.path.exists(dir_Parent + '{}/{}/{}/{}'.format(cdt_yr, cdt_mo, cdt_day, init_time_hr)):
+if not os.path.exists('{}/{}/{}/{}'.format(cdt_yr, cdt_mo, cdt_day, init_time_hr)):
     try:
-        os.makedirs(dir_Parent + '{}/{}/{}/{}'.format(cdt_yr, cdt_mo, cdt_day, init_time_hr))
-        print('The directory is successfully created')
+        os.makedirs('{}/{}/{}/{}'.format(cdt_yr, cdt_mo, cdt_day, init_time_hr))
+        print('The directory is created successfully')
     except:
         print('Creation of the directory failed')
 else: 
-    print('The directory has already exists')
+    print('The directory already exists')
     
-os.path.join(dir_Parent + '{}/{}/{}/{}'.format(cdt_yr, cdt_mo, cdt_day, init_time_hr))
-os.chdir(dir_Parent + '{}/{}/{}/{}'.format(cdt_yr, cdt_mo, cdt_day, init_time_hr))
+os.path.join( '{}/{}/{}/{}'.format(cdt_yr, cdt_mo, cdt_day, init_time_hr))
+os.chdir( '{}/{}/{}/{}'.format(cdt_yr, cdt_mo, cdt_day, init_time_hr))
 dir_Nest = os.path.join(os.getcwd())
 print('entered into', dir_Nest)
 
@@ -78,8 +78,8 @@ from cdo import Cdo
 cdo = Cdo()
 cdo.debug = True
 
-grids='/media/juniperus/SONY/imuk/database/ICON_GLOBAL2EUAU_025_EASY/target_grid_EUAU_025.txt'
-weights='/media/juniperus/SONY/imuk/database/ICON_GLOBAL2EUAU_025_EASY/weights_icogl2world_025_EUAU.nc'
+grids= dir_origin +'/database/ICON_GLOBAL2EUAU_025_EASY/target_grid_EUAU_025.txt'
+weights= dir_origin +'/database/ICON_GLOBAL2EUAU_025_EASY/weights_icogl2world_025_EUAU.nc'
 
 with tqdm(total=len(variables), position=0, leave=True, colour='green') as pbar:
     for var in variables:
@@ -130,7 +130,7 @@ with tqdm(total=len(variables), position=0, leave=True, colour='green') as pbar:
             print("Removing ", ofile)
             os.remove(ofile)
             
-        os.chdir(dir_Parent)
+        os.chdir(dir_origin)
         print(os.path.abspath(os.getcwd()) +" has completed at: ", cdt_date.strftime('%Y-%m-%d  %H:%M:%S'))
     
         #every step datetime

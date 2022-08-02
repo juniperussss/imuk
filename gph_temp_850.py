@@ -29,12 +29,13 @@ current_mo = current_date.month
 current_day = current_date.day
 yrmoday = current_date.strftime('%d/%m/%Y')
 
-dir_Produkt = '/media/juniperus/SONY/imuk/database/output/'
+dir_origin = os.getcwd()
+dir_Produkt = 'database/output/'
 os.chdir(dir_Produkt)
 
 #---- open files and read variables
 
-dir_shp     = os.path.join('/media/juniperus/SONY/imuk/database/shp/')
+dir_shp     = os.path.join( dir_origin+'/database/shp/')
 fn_shp      = dir_shp + 'DEU/gadm36_DEU_1.shp'
 f0 = Nio.open_file(os.path.join(dir_shp, fn_shp), "r")   # Open shapefile
 
@@ -42,8 +43,8 @@ lon0     = np.ravel(f0.variables["x"][:])
 lat0      = np.ravel(f0.variables["y"][:])
 segments = f0.variables["segments"]
 
-dir         = os.path.join('/media/juniperus/SONY/imuk/') #path of model output
-fn1          = dir + 'database/input/icon/2022/8/1/00/t/850/outfile_merged_2022080100_000_004_850_T.grib2' #path name of model output
+dir         = os.path.join(dir_origin) #path of model output
+fn1          = dir + '/database/input/icon/2022/8/2/00/t/850/outfile_merged_2022080200_000_004_850_T.grib2' #path name of model output
 f1           = Nio.open_file(os.path.join(dir, fn1)) #model output definition
 
 print(f1.variables.keys()) # list of the variables briefly
@@ -54,8 +55,8 @@ lon1 = f1.variables['lon_0'][:] - 360
 lat1 = f1.variables['lat_0'][:]
 temp850 = f1.variables['TMP_P0_L100_GLL0'][4,:,:] -273.15
 
-dir         = os.path.join('/media/juniperus/SONY/imuk/') #path of model output
-fn2          = dir + 'database/input/icon/2022/8/1/00/fi/850/outfile_merged_2022080100_000_004_850_FI.grib2' #path name of model output
+dir         = os.path.join(dir_origin) #path of model output
+fn2          = dir + '/database/input/icon/2022/8/2/00/fi/850/outfile_merged_2022080200_000_004_850_FI.grib2' #path name of model output
 f2           = Nio.open_file(os.path.join(dir, fn2)) #model output definition
 
 print(f2.variables.keys()) # list of the variables briefly
@@ -159,7 +160,7 @@ The coordinates contains Germany:
 ''' 
 
 mpres.mpFillOn               = True  # -- turn on fill for map areas.
-mpres.mpLandFillColor        = "darkturquoise"  # -- fill color land -darkslategray
+mpres.mpLandFillColor        = "grey"  # -- fill color land -darkslategray
 mpres.mpOceanFillColor       = 'white' # -- fill color ocean -black
 mpres.mpInlandWaterFillColor = 'white'  # -- fill color inland water
 mpres.mpAreaMaskingOn        = True
@@ -171,7 +172,7 @@ mpres.mpAreaMaskingOn        = True
 
 mpres.mpOutlineBoundarySets  = "national"  # -- "or geophysical"
 mpres.mpOutlineSpecifiers    = "conterminous us: states"  # -- plot state boundaries
-mpres.mpNationalLineThicknessF = 5.0
+mpres.mpNationalLineThicknessF = 0
 mpres.mpNationalLineColor      = 'black'
 # mpres.mpFillDrawOrder          = 'PreDraw' 
 
