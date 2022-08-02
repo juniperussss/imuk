@@ -53,7 +53,7 @@ for i in f1.variables: # main features of the variables
 
 lon1 = f1.variables['lon_0'][:] - 360
 lat1 = f1.variables['lat_0'][:]
-u = f1.variables['UGRD_P0_L100_GLL0'][4,:,:]#*0.5
+u = f1.variables['UGRD_P0_L100_GLL0'][4,:,:]*-1
 
 dir         = os.path.join(dir_origin) #path of model output
 fn2          = dir + '/database/input/icon/2022/8/2/00/v/300/outfile_merged_2022080200_000_004_300_V.grib2' #path name of model output
@@ -65,7 +65,7 @@ for i in f2.variables: # main features of the variables
 
 lon2 = f2.variables['lon_0'][:] - 360
 lat2 = f2.variables['lat_0'][:]
-v = f2.variables['VGRD_P0_L100_GLL0'][4,:,:]#*0.5
+v = f2.variables['VGRD_P0_L100_GLL0'][4,:,:]*-1
 
 
 '''fatal:NclGRIB2: Deleting reference to parameter; unable to decode grid template 3.101'''
