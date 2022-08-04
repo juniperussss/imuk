@@ -114,7 +114,7 @@ wks             =  Ngl.open_wks(wks_type,'gph_temp_850', wkres)  #-- open workst
 
 plres                  = Ngl.Resources()       # resources for polylines
 plres.gsLineColor      = "black"
-plres.gsLineThicknessF = 2.0                 # default is 1.0
+plres.gsLineThicknessF = 0                 # default is 1.0
 plres.gsSegments       = segments[:,0] #province borders
 # plres.sfXArray = lon0 # processing of longitudes arrays
 # plres.sfYArray = lat0 # processing of latitudes arrays
@@ -163,7 +163,7 @@ mpres.mpFillOn               = True  # -- turn on fill for map areas.
 mpres.mpLandFillColor        = "grey"  # -- fill color land -darkslategray
 mpres.mpOceanFillColor       = 'white' # -- fill color ocean -black
 mpres.mpInlandWaterFillColor = 'white'  # -- fill color inland water
-mpres.mpAreaMaskingOn        = True
+mpres.mpAreaMaskingOn        = False
 # mpres.mpMaskAreaSpecifiers   = 'Germany'
 
 # mpres.mpLandFillColor        = "transparent"  # -- fill color land -darkslategray
@@ -171,14 +171,18 @@ mpres.mpAreaMaskingOn        = True
 # mpres.mpInlandWaterFillColor = np.array([0,0,0,0.58])   # -- fill color inland water
 
 mpres.mpOutlineBoundarySets  = "national"  # -- "or geophysical"
-mpres.mpOutlineSpecifiers    = "conterminous us: states"  # -- plot state boundaries
+mpres.mpOutlineSpecifiers    = "NullArea"  # -- plot state boundaries
 mpres.mpNationalLineThicknessF = 0
-mpres.mpNationalLineColor      = 'black'
+mpres.mpNationalLineColor      = 'grey'
+mpres.mpProvincialLineColor    = "grey"
+mpres.mpGeophysicalLineColor      = 'black'
+mpres.mpGeophysicalLineThicknessF      = 2
 # mpres.mpFillDrawOrder          = 'PreDraw' 
 
 #mpres.GridSpacingF = 10
 mpres.mpGridAndLimbOn = True
 mpres.mpGridLineColor = 'black'
+mpres.mpGridLineThicknessF = 5
 mpres.mpGridLatSpacingF     = 10.  # -- grid spacing for latitude
 mpres.mpGridLonSpacingF     = 20.  # -- grid spacing for longitude
 mpres.mpGridLineDashPattern = 3  # -- dash pattern for grid lines
@@ -208,12 +212,13 @@ var1res.cnFillMode      = 'AreaFill' #cell filling typ5
 # var1res.cnFillMode = not necessary
 var1res.cnLevelFlags = 'LineAndLabel'
 var1res.cnLinesOn = True
-var1res.cnLineThicknessF = 4.5
+var1res.cnLineThicknessF = 7.5
 var1res.cnLineColor = 'chocolate3'
 var1res.cnLineLabelBackgroundColor = -1
 var1res.cnLineLabelFontColor = 'chocolate3'
 var1res.cnLineLabelsOn = True
 var1res.cnLineLabelFontHeightF = 0.006
+var1res.cnLineLabelPlacementMode = "constant"
 var1res.cnInfoLabelOn = False
 # var1res.cnConstFEnableFill = False
 # var1res.cnConstFLabelOn = False
@@ -288,6 +293,7 @@ var2res.cnLineThicknessF = 11.5
 var2res.cnLineColor = 'black'
 var2res.cnLineLabelBackgroundColor = -1
 var2res.cnLineLabelFontColor = 'black'
+var2res.cnLineLabelPlacementMode = "constant"
 var2res.cnLineLabelsOn = True
 var2res.cnInfoLabelOn = False
 # var2res.cnConstFEnableFill = False
@@ -323,6 +329,12 @@ var2res.sfYArray = lat2 # processing of latitudes arrays
 
 #---- Integration of Resources of BaseMap and Variables
 
+pmres                    = Ngl.Resources() #pmres = True
+pmres.gsMarkerIndex      = 1 #marker index
+pmres.gsMarkerColor      = 'red'
+pmres.gsMarkerSizeF      = 0.003 #marker size
+pmres.gsMarkerThicknessF = 40
+pmres.gsLineThicknessF   = 8. #lines thickness
 map     = Ngl.map(wks, mpres)
 lnid = Ngl.add_polyline(wks, map, lon0, lat0, plres)
 plot1    = Ngl.contour(wks, temp850, var1res) #gsn_csm_contour command
@@ -330,6 +342,7 @@ plot2    = Ngl.contour(wks, gph850, var2res) #gsn_csm_contour command
 # Ngl.overlay(map, lnid)
 Ngl.overlay(map, plot1)
 Ngl.overlay(map, plot2)
+Ngl.add_polymarker(wks, plot2, 9.732, 52.376, pmres) #marker locations
 
 #---- Annotations and Markers
 
@@ -353,6 +366,8 @@ def subtitles(wks, map, left_string, center_string, right_string):
     
     # ttres.txBackgroundFillColor = np.array([0,0,0,0.55])
     ctres.txBackgroundFillColor = np.array([1,1,1,0.1])
+    #rtres.txBackgroundFillColor = "yellow"
+    rtres.txFontColor = "red"
    
     # Set some some annotation resources to describe how close text
     # is to be attached to plot.
@@ -441,6 +456,7 @@ def subtitles(wks, map, left_string, center_string, right_string):
 left_string_2   = '850 hPa: ' + f1.variables['TMP_P0_L100_GLL0'].attributes['long_name'] +' & '+ f2.variables['GP_P0_L100_GLL0'].attributes['long_name'] #model output info
 left_string   = 'ICON-Lauf: ' + 'Init: ' + str(initial_time) #model output info
 center_string = '                                               ' #center information bar
+#center_string = '' #center information bar
 # right_string_2 = 'Init: ' + str(initial_time) 
 right_string  = 'Valid: ' #+ vld_time #model time information
 subtitles(wks, map, left_string, center_string, right_string) #assigning to main map

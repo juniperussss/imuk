@@ -114,7 +114,7 @@ wks             =  Ngl.open_wks(wks_type,'gph_rh_700', wkres)  #-- open workstat
 
 plres                  = Ngl.Resources()       # resources for polylines
 plres.gsLineColor      = "black"
-plres.gsLineThicknessF = 2.0                 # default is 1.0
+plres.gsLineThicknessF = 0                 # default is 1.0
 plres.gsSegments       = segments[:,0] #province borders
 # plres.sfXArray = lon0 # processing of longitudes arrays
 # plres.sfYArray = lat0 # processing of latitudes arrays
@@ -172,7 +172,7 @@ mpres.mpAreaMaskingOn        = True
 
 mpres.mpOutlineBoundarySets  = "national"  # -- "or geophysical"
 mpres.mpOutlineSpecifiers    = "conterminous us: states"  # -- plot state boundaries
-mpres.mpNationalLineThicknessF = 5.0
+mpres.mpNationalLineThicknessF = 0
 mpres.mpNationalLineColor      = 'black'
 # mpres.mpFillDrawOrder          = 'PreDraw' 
 
@@ -278,6 +278,7 @@ var2res.cnLineColor = 'black'
 var2res.cnLineLabelBackgroundColor = -1
 var2res.cnLineLabelFontColor = 'black'
 var2res.cnLineLabelsOn = True
+var2res.cnLineLabelPlacementMode = "constant"
 var2res.cnInfoLabelOn = False
 # var2res.cnConstFEnableFill = False
 # var2res.cnConstFLabelOn = False
@@ -311,7 +312,12 @@ var2res.sfXArray = lon2 # processing of longitudes arrays
 var2res.sfYArray = lat2 # processing of latitudes arrays
 
 #---- Integration of Resources of BaseMap and Variables
-
+pmres                    = Ngl.Resources() #pmres = True
+pmres.gsMarkerIndex      = 1 #marker index
+pmres.gsMarkerColor      = 'red'
+pmres.gsMarkerSizeF      = 0.003 #marker size
+pmres.gsMarkerThicknessF = 40
+pmres.gsLineThicknessF   = 8. #lines thickness
 map     = Ngl.map(wks, mpres)
 lnid = Ngl.add_polyline(wks, map, lon0, lat0, plres)
 plot1    = Ngl.contour(wks, rh700, var1res) #gsn_csm_contour command
@@ -319,6 +325,7 @@ plot2    = Ngl.contour(wks, gph700, var2res) #gsn_csm_contour command
 # Ngl.overlay(map, lnid)
 Ngl.overlay(map, plot1)
 Ngl.overlay(map, plot2)
+Ngl.add_polymarker(wks, plot2, 9.732, 52.376, pmres) #marker locations
 
 #---- Annotations and Markers
 

@@ -114,7 +114,7 @@ wks             =  Ngl.open_wks(wks_type,'gph_temp_500', wkres)  #-- open workst
 
 plres                  = Ngl.Resources()       # resources for polylines
 plres.gsLineColor      = "black"
-plres.gsLineThicknessF = 2.0                 # default is 1.0
+plres.gsLineThicknessF = 0                # default is 1.0
 plres.gsSegments       = segments[:,0] #province borders
 # plres.sfXArray = lon0 # processing of longitudes arrays
 # plres.sfYArray = lat0 # processing of latitudes arrays
@@ -160,7 +160,7 @@ The coordinates contains Germany:
 ''' 
 
 mpres.mpFillOn               = True  # -- turn on fill for map areas.
-mpres.mpLandFillColor        = "darkturquoise"  # -- fill color land -darkslategray
+mpres.mpLandFillColor        = "grey"  # -- fill color land -darkslategray
 mpres.mpOceanFillColor       = 'white' # -- fill color ocean -black
 mpres.mpInlandWaterFillColor = 'white'  # -- fill color inland water
 mpres.mpAreaMaskingOn        = True
@@ -172,7 +172,7 @@ mpres.mpAreaMaskingOn        = True
 
 mpres.mpOutlineBoundarySets  = "national"  # -- "or geophysical"
 mpres.mpOutlineSpecifiers    = "conterminous us: states"  # -- plot state boundaries
-mpres.mpNationalLineThicknessF = 5.0
+mpres.mpNationalLineThicknessF = 0.0
 mpres.mpNationalLineColor      = 'black'
 # mpres.mpFillDrawOrder          = 'PreDraw' 
 
@@ -207,12 +207,12 @@ var1res.cnFillMode      = 'AreaFill' #cell filling typ5
 # var1res.cnLineLabelsOn = False
 # var1res.cnFillMode = not necessary
 var1res.cnLevelFlags = 'LineAndLabel'
-var1res.cnLinesOn = True
+var1res.cnLinesOn = False
 var1res.cnLineThicknessF = 4.5
 var1res.cnLineColor = 'chocolate3'
 var1res.cnLineLabelBackgroundColor = -1
 var1res.cnLineLabelFontColor = 'chocolate3'
-var1res.cnLineLabelsOn = True
+var1res.cnLineLabelsOn = False
 var1res.cnLineLabelFontHeightF = 0.006
 var1res.cnInfoLabelOn = False
 # var1res.cnConstFEnableFill = False
@@ -288,7 +288,9 @@ var2res.cnLineThicknessF = 11.5
 var2res.cnLineColor = 'black'
 var2res.cnLineLabelBackgroundColor = -1
 var2res.cnLineLabelFontColor = 'black'
+#var2res.cnLineLabelFontHeightF = 1
 var2res.cnLineLabelsOn = True
+var2res.cnLineLabelPlacementMode = "constant"
 var2res.cnInfoLabelOn = False
 # var2res.cnConstFEnableFill = False
 # var2res.cnConstFLabelOn = False
@@ -301,9 +303,9 @@ var2res.pmLabelBarDisplayMode = 'Never'
 
 var2res.cnLevelSelectionMode = "ManualLevels"
 # var2res.cnLevels             = [0.001, 0.2, 0.5, 1, 2, 5, 10, 20, 50, 100]
-var2res.cnMinLevelValF       = 496
-var2res.cnMaxLevelValF       = 608
-var2res.cnLevelSpacingF      = 4 
+var2res.cnMinLevelValF       = 400
+var2res.cnMaxLevelValF       = 800
+var2res.cnLevelSpacingF      = 8
 # var2res.cnConpackParams = [ "HLX:20, HLY:20" ]    
 
 # var2res.cnFillOpacityF = 0.85
@@ -322,6 +324,12 @@ var2res.sfXArray = lon2 # processing of longitudes arrays
 var2res.sfYArray = lat2 # processing of latitudes arrays
 
 #---- Integration of Resources of BaseMap and Variables
+pmres                    = Ngl.Resources() #pmres = True
+pmres.gsMarkerIndex      = 1 #marker index
+pmres.gsMarkerColor      = 'red'
+pmres.gsMarkerSizeF      = 0.003 #marker size
+pmres.gsMarkerThicknessF = 40
+pmres.gsLineThicknessF   = 8. #lines thickness
 
 map     = Ngl.map(wks, mpres)
 lnid = Ngl.add_polyline(wks, map, lon0, lat0, plres)
@@ -330,7 +338,7 @@ plot2    = Ngl.contour(wks, gph500, var2res) #gsn_csm_contour command
 # Ngl.overlay(map, lnid)
 Ngl.overlay(map, plot1)
 Ngl.overlay(map, plot2)
-
+Ngl.add_polymarker(wks, plot2, 9.732, 52.376, pmres) #marker locations
 #---- Annotations and Markers
 
 def subtitles(wks, map, left_string, center_string, right_string):

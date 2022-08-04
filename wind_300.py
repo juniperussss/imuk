@@ -55,6 +55,7 @@ lon1 = f1.variables['lon_0'][:] - 360
 lat1 = f1.variables['lat_0'][:]
 u = f1.variables['UGRD_P0_L100_GLL0'][4,:,:]*-1
 
+print(u)
 dir         = os.path.join(dir_origin) #path of model output
 fn2          = dir + '/database/input/icon/2022/8/2/00/v/300/outfile_merged_2022080200_000_004_300_V.grib2' #path name of model output
 f2           = Nio.open_file(os.path.join(dir, fn2)) #model output definition

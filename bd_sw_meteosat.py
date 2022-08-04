@@ -55,18 +55,43 @@ lon1 = f1.variables['lon_0'][:] - 360
 lat1 = f1.variables['lat_0'][:]
 clct = f1.variables['VAR_0_6_199_P0_L1_GLL0'][4,:,:]
 
-# dir         = os.path.join('/media/juniperus/SONY/imuk/') #path of model output
-# fn2          = dir + 'database/input/icon/2022/7/31/00/clct_mod/outfile_merged_2022073100_000_004_CLCT_MOD.grib2' #path name of model output
-# f2           = Nio.open_file(os.path.join(dir, fn2)) #model output definition
+dir         = os.path.join(dir_origin) #path of model output
+fn2          = dir + '/database/input/icon/2022/8/2/00/pmsl/outfile_merged_2022080200_000_004_PMSL.grib2' #path name of model output
+f2           = Nio.open_file(os.path.join(dir, fn2)) #model output definition
 
-# print(f2.variables.keys()) # list of the variables briefly
-# for i in f2.variables: # main features of the variables
-#     print(f2.variables[i].long_name, f2.variables[i].name, f2.variables[i].units, f2.variables[i].shape)
+print(f2.variables.keys()) # list of the variables briefly
+for i in f2.variables: # main features of the variables
+    print(f2.variables[i].long_name, f2.variables[i].name, f2.variables[i].units, f2.variables[i].shape)
     
-# lon2 = f2.variables['lon_0'][:] - 360
-# lat2 = f2.variables['lat_0'][:]
-# gph850 = f2.variables['GP_P0_L100_GLL0'][:] /98.1
+lon2 = f2.variables['lon_0'][:] - 360
+lat2 = f2.variables['lat_0'][:]
+pmsl = f2.variables['PRMSL_P0_L101_GLL0'][4,:,:]/100
 
+
+dir         = os.path.join(dir_origin) #path of model output
+fn3          = dir + '/database/input/icon/2022/8/2/00/tot_prec/outfile_merged_2022080200_000_004_TOT_PREC.grib2' #path name of model output
+f3          = Nio.open_file(os.path.join(dir, fn3)) #model output definition
+
+print(f3.variables.keys()) # list of the variables briefly
+for i in f3.variables: # main features of the variables
+    print(f3.variables[i].long_name, f3.variables[i].name, f3.variables[i].units, f3.variables[i].shape)
+
+lon3 = f3.variables['lon_0'][:] - 360
+lat3 = f3.variables['lat_0'][:]
+rain = f3.variables['TPRATE_P8_L1_GLL0_acc'][4,:,:]
+
+
+dir         = os.path.join(dir_origin) #path of model output
+fn4          = dir + '/database/input/icon/2022/8/2/00/ww/outfile_merged_2022080200_000_004_WW.grib2' #path name of model output
+f4          = Nio.open_file(os.path.join(dir, fn4)) #model output definition
+
+print(f4.variables.keys()) # list of the variables briefly
+for i in f4.variables: # main features of the variables
+    print(f4.variables[i].long_name, f4.variables[i].name, f4.variables[i].units, f4.variables[i].shape)
+
+lon4 = f4.variables['lon_0'][:] - 360
+lat4 = f4.variables['lat_0'][:]
+ww = f4.variables["WIWW_P0_L1_GLL0"][4,:,:]
 
 '''fatal:NclGRIB2: Deleting reference to parameter; unable to decode grid template 3.101'''
 '''see: https://www.nco.ncep.noaa.gov/pmb/docs/grib2/grib2_doc/grib2_temp3-101.shtml'''
@@ -76,7 +101,10 @@ clct = f1.variables['VAR_0_6_199_P0_L1_GLL0'][4,:,:]
 #---- Preliminaries (2)
 
 clct = mpcalc.smooth_n_point(clct, 9, 4)
-# gph850 = mpcalc.smooth_n_point(gph850, 9, 4)
+pmsl = mpcalc.smooth_n_point(pmsl, 9, 4)
+rain = mpcalc.smooth_n_point(rain, 9, 4)
+
+
 
 #---- Initial Time
 
@@ -114,7 +142,7 @@ wks             =  Ngl.open_wks(wks_type,'bd_sw_meteosat', wkres)  #-- open work
 
 plres                  = Ngl.Resources()       # resources for polylines
 plres.gsLineColor      = "black"
-plres.gsLineThicknessF = 2.0                 # default is 1.0
+plres.gsLineThicknessF = 0                # default is 1.0
 plres.gsSegments       = segments[:,0] #province borders
 # plres.sfXArray = lon0 # processing of longitudes arrays
 # plres.sfYArray = lat0 # processing of latitudes arrays
@@ -160,9 +188,9 @@ The coordinates contains Germany:
 ''' 
 
 mpres.mpFillOn               = True  # -- turn on fill for map areas.
-mpres.mpLandFillColor        = "darkturquoise"  # -- fill color land -darkslategray
-mpres.mpOceanFillColor       = 'white' # -- fill color ocean -black
-mpres.mpInlandWaterFillColor = 'white'  # -- fill color inland water
+mpres.mpLandFillColor        = "darkgreen"  # -- fill color land -darkslategray
+mpres.mpOceanFillColor       = 'navy' # -- fill color ocean -black
+mpres.mpInlandWaterFillColor = 'navy'  # -- fill color inland water
 mpres.mpAreaMaskingOn        = True
 # mpres.mpMaskAreaSpecifiers   = 'Germany'
 
@@ -172,7 +200,7 @@ mpres.mpAreaMaskingOn        = True
 
 mpres.mpOutlineBoundarySets  = "national"  # -- "or geophysical"
 mpres.mpOutlineSpecifiers    = "conterminous us: states"  # -- plot state boundaries
-mpres.mpNationalLineThicknessF = 5.0
+mpres.mpNationalLineThicknessF = 0
 mpres.mpNationalLineColor      = 'black'
 # mpres.mpFillDrawOrder          = 'PreDraw' 
 
@@ -247,10 +275,10 @@ var1res.cnFillPalette    = cmap_colors #-- set the0 colormap to be used or 'NCL_
 
 var1res.cnLevelSelectionMode = "ManualLevels"
 # var1res.cnLevels             = [0.001, 0.2, 0.5, 1, 2, 5, 10, 20, 50, 100]
-var1res.cnMinLevelValF       = 0.1
+var1res.cnMinLevelValF       = 0.2
 var1res.cnMaxLevelValF       = 1.01
-var1res.cnLevelSpacingF      = 0.1 
-var1res.cnFillOpacityF       = 0.35
+var1res.cnLevelSpacingF      = 0.1
+var1res.cnFillOpacityF       = 0.85
 var1res.cnNoDataLabelString  = 'No Variable Data'
 var1res.cnConstFLabelString  = 'No Variable Data'
 
@@ -274,62 +302,154 @@ var1res.lbBoxEndCapStyle         = "TriangleBothEnds"
 var1res.sfXArray = lon1 # processing of longitudes arrays
 var1res.sfYArray = lat1 # processing of latitudes arrays
 
-# #---- Variable (2) Resources
+ #---- Variable (2) Resources
 
-# var2res                 =  Ngl.Resources()
-# var2res.nglDraw         =  False #-- don't draw plot
-# var2res.nglFrame        =  False
+var2res                 =  Ngl.Resources()
+var2res.nglDraw         =  False #-- don't draw plot
+var2res.nglFrame        =  False
 
-# var2res.cnFillOn = False
-# # var2res.cnFillMode = not necessary
-# var2res.cnLevelFlags = 'LineAndLabel'
-# var2res.cnLinesOn = True
-# var2res.cnLineThicknessF = 11.5
-# var2res.cnLineColor = 'black'
-# var2res.cnLineLabelBackgroundColor = -1
-# var2res.cnLineLabelFontColor = 'black'
-# var2res.cnLineLabelsOn = True
-# var2res.cnInfoLabelOn = False
-# # var2res.cnConstFEnableFill = False
-# # var2res.cnConstFLabelOn = False
-# # var2res.cnSmoothingOn = True
-# # var2res.cnSmoothingDistanceF = 0.00125
+var2res.cnFillOn = False
+# var2res.cnFillMode = not necessary
+var2res.cnLevelFlags = 'LineAndLabel'
+var2res.cnLinesOn = True
+var2res.cnLineThicknessF = 20
+var2res.cnLineColor = 'black'
+var2res.cnLineLabelBackgroundColor = -1
+var2res.cnLineLabelFontColor = 'black'
+var2res.cnLineLabelsOn = True
+var2res.cnLineLabelPlacementMode = "constant"
+var2res.cnInfoLabelOn = False
+# var2res.cnConstFEnableFill = False
+# var2res.cnConstFLabelOn = False
+# var2res.cnSmoothingOn = True
+# var2res.cnSmoothingDistanceF = 0.00125
 
-# # var2res.cnLineLabelInterval = 1
+# var2res.cnLineLabelInterval = 1
 
-# var2res.pmLabelBarDisplayMode = 'Never'
+var2res.pmLabelBarDisplayMode = 'Never'
 
-# var2res.cnLevelSelectionMode = "ManualLevels"
-# # var2res.cnLevels             = [0.001, 0.2, 0.5, 1, 2, 5, 10, 20, 50, 100]
-# var2res.cnMinLevelValF       = 52
-# var2res.cnMaxLevelValF       = 200
-# var2res.cnLevelSpacingF      = 4 
-# # var2res.cnConpackParams = [ "HLX:20, HLY:20" ]    
+var2res.cnLevelSelectionMode = "ManualLevels"
+# var2res.cnLevels             = [0.001, 0.2, 0.5, 1, 2, 5, 10, 20, 50, 100]
+var2res.cnMinLevelValF       =  950
+var2res.cnMaxLevelValF       = 1100
+var2res.cnLevelSpacingF      = 5
+# var2res.cnConpackParams = [ "HLX:20, HLY:20" ]
 
-# # var2res.cnFillOpacityF = 0.85
-# var2res.cnLowLabelsOn = True
-# var2res.cnHighLabelsOn = True
-# var2res.cnHighLabelString = "H"
-# var2res.cnLowLabelString = "T"
-# var2res.cnHighLabelFontColor = 'black'
-# var2res.cnLowLabelFontColor = 'black'
-# # var2res.cnLowLabelFontHeightF = 0.012 #larger L labels
-# # var2res.cnHighLabelFontHeightF = 0.020 #larger H labels
-# var2res.cnLowLabelBackgroundColor = -1
-# var2res.cnHighLabelBackgroundColor = -1
+# var2res.cnFillOpacityF = 0.85
+var2res.cnLowLabelsOn = True
+var2res.cnHighLabelsOn = True
+var2res.cnHighLabelString = "H"
+var2res.cnLowLabelString = "T"
+var2res.cnHighLabelFontColor = 'white'
+var2res.cnLowLabelFontColor = 'white'
+# var2res.cnLowLabelFontHeightF = 0.012 #larger L labels
+# var2res.cnHighLabelFontHeightF = 0.020 #larger H labels
+var2res.cnLowLabelBackgroundColor = -1
+var2res.cnHighLabelBackgroundColor = -1
 
-# var2res.sfXArray = lon2 # processing of longitudes arrays
-# var2res.sfYArray = lat2 # processing of latitudes arrays
+var2res.sfXArray = lon2 # processing of longitudes arrays
+var2res.sfYArray = lat2 # processing of latitudes arrays
+
+#---- Variable (3) Resources
+var3res                 =  Ngl.Resources()
+var3res.nglDraw         =  False #-- don't draw plot
+var3res.nglFrame        =  False
+
+var3res.cnFillOn        =  True
+var3res.cnFillMode      = 'AreaFill' #cell filling typ5
+var3res.cnLineLabelsOn = False
+# var3res.cnFillMode = not necessary
+# var3res.cnLevelFlags = 'LineAndLabel'
+#var3res.tGridType="TriangularMesh"
+var3res.cnLinesOn = False
+# var3res.cnLineThicknessF = 4.5
+# var3res.cnLineColor = 'chocolate3'
+# var3res.cnLineLabelBackgroundColor = -1
+# var3res.cnLineLabelFontColor = 'chocolate3'
+# var3res.cnLineLabelsOn = True
+# var3res.cnLineLabelFontHeightF = 0.006
+# var3res.cnInfoLabelOn = False
+# var3res.cnConstFEnableFill = False
+# var3res.cnConstFLabelOn = False
+# var3res.cnSmoothingOn = True
+# var3res.cnSmoothingDistanceF = 0.00125
+
+# var3res.cnLineLabelInterval = 1
+
+var3res.pmLabelBarDisplayMode = 'Never'
+# var3res.cnFillPalette    = 'BlAqGrYeOrRe' #-- set the0 colormap to be used or 'NCL_default'
+
+#cmap_colors = ("(/0,0,0/)",
+#                 "(/0,0,.2/)", "(/0,0,.4/)", "(/0,0,.6/)", "(/0,0,.8/)", "(/0.6,0,0.6/)",\
+#                 "(/.6,0.01,0.21/)")
+cmap_colors = Ngl.read_colormap_file("MPL_cool")
+# cmap_colors = cmap_colors[2:]
+# cmap = np.delete(cmap, [1,5,11], axis=0)
+cmap_colors = np.insert(cmap_colors, 0, [0,0,0,0], axis=0)
+#cmap_colors =  "[0,0,0,0]" +cmap_colors
+
+# cmap_colors[1:6] + martin_colors[5:9]
+
+# cmap_martin = ("(/0,0,0/)",
+#                 "(/0,0,.2/)", "(/0,0,.4/)", "(/0,0,.6/)", "(/0,0,.8/)", "(/0,0,1/)",\
+#                 "(/0,.3,1/)", "(/0,.45,1/)", "(/0,.6,1/)", "(/0,.8,1/)", "(/0,1,1/)",\
+#                 "(/0,1,.85/)", "(/0,1,.7/)", "(/0,1,.4/)", "(/.4,1,.2/)", "(/.8,1,.4/)",\
+#                 "(/1,1,.65/)", "(/1,1,.55/)", "(/1,1,.4/)", "(/1,1,.2/)", "(/1,1,0/)",\
+#                 "(/1,.8,.2/)", "(/1,.7,0/)", "(/1,.6,0/)", "(/1,.4,.05/)", "(/1,.3,.1/)",\
+#                 "(/1,0,0/)", "(/.85,0,0/)", "(/0.7,0,0/)", "(/.55,0,0/)", "(/.4,0,0/)",\
+#                 "(/.25,0,0/)") #(R, G, B) Values
+
+
+var3res.cnFillPalette    = cmap_colors #-- set the0 colormap to be used or 'NCL_default'
+
+var3res.cnLevelSelectionMode = "ExplicitLevels"
+var3res.cnLevels             = [ 1.5, 4, 6, 12, 24, 10**6]
+#var3res.cnMinLevelValF       = 0.1
+#var3res.cnMaxLevelValF       = 1.01
+#var3res.cnLevelSpacingF      = 0.1
+var3res.cnFillOpacityF       = 0.85
+var3res.cnNoDataLabelString  = 'No Variable Data'
+var3res.cnConstFLabelString  = 'No Variable Data'
+
+var3res.lbOrientation            = "horizontal" #-- horizontal labelbar
+var3res.lbTitleString            = '~F34~0~F~C' #f1.variables[list(f1.variables.items())[0][0]].units
+var3res.pmLabelBarOrthogonalPosF = -0.05
+# var3res.pmLabelBarParallelPosF   = 0.25 #-- move labelbar upward
+var3res.lbLabelFontHeightF       = 0.008 #-- labelbar labe font size
+var3res.lbBoxMinorExtentF        = 0.12 #-- decrease height of
+# var3res.lbBoxLinesOn             = True
+var3res.lbTitleFontHeightF       = 0.008 #label title font height
+var3res.lbTitleOffsetF           = -0.40 #title distance from the label
+var3res.lbBoxEndCapStyle         = "TriangleBothEnds"
+var3res.sfXArray = lon3 # processing of longitudes arrays
+var3res.sfYArray = lat3 # processing of latitudes arrays
+
+
 
 #---- Integration of Resources of BaseMap and Variables
-
+pmres                    = Ngl.Resources() #pmres = True
+pmres.gsMarkerIndex      = 1 #marker index
+pmres.gsMarkerColor      = 'red'
+pmres.gsMarkerSizeF      = 0.003 #marker size
+pmres.gsMarkerThicknessF = 40
+pmres.gsLineThicknessF   = 8. #lines thickness
 map     = Ngl.map(wks, mpres)
 lnid = Ngl.add_polyline(wks, map, lon0, lat0, plres)
 plot1    = Ngl.contour(wks, clct, var1res) #gsn_csm_contour command
-# plot2    = Ngl.contour(wks, gph850, var2res) #gsn_csm_contour command
+plot2    = Ngl.contour(wks, pmsl, var2res) #gsn_csm_contour command
+plot3    = Ngl.contour(wks, rain, var3res) #gsn_csm_contour command
+Ngl.add_polymarker(wks, plot2, 9.732, 52.376, pmres) #marker locations
+
 # Ngl.overlay(map, lnid)
 Ngl.overlay(map, plot1)
-# Ngl.overlay(map, plot2)
+Ngl.overlay(map, plot3)
+Ngl.overlay(map, plot2)
+
+#TODO
+#Ngl.wmsetp("ezf",1)
+#Ngl.wmstnm(wks,lon4,lat4,ww)
+#Ngl.overlay(map, plot4)
+#END TODO
 
 #---- Annotations and Markers
 
