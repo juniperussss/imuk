@@ -2,8 +2,29 @@
 
 Using opendata from the dwd to visualize and display synoptic Data
 
+## Current Visualisation
+### Groundlevel
+![Groundlevel](./database/output/bd_sw_meteosat.png )
 
-## Colorscale for 700 hPa
+### 850 hPa
+![850](./database/output/gph_temp_850.png )
+
+### 700 hPa
+![700](./database/output/gph_rh_700.png )
+
+### 500 hPa
+![500](./database/output/gph_temp_500.png )
+
+### 300 hPa
+![300](./database/output/u_v_300.png )
+## Todos
+- Fix Cloudcolorscale
+- Implent significant Weather to Groundlevel
+- optimize Colorscale for 850 hPa
+- Windspeed in 300hPa
+- fix nontransparent Colors
+## Dokumentation
+### Colorscale for 700 hPa
 - 1-7: rgba(254, 255, 69, 1): (0.99,1,0.27,1 )
 - -7.5-15 rgba(254, 253, 134, 1)(0.99,0.99,0.52,1)
 - 15-22,5 rgba(254, 255, 221, 1) (0.99,0.99,0.87,1)
@@ -15,29 +36,29 @@ Using opendata from the dwd to visualize and display synoptic Data
 - 82,5-90
 - 90-95
 - 95-100 rgba(0, 119, 159, 1)(0,0.47,0.62)
-## Colorscale for 300 hPa
+### Colorscale for 300 hPa
 
 - 1-30:Transparent 
 - 31-40 : Green #33ff00
 - 41-50:  Cyan #21e8ff
 - >50 : Magenta #fe00fe
 
-## Parameters for Groundlevel
+### Parameters for Groundlevel
 Here are different parameters used to display the groundlevel documented.
 
-### Recommended 
-#### Past
+#### Recommended 
+##### Past
 - CLCT_MOD:  cloud coverage
 - PMSL: reduced surface pressure
 - WW:  significant weather
 
-#### Future
+##### Future
 - PWSL: reduces surface pressure
 - CLCT_MOD: cloud coverage
 - TOT_PREC: total Precipitation
 
-### En detail
-#### Clouds
+#### En detail
+##### Clouds
 Different Methods available:
 
 - CLC: Cloud Cover in a single level. Multi Level
@@ -45,15 +66,15 @@ Different Methods available:
 - CLCT_MOD: Modified total cloud cover, effective CLC without Cirrus. Greyscale. Single Level. Often Used in media
 - Meteosat HRV/IR 10.8 Original used Satellite Data
 
-#### Pressure
+##### Pressure
 - PS: Surface pressure (not reduced). Single Level
 - PMSL: Surface pressure reduced to MSL. Single Level
 
-#### Significant weather
+##### Significant weather
 
 - WW: Significant weather of the last hour. Single Level
 
-#### Precipitation
+##### Precipitation
 
 - TOT_PREC: Total precipitation accumulated since model start
 
