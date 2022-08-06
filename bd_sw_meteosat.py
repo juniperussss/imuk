@@ -100,7 +100,7 @@ ww = f4.variables["WIWW_P0_L1_GLL0"][4,:,:]
 
 #---- Preliminaries (2)
 
-clct = mpcalc.smooth_n_point(clct, 9, 4)
+#clct = mpcalc.smooth_n_point(clct, 9, 4)
 pmsl = mpcalc.smooth_n_point(pmsl, 9, 4)
 rain = mpcalc.smooth_n_point(rain, 9, 4)
 
