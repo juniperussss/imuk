@@ -275,7 +275,7 @@ var1res.cnFillPalette    = cmap_colors #-- set the0 colormap to be used or 'NCL_
 
 var1res.cnLevelSelectionMode = "ManualLevels"
 # var1res.cnLevels             = [0.001, 0.2, 0.5, 1, 2, 5, 10, 20, 50, 100]
-var1res.cnMinLevelValF       = 0.2
+var1res.cnMinLevelValF       = 0.01
 var1res.cnMaxLevelValF       = 1.01
 var1res.cnLevelSpacingF      = 0.1
 var1res.cnFillOpacityF       = 0.85
