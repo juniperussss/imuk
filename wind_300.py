@@ -30,8 +30,8 @@ current_day = current_date.day
 yrmoday = current_date.strftime('%d/%m/%Y')
 
 dir_origin = os.getcwd()
-dir_Produkt = 'database/output/'
-os.chdir(dir_Produkt)
+# dir_Produkt = 'database/output/'
+# os.chdir(dir_Produkt)
 
 #---- open files and read variables
 
@@ -44,7 +44,7 @@ lat0      = np.ravel(f0.variables["y"][:])
 segments = f0.variables["segments"]
 
 dir         = os.path.join(dir_origin) #path of model output
-fn1          = dir + '/database/input/icon/2022/8/2/00/u/300/outfile_merged_2022080200_000_004_300_U.grib2' #path name of model output
+fn1          = dir + '/database/input/icon/2022/8/19/00/u/300/outfile_merged_2022081900_000_004_300_U.grib2' #path name of model output
 f1           = Nio.open_file(os.path.join(dir, fn1)) #model output definition
 
 print(f1.variables.keys()) # list of the variables briefly
@@ -57,7 +57,7 @@ u = f1.variables['UGRD_P0_L100_GLL0'][4,:,:]*-1
 
 print(u)
 dir         = os.path.join(dir_origin) #path of model output
-fn2          = dir + '/database/input/icon/2022/8/2/00/v/300/outfile_merged_2022080200_000_004_300_V.grib2' #path name of model output
+fn2          = dir + '/database/input/icon/2022/8/19/00/v/300/outfile_merged_2022081900_000_004_300_V.grib2' #path name of model output
 f2           = Nio.open_file(os.path.join(dir, fn2)) #model output definition
 
 print(f2.variables.keys()) # list of the variables briefly
@@ -78,6 +78,10 @@ v = f2.variables['VGRD_P0_L100_GLL0'][4,:,:]*-1
 
 u = mpcalc.smooth_n_point(u, 9, 4)
 v = mpcalc.smooth_n_point(v, 9, 4)
+
+import metpy.calc as mpcalc
+from metpy.units import units
+windspeed = mpcalc.wind_speed(u*units('m/s'),v*units('m/s'))
 
 #---- Initial Time
 
@@ -226,6 +230,7 @@ var1res.vcGlyphOpacityF         =1
 var1res.vcWindBarbLineThicknessF=8
 var1res. vcWindBarbColor= "Black"
 var1res.vcWindBarbScaleFactorF=5
+var1res.vcRefAnnoOn = False
 
 # var1res.cnConstFEnableFill = False
 # var1res.cnConstFLabelOn = False
@@ -296,14 +301,14 @@ var2res.cnFillOn        =  True
 var2res.cnFillMode      = 'AreaFill' #cell filling typ5
 # var2res.cnLineLabelsOn = False
 # var2res.cnFillMode = not necessary
-var2res.cnLevelFlags = 'LineAndLabel'
-var2res.cnLinesOn = True
-var2res.cnLineThicknessF = 4.5
-var2res.cnLineColor = 'chocolate3'
+# var2res.cnLevelFlags = 'LineAndLabel'
+# var2res.cnLinesOn = True
+# var2res.cnLineThicknessF = 4.5
+var2res.cnLineColor = 'transparent'
 var2res.cnLineLabelBackgroundColor = -1
-var2res.cnLineLabelFontColor = 'chocolate3'
-var2res.cnLineLabelsOn = True
-var2res.cnLineLabelFontHeightF = 0.006
+var2res.cnLineLabelFontColor = 'transparent'
+# var2res.cnLineLabelsOn = True
+# var2res.cnLineLabelFontHeightF = 0.006
 var2res.cnInfoLabelOn = False
 # var2res.cnConstFEnableFill = False
 # var2res.cnConstFLabelOn = False
@@ -316,9 +321,11 @@ var2res.pmLabelBarDisplayMode = 'Never'
 # var2res.cnFillPalette    = 'BlAqGrYeOrRe' #-- set the0 colormap to be used or 'NCL_default'
 
 cmap_colors = Ngl.read_colormap_file("GMT_wysiwygcont")
-cmap_colors = cmap_colors[:-12]
+cmap_colors = cmap_colors[30:180:50]
 # cmap = np.delete(cmap, [1,5,11], axis=0)
-# cmap_colors = np.insert(cmap_colors, 0, [0,0,0,0], axis=0)
+cmap_colors = np.insert(cmap_colors, 0, [0,0,0,0], axis=0)
+cmap_colors = np.insert(cmap_colors, 0, [0,0,0,0], axis=0)
+cmap_colors = np.insert(cmap_colors, 0, [0,0,0,0], axis=0)
 # cmap = np.insert(cmap, 10, [0,0,0,0], axis=0)
 
 # cmap_colors[1:6] + martin_colors[5:9]
@@ -331,15 +338,15 @@ cmap_colors = cmap_colors[:-12]
 #                 "(/1,.8,.2/)", "(/1,.7,0/)", "(/1,.6,0/)", "(/1,.4,.05/)", "(/1,.3,.1/)",\
 #                 "(/1,0,0/)", "(/.85,0,0/)", "(/0.7,0,0/)", "(/.55,0,0/)", "(/.4,0,0/)",\
 #                 "(/.25,0,0/)") #(R, G, B) Values
-
+    
 
 var2res.cnFillPalette    = cmap_colors #-- set the0 colormap to be used or 'NCL_default'
 
 var2res.cnLevelSelectionMode = "ExplicitLevels"
-var2res.cnLevels             = [1, 31, 41, 51]
-var2res.cnMinLevelValF       = -30
-var2res.cnMaxLevelValF       = 30
-var2res.cnLevelSpacingF      = 2
+var2res.cnLevels             = [1, 21, 31, 41, 51, 62]
+# var2res.cnMinLevelValF       = -50
+# var2res.cnMaxLevelValF       = 10
+# var2res.cnLevelSpacingF      = 2 
 var2res.cnFillOpacityF       = 0.99
 var2res.cnNoDataLabelString  = 'No Variable Data'
 var2res.cnConstFLabelString  = 'No Variable Data'
@@ -350,7 +357,7 @@ var2res.pmLabelBarOrthogonalPosF = -0.05
 # var2res.pmLabelBarParallelPosF   = 0.25 #-- move labelbar upward
 var2res.lbLabelFontHeightF       = 0.008 #-- labelbar labe font size
 var2res.lbBoxMinorExtentF        = 0.12 #-- decrease height of
-# var2res.lbBoxLinesOn             = True
+# var2res.lbBoxLinesOn             = True 
 var2res.lbTitleFontHeightF       = 0.008 #label title font height
 var2res.lbTitleOffsetF           = -0.40 #title distance from the label
 var2res.lbBoxEndCapStyle         = "TriangleBothEnds"
@@ -367,12 +374,12 @@ var2res.sfYArray = lat1 # processing of latitudes arrays
 #---- Integration of Resources of BaseMap and Variables
 
 map     = Ngl.map(wks, mpres)
-lnid = Ngl.add_polyline(wks, map, lon0, lat0, plres)
+# lnid = Ngl.add_polyline(wks, map, lon0, lat0, plres)
 plot1    = Ngl.vector(wks, u,v, var1res) #gsn_csm_contour command
-plot2    = Ngl.contour(wks, v, var2res) #gsn_csm_contour command
+plot2    = Ngl.contour(wks, windspeed, var2res) #gsn_csm_contour command
 # Ngl.overlay(map, lnid)
-#Ngl.overlay(map, plot2)
 Ngl.overlay(map, plot1)
+Ngl.overlay(map, plot2)
 
 
 #---- Annotations and Markers
@@ -482,7 +489,7 @@ def subtitles(wks, map, left_string, center_string, right_string):
 # annores.txBackgroundFillColor = 'black'
 # annotation               = Ngl.add_text(wks, map, 'O.K. Mihliardic', mpres.mpLambertMeridianF, mpres.mpMinLatF+(domain_area/100), annores) #citys text locations
 
-left_string_2   = '850 hPa: ' + f1.variables['UGRD_P0_L100_GLL0'].attributes['long_name'] +' & '+ f2.variables['VGRD_P0_L100_GLL0'].attributes['long_name'] #model output info
+left_string_2   = '300 hPa: ' + f1.variables['UGRD_P0_L100_GLL0'].attributes['long_name'] +' & '+ f2.variables['VGRD_P0_L100_GLL0'].attributes['long_name'] #model output info
 left_string   = 'ICON-Lauf: ' + 'Init: ' + str(initial_time) #model output info
 center_string = '                                               ' #center information bar
 # right_string_2 = 'Init: ' + str(initial_time)
