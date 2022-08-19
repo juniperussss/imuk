@@ -336,7 +336,7 @@ pmres.gsMarkerSizeF      = 0.003 #marker size
 pmres.gsMarkerThicknessF = 40
 pmres.gsLineThicknessF   = 8. #lines thickness
 map     = Ngl.map(wks, mpres)
-lnid = Ngl.add_polyline(wks, map, lon0, lat0, plres)
+# lnid = Ngl.add_polyline(wks, map, lon0, lat0, plres)
 plot1    = Ngl.contour(wks, temp850, var1res) #gsn_csm_contour command
 plot2    = Ngl.contour(wks, gph850, var2res) #gsn_csm_contour command
 # Ngl.overlay(map, lnid)
