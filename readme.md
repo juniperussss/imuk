@@ -21,8 +21,9 @@ Using opendata from the dwd to visualize and display synoptic Data
 - Fix Cloudcolorscale
 - Implent significant Weather to Groundlevel
 - optimize Colorscale for 850 hPa
-- Windspeed in 300hPa
-- fix nontransparent Colors
+- Windspeed in 300hPa (calculated and added to map)
+- Transparent colors added to 300hpa wind but other colors should be changed!
+- Germany Province Borders were deleted
 ## Dokumentation
 ### Colorscale for 700 hPa
 - 1-7: rgba(254, 255, 69, 1): (0.99,1,0.27,1 )
