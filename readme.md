@@ -20,6 +20,8 @@ Using opendata from the dwd to visualize and display synoptic Data
 ## Todos
 - Fix Cloudcolorscale
 - Implent significant Weather to Groundlevel
+    (https://www.ncl.ucar.edu/Applications/weather_sym.shtml)
+    
 - optimize Colorscale for 850 hPa
 
 COMPLETED
