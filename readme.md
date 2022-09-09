@@ -18,13 +18,17 @@ Using opendata from the dwd to visualize and display synoptic Data
 ### 300 hPa
 ![300](./database/output/300/u_v_300_0.png )
 ## Todos
-- Fix Cloudcolorscale
 - Implent significant Weather to Groundlevel
     (https://www.ncl.ucar.edu/Applications/weather_sym.shtml)
     
-- optimize Colorscale for 850 hPa
+- optimize Colorscale for 850 hPa and Groundlevel
+- add Label and Legend for
+-   300hpa
+-   500hpa
+-   700hpa
+-   850hpa
 
-COMPLETED
+### COMPLETED
 - Windspeed in 300hPa (calculated and added to map)
 - Transparent colors added to 300hpa wind but other colors should be changed!
 - Germany Province Borders were deleted
