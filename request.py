@@ -75,11 +75,11 @@ variables = {p('t'): ['pressure-level', '_500'],
 
 url_base = 'https://opendata.dwd.de/weather/nwp/icon/grib/'
 
-from cdo import Cdo
-
+#from cdo import Cdo
+from cdo import *
 cdo = Cdo()
 cdo.debug = True
-
+0
 grids= dir_origin +'/database/ICON_GLOBAL2EUAU_025_EASY/target_grid_EUAU_025.txt'
 weights= dir_origin +'/database/ICON_GLOBAL2EUAU_025_EASY/weights_icogl2world_025_EUAU.nc'
 

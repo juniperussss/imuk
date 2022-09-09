@@ -10,26 +10,17 @@ from datetime import datetime, timedelta
 from PIL import Image
 import metpy.calc as mpcalc
 from metpy.units import units
-
-import glob
+import cleaner
 from datetime import date
 
-today =datetime.now()
-filepath = "database/input/icon/"+str(today.year)+"/"+str(today.month)+"/"+str(today.day)
-print(glob.glob(filepath +"/*"))
-filelist = glob.glob(filepath +"/*")
-filelist.remove(filelist[0]) # Remove unnecessary element
-varalist = []
-varblist = []
+### Cleaning and Setup
+cleaner.cleaning_old_timefolders() #Remove old Folders
+varnumber=2
+vars=["u","v"]
+varlevel=[300,300]
+variablepaths=cleaner.varnames(varnumber,vars,varlevel) ##Getting every filepath in the directory like [[vara1,vara2],[varb1,varb2]]
 
-vara= "u"
-gplvara= 300
-varb ="v"
-gplvarb= 300
-
-for i in range(0, len(filelist)):
-   varalist.append(glob.glob(filelist[i] +"/" +vara +"/" +str(gplvara) +"/*"))
-   varblist.append(glob.glob(filelist[i] + "/" +varb + "/" +str(gplvarb) + "/*"))
+timestepnumber= len(variablepaths[0])
 
 #---- Preliminaries (1)
 dir_origin = os.getcwd()
@@ -38,8 +29,8 @@ os.chdir(dir_Produkt)
 
 for f in os.listdir(os.getcwd()):
     os.remove(os.path.join(os.getcwd(), f))
-
-def picture(vara,varb):
+###
+def picture(vara,varb,number):
     warnings.filterwarnings("ignore")
     current_date = datetime.utcnow()
     print("EU has started at: ", current_date.strftime('%Y-%m-%d  %H:%M:%S'))
@@ -61,8 +52,8 @@ def picture(vara,varb):
     segments = f0.variables["segments"]
 
     dir         = os.path.join(dir_origin) #path of model output
-    fn1          = dir + "/"+vara # '/database/input/icon/2022/8/19/00/u/300/outfile_merged_2022081900_000_004_300_U.grib2' #path name of model output
-    f1           = Nio.open_file(os.path.join(dir, fn1)) #model output definition
+    fn1          = vara # '/database/input/icon/2022/8/19/00/u/300/outfile_merged_2022081900_000_004_300_U.grib2' #path name of model output
+    f1           = Nio.open_file(os.path.join(vara)) #model output definition
 
    # print(f1.variables.keys()) # list of the variables briefly
    # for i in f1.variables: # main features of the variables
@@ -74,8 +65,8 @@ def picture(vara,varb):
 
 
     dir         = os.path.join(dir_origin) #path of model output
-    fn2          = dir + "/"+varb #'/database/input/icon/2022/8/19/00/v/300/outfile_merged_2022081900_000_004_300_V.grib2' #path name of model output
-    f2           = Nio.open_file(os.path.join(dir, fn2)) #model output definition
+    fn2          = varb #'/database/input/icon/2022/8/19/00/v/300/outfile_merged_2022081900_000_004_300_V.grib2' #path name of model output
+    f2           = Nio.open_file(os.path.join(varb)) #model output definition
 
     #print(f2.variables.keys()) # list of the variables briefly
    # for i in f2.variables: # main features of the variables
@@ -125,7 +116,7 @@ def picture(vara,varb):
     wkres.wkWidth   = 3840                             #-- width of workstation
     wkres.wkHeight  = 2560                             #-- height of workstation
     wks_type        = "png"                             #-- output type of workstation
-    wks             =  Ngl.open_wks(wks_type,'u_v_300_' +str(i), wkres)  #-- open workstation
+    wks             =  Ngl.open_wks(wks_type,'u_v_300_' +str(number), wkres)  #-- open workstation
 
 
     #---- Resources
@@ -335,12 +326,13 @@ def picture(vara,varb):
     var2res.pmLabelBarDisplayMode = 'Never'
     # var2res.cnFillPalette    = 'BlAqGrYeOrRe' #-- set the0 colormap to be used or 'NCL_default'
 
-    cmap_colors = Ngl.read_colormap_file("GMT_wysiwygcont")
-    cmap_colors = cmap_colors[30:180:50]
+    #cmap_colors = Ngl.read_colormap_file("GMT_wysiwygcont")
+    #cmap_colors = cmap_colors[30:180:50]
     # cmap = np.delete(cmap, [1,5,11], axis=0)
-    cmap_colors = np.insert(cmap_colors, 0, [0,0,0,0], axis=0)
-    cmap_colors = np.insert(cmap_colors, 0, [0,0,0,0], axis=0)
-    cmap_colors = np.insert(cmap_colors, 0, [0,0,0,0], axis=0)
+    cmap_colors = np.array([[0,0,0,0],[0.2,1,0,1],[0.13,0.9,1,1],[0.99,0,0.99,1]])
+    #cmap_colors = np.insert(cmap_colors, 0, [0,0,0,0], axis=0)
+    #cmap_colors = np.insert(cmap_colors, 0, [0,0,0,0], axis=0)
+    #cmap_colors = np.insert(cmap_colors, 0, [0,0,0,0], axis=0)
     # cmap = np.insert(cmap, 10, [0,0,0,0], axis=0)
 
     # cmap_colors[1:6] + martin_colors[5:9]
@@ -358,7 +350,7 @@ def picture(vara,varb):
     var2res.cnFillPalette    = cmap_colors #-- set the0 colormap to be used or 'NCL_default'
 
     var2res.cnLevelSelectionMode = "ExplicitLevels"
-    var2res.cnLevels             = [1, 21, 31, 41, 51, 62]
+    var2res.cnLevels             = [31, 41, 51]
     # var2res.cnMinLevelValF       = -50
     # var2res.cnMaxLevelValF       = 10
     # var2res.cnLevelSpacingF      = 2
@@ -391,10 +383,11 @@ def picture(vara,varb):
     map     = Ngl.map(wks, mpres)
     # lnid = Ngl.add_polyline(wks, map, lon0, lat0, plres)
     plot1    = Ngl.vector(wks, u,v, var1res) #gsn_csm_contour command
-    #plot2    = Ngl.contour(wks, windspeed, var2res) #gsn_csm_contour command
+    plot2    = Ngl.contour(wks, windspeed, var2res) #gsn_csm_contour command
     # Ngl.overlay(map, lnid)
+    Ngl.overlay(map, plot2)
     Ngl.overlay(map, plot1)
-    #Ngl.overlay(map, plot2)
+
 
 
     #---- Annotations and Markers
@@ -540,5 +533,11 @@ def picture(vara,varb):
 
     print('\EU has finished at: ', datetime.utcnow().strftime('%Y-%m-%d  %H:%M:%S '), u'\u2714' )
     return
-for i in range(0,len(varalist)):
-    picture(varalist[i][0],varblist[i][0])
+
+def main():
+    for i in range(0,timestepnumber):
+       picture(variablepaths[0][i],variablepaths[1][i],i)
+    return
+
+if __name__ == "__main__":
+    main()
