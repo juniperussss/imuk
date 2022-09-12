@@ -472,7 +472,7 @@ def picture(vara, varb, number):
     left_string = 'ICON-Lauf: ' + 'Init: ' + str(datetime_object)  # model output info
     center_string = ''  # center information bar
     # right_string_2 = 'Init: ' + str(initial_time)
-    right_string = weekday.capitalize() + " " + str(hour) + " UTC     "  # + vld_time #model time information
+    right_string = weekday.capitalize() + " " + str(hour) + " UTC"  # + vld_time #model time information
     subtitles(wks, map, left_string, center_string, right_string)  # assigning to main map
 
     # ---- Drawing Conclusion
