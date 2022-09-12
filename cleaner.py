@@ -52,7 +52,10 @@ def varnames(varnumber,varnames,varlevel):
     for i in range(0,varnumber):
         varname = varnames[i]
         level = varlevel[i]
-        varalist.append( (glob.glob(initialtimefolder + "/" + varname + "/" + str(level) + "/*")))
+        if (level == "single"):
+            varalist.append((glob.glob(initialtimefolder + "/" + varname + "/*")))
+        else:
+            varalist.append( (glob.glob(initialtimefolder + "/" + varname + "/" + str(level) + "/*")))
 
     print(varalist)
     return varalist

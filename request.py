@@ -11,6 +11,7 @@ from datetime import datetime, timedelta
 from tqdm import tqdm
 import numpy as np
 import glob
+import cleaner
 
 # fcst_hr_1 = np.arange(0, 78, 1)
 # fcst_hr_2 = np.arange(78, 181, 3)
@@ -137,3 +138,7 @@ with tqdm(total=len(variables), position=0, leave=True, colour='green') as pbar:
     
         #every step datetime
         #windbarb 
+
+cleaner.cleaning_old_folders()
+cleaner.cleaning_old_today_folders()
+cleaner.archiving()
