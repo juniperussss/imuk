@@ -10,24 +10,29 @@ Using opendata from the dwd to visualize and display synoptic Data
 ![850](./database/output/gph_temp_850.png )
 
 ### 700 hPa
-![700](./database/output/gph_rh_700.png )
+![700](./database/output/700/gph_rh_700_0.png )
 
 ### 500 hPa
 ![500](./database/output/gph_temp_500.png )
 
 ### 300 hPa
-![300](./database/output/u_v_300.png )
+![300](./database/output/300/u_v_300_0.png )
 ## Todos
-- Fix Cloudcolorscale
 - Implent significant Weather to Groundlevel
     (https://www.ncl.ucar.edu/Applications/weather_sym.shtml)
     
-- optimize Colorscale for 850 hPa
+- optimize Colorscale for 850 hPa and Groundlevel
+- add Label and Legend for
+-   300hpa
+-   500hpa
+-   700hpa
+-   850hpa
 
-COMPLETED
+### COMPLETED
 - Windspeed in 300hPa (calculated and added to map)
 - Transparent colors added to 300hpa wind but other colors should be changed!
 - Germany Province Borders were deleted
+- fix transparancy in all levels
 
 ## Dokumentation
 ### Colorscale for 700 hPa
