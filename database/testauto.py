@@ -1,11 +1,11 @@
 #---- calling for the necessary libraries
-from datetime import datetime
+from datetime import datetime,timedelta
 import glob
 import os
-from cleaner import varnames
+now=datetime.now()
+now=now + timedelta(hours=24)
+print(now.strftime("%a"))
 
-varnumber=2
-vars=["u","v"]
-varlevel=[300,300]
+now=datetime.now().hour
 
-varnames(varnumber,vars,varlevel)
+print(now)
