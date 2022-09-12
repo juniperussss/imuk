@@ -14,7 +14,8 @@ import cleaner
 from datetime import date
 
 ### Cleaning and Setup
-cleaner.cleaning_old_timefolders() #Remove old Folders
+cleaner.cleaning_old_today_folders() #Remove old Folders for today
+cleaner.archiving()
 varnumber=2
 vars=["u","v"]
 varlevel=[300,300]
