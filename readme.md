@@ -35,6 +35,26 @@ Using opendata from the dwd to visualize and display synoptic Data
 - Germany Province Borders were deleted
 - fix transparancy in all levels
 
+## Deployment
+### Conda
+- Install miniforge: https://github.com/conda-forge/miniforge
+```
+ conda env create -f environment.yml
+ conda activate imuk
+ conda env list
+```
+### Crontab
+- Install postfix and mutt
+- copy .bashrc_conda to ~
+- crontab -e
+- set shell to bash and Bash enviroment:
+```
+- SHELL=/bin/bash
+BASH_ENV=~/.bashrc_conda 
+MAILTO="user"
+* */1 * * *  /bin/bash ~/imuk/automation/automation.sh /dev/null
+```
+
 ## Dokumentation
 ### Colorscale for 700 hPa
 - 1-7: rgba(254, 255, 69, 1): (0.99,1,0.27,1 )

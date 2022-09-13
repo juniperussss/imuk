@@ -4,20 +4,24 @@ def cleaning_old_today_folders():
     from datetime import datetime, timedelta
     import glob
     today = datetime.now()
-    filepath = "input/icon/" + str(today.year) + "/" + str(today.month) + "/" + str(today.day)
+    filepath =  str(today.year) + "/" + str(today.month) + "/" + str(today.day)
     print(glob.glob(filepath + "/*"))
     filelist = glob.glob(filepath + "/*")
+    oldday= today -timedelta(days=200)
     newfolder = 0
     print(len(filelist))
     deletelist = []
-    for i in range(0, len(filelist)):
-        oldfolder = newfolder
-        newfolder = os.getcwd() + "/" + filelist[i]
-        print(os.path.getmtime(newfolder))
-        deletelist.append([os.path.getmtime(newfolder), i])
-        if i > 0 and oldfolder < newfolder:
-            print("removing", oldfolder)
-            shutil.rmtree(oldfolder)
+    if (len(filelist)==1):
+        shutil.rmtree(os.getcwd() + "/" + filelist[0])
+    else:
+        for i in range(0, len(filelist)):
+            oldfolder = newfolder
+            newfolder = os.getcwd() + "/" + filelist[i]
+            print(os.path.getmtime(newfolder))
+            deletelist.append([os.path.getmtime(newfolder), i])
+            if oldfolder < newfolder:
+                print("removing", oldfolder)
+                shutil.rmtree(oldfolder)
 
 def archiving():
     import os

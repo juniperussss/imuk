@@ -27,8 +27,8 @@ cdt_yrmoday = cdt_date.strftime('%Y%m%d')
 dir_origin= os.getcwd()
 dir_Parent = 'database/input/icon/'
 os.chdir(dir_Parent)
-
-init_time_hr = input('Enter the model run time ')
+cleaner.cleaning_old_today_folders()
+init_time_hr = "00" # input('Enter the model run time ')
 
 if not os.path.exists('{}/{}/{}/{}'.format(cdt_yr, cdt_mo, cdt_day, init_time_hr)):
     try:
@@ -140,5 +140,5 @@ with tqdm(total=len(variables), position=0, leave=True, colour='green') as pbar:
         #windbarb 
 
 cleaner.cleaning_old_folders()
-cleaner.cleaning_old_today_folders()
+
 cleaner.archiving()
