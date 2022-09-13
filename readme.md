@@ -4,16 +4,16 @@ Using opendata from the dwd to visualize and display synoptic Data
 
 ## Current Visualisation
 ### Groundlevel
-![Groundlevel](./database/output/bd_sw_meteosat.png )
+![Groundlevel](./database/output/1000_gl/bd_sw_meteosat_0.png )
 
 ### 850 hPa
-![850](./database/output/gph_temp_850.png )
+![850](./database/output/850/gph_temp_850_0.png )
 
 ### 700 hPa
 ![700](./database/output/700/gph_rh_700_0.png )
 
 ### 500 hPa
-![500](./database/output/gph_temp_500.png )
+![500](./database/output/500/gph_temp_500_0.png )
 
 ### 300 hPa
 ![300](./database/output/300/u_v_300_0.png )
@@ -22,12 +22,13 @@ Using opendata from the dwd to visualize and display synoptic Data
     (https://www.ncl.ucar.edu/Applications/weather_sym.shtml)
     
 - optimize Colorscale for 850 hPa and Groundlevel
-- add Label and Legend for
+- add ~~Infobar~~ and Legend for
 -   300hpa
 -   500hpa
 -   700hpa
 -   850hpa
-
+- cronjob automation
+- correct wrong windbarbs in 300hPa
 ### COMPLETED
 - Windspeed in 300hPa (calculated and added to map)
 - Transparent colors added to 300hpa wind but other colors should be changed!
