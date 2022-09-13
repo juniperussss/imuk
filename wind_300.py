@@ -383,97 +383,14 @@ def picture(vara, varb, number):
 
     # ---- Annotations and Markers
 
-    def subtitles(wks, map, left_string, center_string, right_string):
-        ltres = Ngl.Resources()
-        ctres = Ngl.Resources()
-        rtres = Ngl.Resources()
-        ltres.nglDraw = False  # Make sure string is just created, not drawn.
-        ctres.nglDraw = False  # Make sure string is just created, not drawn.
-        rtres.nglDraw = False  # Make sure string is just created, not drawn.
-        # Retrieve font height of left axis string and use this to calculate
-        # size of subtitles.
-
-        font_height = Ngl.get_float(map.base, "tiXAxisFontHeightF")
-        ltres.txFontHeightF = font_height * 0.4  # Slightly smaller
-        rtres.txFontHeightF = font_height * 0.9  # Slightly smaller
-        ctres.txFontHeightF = font_height * 1.717  # Slightly smaller
-        # ttres.txFont = 'complex_roman'
-        ltres.txFontThicknessF = 5
-        rtres.txFont = 22
-
-        # ttres.txBackgroundFillColor = np.array([0,0,0,0.55])
-        ctres.txBackgroundFillColor = np.array([1, 1, 1, 0.1])
-        rtres.txBackgroundFillColor = np.array([0, 1, 1, 1])
-        ctres.txBackgroundFillColor = "white"
-        rtres.txBackgroundFillColor = "yellow"
-        rtres.txFontColor = "red"
-        ltres.txFontColor = "blue"
-
-        # Set some some annotation resources to describe how close text
-        # is to be attached to plot.
-
-        amres = Ngl.Resources()  # amres = True
-        amres.amOrthogonalPosF = -0.70  # Top of plot plus a little extra
-        # to stay off the border.
-
-        # Create three strings to put at the top, using a slightly
-        # smaller font height than the axis titles.
-
-        if left_string != "":
-            txidl = Ngl.text(wks, map, left_string, mpres.mpLambertMeridianF, 51., ltres)
-
-            amres.amJust = "TopLeft"
-            amres.amParallelPosF = -0.5  # Left-justified
-            amres.amOrthogonalPosF = 0.56  # -0.55
-            annoidl = Ngl.add_annotation(map, txidl, amres)
-
-            if left_string != "":
-                txidl = Ngl.text(wks, map, left_string_2, mpres.mpLambertMeridianF, 51., ltres)
-
-                amres.amJust = "BottomLeft"
-                amres.amParallelPosF = -0.5  # Left-justified
-                amres.amOrthogonalPosF = 0.55  # -0.56
-                annoidl = Ngl.add_annotation(map, txidl, amres)
-
-        if center_string != "":
-            txidc = Ngl.text(wks, map, center_string, mpres.mpLambertMeridianF, 51., ctres)
-
-            amres.amJust = "TopCenter"
-            amres.amParallelPosF = 0.0  # Centered
-            amres.amOrthogonalPosF = 0.501  # -0.65
-            annoidc = Ngl.add_annotation(map, txidc, amres)
-
-        if right_string != "":
-            txidr = Ngl.text(wks, map, right_string, mpres.mpLambertMeridianF, 51., rtres)
-
-            amres.amJust = "TopRight"
-            amres.amParallelPosF = 0.5  # Right-justifed
-            amres.amOrthogonalPosF = 0.50  # -0.55
-            annoidr = Ngl.add_annotation(map, txidr, amres)
-
-        # if right_string != "":
-        #  txidr = Ngl.text(wks, map, right_string_2, mpres.mpLambertMeridianF, 51., rtres)
-
-        #  amres.amJust = "BottomRight"
-        #  amres.amParallelPosF = 0.5  # Right-justifed
-        #  amres.amOrthogonalPosF = 0.55 #-0.56
-        #  annoidr = Ngl.add_annotation(map, txidr, amres)
-
-        return
-
-    strObj = os.path.basename(vara)  # Get Filestring
-    strObj = strObj[15:25:]  # Cut to Datestring
-    datetime_object = datetime.strptime(strObj, '%Y%m%d%H')  # Convert Datestring to Datetimeobject
-    newdatetime_object = datetime_object + timedelta(hours=number * 3)
-    weekday = newdatetime_object.strftime("%a")  # Extract Weekday from Datetimeobject
-    hour = newdatetime_object.strftime("%H")
+    hour, weekday, datetime_object = cleaner.dates_for_subtitles(vara, number)
     left_string_2 = '300 hPa: ' + f1.variables['UGRD_P0_L100_GLL0'].attributes['long_name'] + ' & ' + \
                     f2.variables['VGRD_P0_L100_GLL0'].attributes['long_name']  # model output info
     left_string = 'ICON-Lauf: ' + 'Init: ' + str(datetime_object)  # model output info
     center_string = ''  # center information bar
     # right_string_2 = 'Init: ' + str(initial_time)
     right_string = weekday.capitalize() + " " + str(hour) + " UTC"  # + vld_time #model time information
-    subtitles(wks, map, left_string, center_string, right_string)  # assigning to main map
+    cleaner.subtitles(wks, map, left_string, center_string, right_string,mpres,left_string_2)  # assigning to main map
 
     # ---- Drawing Conclusion
 
@@ -484,24 +401,27 @@ def picture(vara, varb, number):
     Ngl.destroy(wks)
 
     # ---- Crop Graphics
+    cleaner.crop_image(number,'u_v_300_',wkres)
 
-    im = Image.open('u_v_300_' + str(number) +".png", mode='r')
-    left   = 70
-    top    = 960
-    right  = wkres.wkWidth - 90
-    bottom = wkres.wkWidth -780
-    im1 = im.crop((left, top, right, bottom))
-    im1.save('u_v_300_' + str(number) +".png", format='png')
-    # Ngl.destroy(wks)
 
     # #---- Merge Logo
+    """
+    # Opening the primary image (used in background)
+    img1 = Image.open(r'u_v_300_' + str(number) +".png")
 
-    # input_1 = "/media/juniperus/SONY/imuk/database/imuk_logo_trans.png"
-    # input_2 = '/media/juniperus/SONY/imuk/database/input/icon/temp.png'
-    # output  = input_2
-    # cmd = f"composite -geometry 233x198.5+2880+1700 {input_1} {input_2} {output}"
-    # os.system(cmd)
+    parent=os.path.dirname('u_v_300_' + str(number) +".png")
+    print(parent)
+    kek =os.path.dirname(__file__) + '/database/output/icons/imuk.png'
+    # Opening the secondary image (overlay image)
+    img2 = Image.open(kek)
 
+    # Pasting img2 image on top of img1
+    # starting at coordinates (0, 0)
+    img1.paste(img2, (wkres.wkWidth -680, 0), mask=img2)
+
+    # Displaying the image
+    img1.show()
+    """
     print('\EU has finished at: ', datetime.utcnow().strftime('%Y-%m-%d  %H:%M:%S '), u'\u2714')
     return
 

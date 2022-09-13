@@ -98,12 +98,12 @@ def picture(vara,varb,number):
     #---- Designing a workstation
 
     wkres           =  Ngl.Resources()                  #-- generate an resources object for workstation
-    wkres.wkBackgroundColor = 'black'
+    wkres.wkBackgroundColor = 'white'
     wkres.wkForegroundColor = 'white'
     wkres.wkWidth   = 3840                             #-- width of workstation
-    wkres.wkHeight  = 2560                             #-- height of workstation
+    wkres.wkHeight  = 3840#2560                             #-- height of workstation
     wks_type        = "png"                             #-- output type of workstation
-    wks             =  Ngl.open_wks(wks_type,'gph_temp_500', wkres)  #-- open workstation
+    wks             =  Ngl.open_wks(wks_type,'gph_temp_500_' +str(number), wkres)  #-- open workstation
 
 
     #---- Resources
@@ -443,40 +443,24 @@ def picture(vara,varb,number):
     # annores.txFontColor      = 'white'
     # annores.txBackgroundFillColor = 'black'
     # annotation               = Ngl.add_text(wks, map, 'O.K. Mihliardic', mpres.mpLambertMeridianF, mpres.mpMinLatF+(domain_area/100), annores) #citys text locations
-
+    hour,weekday,datetime_object=cleaner.dates_for_subtitles(vara,number)
     left_string_2   = '500 hPa: ' + f1.variables['TMP_P0_L100_GLL0'].attributes['long_name'] +' & '+ f2.variables['GP_P0_L100_GLL0'].attributes['long_name'] #model output info
-    left_string   = 'ICON-Lauf: ' + 'Init: ' + str(initial_time) #model output info
-    center_string = '                                               ' #center information bar
+    left_string = 'ICON-Lauf: ' + 'Init: ' + str(datetime_object)  # model output info
+    center_string = '' #center information bar
     # right_string_2 = 'Init: ' + str(initial_time)
-    right_string  = 'Valid: ' #+ vld_time #model time information
-    subtitles(wks, map, left_string, center_string, right_string) #assigning to main map
+    right_string = weekday.capitalize() + " " + str(hour) + " UTC"  # + vld_time #model time information
+    cleaner.subtitles(wks, map, left_string, center_string, right_string, mpres, left_string_2)  # assigning to main map
 
+    # ---- Drawing Conclusion
 
-    #---- Drawing Conclusion
-
+    # Ngl.maximize_plot(wks, map)
     Ngl.draw(map)
     Ngl.frame(wks)
     # Ngl.delete_wks(wks)
     Ngl.destroy(wks)
 
-    #---- Crop Graphics
-
-    # im = Image.open('temp.png', mode='r')
-    # left   = 1000
-    # top    = 300
-    # right  = wkres.wkWidth - left
-    # bottom = wkres.wkHeight - top
-    # im1 = im.crop((left, top, right, bottom))
-    # im1.save("temp.png", format='png')
-    # Ngl.destroy(wks)
-
-    # #---- Merge Logo
-
-    # input_1 = "/media/juniperus/SONY/imuk/database/imuk_logo_trans.png"
-    # input_2 = '/media/juniperus/SONY/imuk/database/input/icon/temp.png'
-    # output  = input_2
-    # cmd = f"composite -geometry 233x198.5+2880+1700 {input_1} {input_2} {output}"
-    # os.system(cmd)
+    # ---- Crop Graphics
+    cleaner.crop_image(number, 'gph_temp_500_', wkres)
 
     print('\EU has finished at: ', datetime.utcnow().strftime('%Y-%m-%d  %H:%M:%S '), u'\u2714' )
 
