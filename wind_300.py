@@ -8,7 +8,7 @@ import numpy as np
 import warnings
 from datetime import datetime, timedelta
 from PIL import Image
-import metpy.calc as mpcalc
+import metpy.calc as mpcalc 
 from metpy.units import units
 import cleaner
 from datetime import date
@@ -61,7 +61,7 @@ def picture(vara, varb, number):
 
     lon1 = f1.variables['lon_0'][:] - 360
     lat1 = f1.variables['lat_0'][:]
-    u = f1.variables['UGRD_P0_L100_GLL0'][4, :, :] * -1
+    u = f1.variables['UGRD_P0_L100_GLL0'][4, :, :]
 
     dir = os.path.join(dir_origin)  # path of model output
     fn2 = varb  # '/database/input/icon/2022/8/19/00/v/300/outfile_merged_2022081900_000_004_300_V.grib2' #path name of model output
@@ -73,7 +73,7 @@ def picture(vara, varb, number):
 
     lon2 = f2.variables['lon_0'][:] - 360
     lat2 = f2.variables['lat_0'][:]
-    v = f2.variables['VGRD_P0_L100_GLL0'][4, :, :] * -1
+    v = f2.variables['VGRD_P0_L100_GLL0'][4, :, :]
 
     '''fatal:NclGRIB2: Deleting reference to parameter; unable to decode grid template 3.101'''
     '''see: https://www.nco.ncep.noaa.gov/pmb/docs/grib2/grib2_doc/grib2_temp3-101.shtml'''
@@ -81,10 +81,12 @@ def picture(vara, varb, number):
 
     # ---- Preliminaries (2)
 
-    u = mpcalc.smooth_n_point(u, 9, 4)
-    v = mpcalc.smooth_n_point(v, 9, 4)
+    # u = mpcalc.smooth_n_point(u, 9, 4)
+    # v = mpcalc.smooth_n_point(v, 9, 4)
 
-    windspeed = mpcalc.wind_speed(u * units('m/s'), v * units('m/s'))
+    windspeed = mpcalc.wind_speed(np.array(u) * units('m/s'), np.array(v) * units('m/s'))
+    windspeed_smoothed = mpcalc.smooth_n_point(windspeed, 9, 4)
+    
     # ---- Initial Time
 
     variable_name = [var for var in f1.variables.keys() if "UGRD_P0_L100_GLL0" in var][0]
@@ -288,8 +290,8 @@ def picture(vara, varb, number):
     # var1res.lbPerimFillColor = np.array([0,0,0,0.83])
     # var1res.lbLabelOffsetF = 0.08
 
-    # var1res.sfXArray = lon1 # processing of longitudes arrays
-    # var1res.sfYArray = lat1 # processing of latitudes arrays
+    var1res.vfXArray = lon1 # processing of longitudes arrays
+    var1res.vfYArray = lat1 # processing of latitudes arrays
 
     # ---- Variable (2) Resources
 
@@ -376,7 +378,7 @@ def picture(vara, varb, number):
     map = Ngl.map(wks, mpres)
     # lnid = Ngl.add_polyline(wks, map, lon0, lat0, plres)
     plot1 = Ngl.vector(wks, u, v, var1res)  # gsn_csm_contour command
-    plot2 = Ngl.contour(wks, windspeed, var2res)  # gsn_csm_contour command
+    plot2 = Ngl.contour(wks, windspeed_smoothed, var2res)  # gsn_csm_contour command
     # Ngl.overlay(map, lnid)
     Ngl.overlay(map, plot2)
     Ngl.overlay(map, plot1)
