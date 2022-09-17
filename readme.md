@@ -28,8 +28,9 @@ Using opendata from the dwd to visualize and display synoptic Data
 -   700hpa
 -   850hpa
 - cronjob automation
-- correct wrong windbarbs in 300hPa
 ### COMPLETED
+- Request.py update for twice download per day
+- correct wrong windbarbs in 300hPa
 - Windspeed in 300hPa (calculated and added to map)
 - Transparent colors added to 300hpa wind but other colors should be changed!
 - Germany Province Borders were deleted
