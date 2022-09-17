@@ -11,12 +11,11 @@ from datetime import datetime, timedelta
 from tqdm import tqdm
 import numpy as np
 import glob
-import cleaner
 
-# fcst_hr_1 = np.arange(0, 78, 1)
-# fcst_hr_2 = np.arange(78, 181, 3)
-# fcst_hrs = np.concatenate((fcst_hr_1, fcst_hr_2))    
-fcst_hrs = np.arange(0, 5, 1)
+fcst_hr_1 = np.arange(0, 78, 1)
+fcst_hr_2 = np.arange(78, 181, 3)
+fcst_hrs = np.concatenate((fcst_hr_1, fcst_hr_2))    
+# fcst_hrs = np.arange(0, 5, 1)
 
 cdt_date = datetime.utcnow()
 print(" has started at: ", cdt_date.strftime('%Y-%m-%d  %H:%M:%S'))
@@ -24,11 +23,18 @@ cdt_yr = cdt_date.year
 cdt_mo = cdt_date.month
 cdt_day = cdt_date.day
 cdt_yrmoday = cdt_date.strftime('%Y%m%d')
+
+if int(cdt_date.strftime("%H")) >= 3 and int(cdt_date.strftime("%H")) <= 11:
+    init_time_hr = '00'
+elif int(cdt_date.strftime("%H")) >= 15 and int(cdt_date.strftime("%H")) <= 23:
+    init_time_hr = '12' 
+else:
+    init_time_hr = input('Enter the model run time ')
+    
+
 dir_origin= os.getcwd()
 dir_Parent = 'database/input/icon/'
 os.chdir(dir_Parent)
-cleaner.cleaning_old_today_folders()
-init_time_hr = "00" # input('Enter the model run time ')
 
 if not os.path.exists('{}/{}/{}/{}'.format(cdt_yr, cdt_mo, cdt_day, init_time_hr)):
     try:
@@ -76,11 +82,11 @@ variables = {p('t'): ['pressure-level', '_500'],
 
 url_base = 'https://opendata.dwd.de/weather/nwp/icon/grib/'
 
-#from cdo import Cdo
-from cdo import *
+from cdo import Cdo
+
 cdo = Cdo()
 cdo.debug = True
-0
+
 grids= dir_origin +'/database/ICON_GLOBAL2EUAU_025_EASY/target_grid_EUAU_025.txt'
 weights= dir_origin +'/database/ICON_GLOBAL2EUAU_025_EASY/weights_icogl2world_025_EUAU.nc'
 
@@ -135,10 +141,4 @@ with tqdm(total=len(variables), position=0, leave=True, colour='green') as pbar:
             
         os.chdir(dir_origin)
         print(os.path.abspath(os.getcwd()) +" has completed at: ", cdt_date.strftime('%Y-%m-%d  %H:%M:%S'))
-    
-        #every step datetime
-        #windbarb 
-
-cleaner.cleaning_old_folders()
-
-cleaner.archiving()
+  
