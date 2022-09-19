@@ -27,8 +27,10 @@ Using opendata from the dwd to visualize and display synoptic Data
 -   500hpa
 -   700hpa
 -   850hpa
-- cronjob automation
+
 ### COMPLETED
+- fixed Windbarb multiplyer
+- cronjob automation
 - Request.py update for twice download per day
 - correct wrong windbarbs in 300hPa
 - Windspeed in 300hPa (calculated and added to map)
