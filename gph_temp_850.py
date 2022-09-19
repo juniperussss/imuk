@@ -58,7 +58,7 @@ def picture(vara,varb,number):
 
     lon1 = f1.variables['lon_0'][:] - 360
     lat1 = f1.variables['lat_0'][:]
-    temp850 = f1.variables['TMP_P0_L100_GLL0'][4,:,:] -273.15
+    temp850 = f1.variables['TMP_P0_L100_GLL0'][:,:] -273.15
 
     dir         = os.path.join(dir_origin) #path of model output
     fn2          = varb#dir + '/database/input/icon/2022/8/2/00/fi/850/outfile_merged_2022080200_000_004_850_FI.grib2' #path name of model output
@@ -70,7 +70,7 @@ def picture(vara,varb,number):
 
     lon2 = f2.variables['lon_0'][:] - 360
     lat2 = f2.variables['lat_0'][:]
-    gph850 = f2.variables['GP_P0_L100_GLL0'][4,:,:] /98.1
+    gph850 = f2.variables['GP_P0_L100_GLL0'][:,:] /98.1
 
 
     '''fatal:NclGRIB2: Deleting reference to parameter; unable to decode grid template 3.101'''

@@ -12,10 +12,13 @@ from tqdm import tqdm
 import numpy as np
 import glob
 
+import cleaner
+"""
 fcst_hr_1 = np.arange(0, 78, 1)
 fcst_hr_2 = np.arange(78, 181, 3)
 fcst_hrs = np.concatenate((fcst_hr_1, fcst_hr_2))    
-# fcst_hrs = np.arange(0, 5, 1)
+"""
+fcst_hrs = np.arange(0, 5, 1)
 
 cdt_date = datetime.utcnow()
 print(" has started at: ", cdt_date.strftime('%Y-%m-%d  %H:%M:%S'))
@@ -35,7 +38,7 @@ else:
 dir_origin= os.getcwd()
 dir_Parent = 'database/input/icon/'
 os.chdir(dir_Parent)
-
+cleaner.cleaning_old_today_folders()
 if not os.path.exists('{}/{}/{}/{}'.format(cdt_yr, cdt_mo, cdt_day, init_time_hr)):
     try:
         os.makedirs('{}/{}/{}/{}'.format(cdt_yr, cdt_mo, cdt_day, init_time_hr))
@@ -142,3 +145,6 @@ with tqdm(total=len(variables), position=0, leave=True, colour='green') as pbar:
         os.chdir(dir_origin)
         print(os.path.abspath(os.getcwd()) +" has completed at: ", cdt_date.strftime('%Y-%m-%d  %H:%M:%S'))
   
+
+cleaner.cleaning_old_folders()
+cleaner.archiving()

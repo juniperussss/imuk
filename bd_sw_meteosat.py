@@ -78,7 +78,7 @@ def picture(vara,varb,varc,vard,number):
 
     lon1 = f1.variables['lon_0'][:] - 360
     lat1 = f1.variables['lat_0'][:]
-    clct = f1.variables['VAR_0_6_199_P0_L1_GLL0'][4,:,:]
+    clct = f1.variables['VAR_0_6_199_P0_L1_GLL0'][:,:]
 
     dir         = os.path.join(dir_origin) #path of model output
     fn2          = varb #dir + '/database/input/icon/2022/8/2/00/pmsl/outfile_merged_2022080200_000_004_PMSL.grib2' #path name of model output
@@ -90,7 +90,7 @@ def picture(vara,varb,varc,vard,number):
 
     lon2 = f2.variables['lon_0'][:] - 360
     lat2 = f2.variables['lat_0'][:]
-    pmsl = f2.variables['PRMSL_P0_L101_GLL0'][4,:,:]/100
+    pmsl = f2.variables['PRMSL_P0_L101_GLL0'][:,:]/100
 
 
     dir         = os.path.join(dir_origin) #path of model output
@@ -103,7 +103,7 @@ def picture(vara,varb,varc,vard,number):
 
     lon3 = f3.variables['lon_0'][:] - 360
     lat3 = f3.variables['lat_0'][:]
-    rain = f3.variables['TPRATE_P8_L1_GLL0_acc'][4,:,:]
+    rain = f3.variables['TPRATE_P8_L1_GLL0_acc'][:,:]
 
 
     dir         = os.path.join(dir_origin) #path of model output
@@ -116,7 +116,7 @@ def picture(vara,varb,varc,vard,number):
 
     lon4 = f4.variables['lon_0'][:] - 360
     lat4 = f4.variables['lat_0'][:]
-    ww = f4.variables["WIWW_P0_L1_GLL0"][4,:,:]
+    ww = f4.variables["WIWW_P0_L1_GLL0"][:,:]
 
     '''fatal:NclGRIB2: Deleting reference to parameter; unable to decode grid template 3.101'''
     '''see: https://www.nco.ncep.noaa.gov/pmb/docs/grib2/grib2_doc/grib2_temp3-101.shtml'''

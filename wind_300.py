@@ -61,7 +61,7 @@ def picture(vara, varb, number):
 
     lon1 = f1.variables['lon_0'][:] - 360
     lat1 = f1.variables['lat_0'][:]
-    u = f1.variables['UGRD_P0_L100_GLL0'][4, :, :]
+    u = f1.variables['UGRD_P0_L100_GLL0'][:,:]
 
     dir = os.path.join(dir_origin)  # path of model output
     fn2 = varb  # '/database/input/icon/2022/8/19/00/v/300/outfile_merged_2022081900_000_004_300_V.grib2' #path name of model output
@@ -73,7 +73,7 @@ def picture(vara, varb, number):
 
     lon2 = f2.variables['lon_0'][:] - 360
     lat2 = f2.variables['lat_0'][:]
-    v = f2.variables['VGRD_P0_L100_GLL0'][4, :, :]
+    v = f2.variables['VGRD_P0_L100_GLL0'][:, :]
 
     '''fatal:NclGRIB2: Deleting reference to parameter; unable to decode grid template 3.101'''
     '''see: https://www.nco.ncep.noaa.gov/pmb/docs/grib2/grib2_doc/grib2_temp3-101.shtml'''
@@ -232,7 +232,7 @@ def picture(vara, varb, number):
     var1res.vcGlyphOpacityF = 1
     var1res.vcWindBarbLineThicknessF = 8
     var1res.vcWindBarbColor = "Black"
-    var1res.vcWindBarbScaleFactorF = 5
+    var1res.vcWindBarbScaleFactorF = 1
     var1res.vcRefAnnoOn = False
 
     # var1res.cnConstFEnableFill = False
