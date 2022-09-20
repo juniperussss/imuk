@@ -176,7 +176,7 @@ def dates_for_subtitles(vara,number):
     import os
     from datetime import datetime, timedelta
     strObj = os.path.basename(vara)  # Get Filestring
-    strObj = strObj[6:15:]  # Cut to Datestring
+    strObj = strObj[6:16:]  # Cut to Datestring
     datetime_object = datetime.strptime(strObj, '%Y%m%d%H')  # Convert Datestring to Datetimeobject
     newdatetime_object = datetime_object + timedelta(hours=number * 3)
     weekday = newdatetime_object.strftime("%a")  # Extract Weekday from Datetimeobject
