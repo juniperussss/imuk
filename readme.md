@@ -28,6 +28,9 @@ Using opendata from the dwd to visualize and display synoptic Data
 -   700hpa
 -   850hpa
 
+H and L symbol problems
+300 hPa wind speed and unit check 
+
 ### COMPLETED
 - fixed Windbarb multiplyer
 - cronjob automation
