@@ -13,26 +13,11 @@ from metpy.units import units
 import cleaner
 from datetime import date
 
-### Cleaning and Setup
-varnumber = 2
-vars = ["u", "v"]
-varlevel = [300, 300]
-variablepaths = cleaner.varnames(varnumber, vars,
-                                 varlevel)  ##Getting every filepath in the directory like [[vara1,vara2],[varb1,varb2]]
-
-timestepnumber = len(variablepaths[0])
-
-# ---- Preliminaries (1)
-dir_origin = os.getcwd()
-dir_Produkt = 'database/output/300/'
-os.chdir(dir_Produkt)
-
-for f in os.listdir(os.getcwd()):
-    os.remove(os.path.join(os.getcwd(), f))
+import argparse
 
 
 ###
-def picture(vara, varb, number):
+def picture(vara, varb, number,resx,resy,dir_origin):
     warnings.filterwarnings("ignore")
     current_date = datetime.utcnow()
     print("EU has started at: ", current_date.strftime('%Y-%m-%d  %H:%M:%S'))
@@ -107,12 +92,13 @@ def picture(vara, varb, number):
     # vld_time = vld_time.strftime('%d/%m/%Y %H') + 'UTC'
 
     # ---- Designing a workstation
-
+    aspect_ratio= resx/resy
+    #print(10 *aspect_ratio, 10*resy/resx)
     wkres = Ngl.Resources()  # -- generate an resources object for workstation
     wkres.wkBackgroundColor = 'white'
     wkres.wkForegroundColor = 'white'
-    wkres.wkWidth = 3840  # -- width of workstation
-    wkres.wkHeight = 3840#2560  # -- height of workstation
+    wkres.wkWidth = 3*resx#0.081*3840#299#0.081*3840  # -- width of workstation
+    wkres.wkHeight = 3*resx#0.081*3840#224#0.081*3840#2560  # -- height of workstation
     wks_type = "png"  # -- output type of workstation
     wks = Ngl.open_wks(wks_type, 'u_v_300_' + str(number), wkres)  # -- open workstation
 
@@ -133,17 +119,20 @@ def picture(vara, varb, number):
     mpres.nglMaximize = True  # expanding the draw
     mpres.nglDraw = False  # -- don't draw plot
     mpres.nglFrame = False  # -- don't advance frame
-    # mpres.mpShapeMode = "FreeAspect"
-    # mpres.vpWidthF = 5
-    # mpres.vpHeightF = 15
+    #mpres.mpShapeMode = "FreeAspect"
+    #mpres.vpXF = 0.5
+    #mpres.vpYF = 1
+    #mpres.vpWidthF = aspect_ratio
+    #mpres.vpHeightF = resy/resx
     # mpres.tfDoNDCOverlay   = True
+    #mpres.nglPaperMargin = 0
 
     mpres.mpPerimOn = True
     mpres.mpPerimLineThicknessF = 4.
 
     mpres.mpOutlineOn = True  # -- turn on map outlines
     mpres.mpGeophysicalLineColor = "black"  # boundary color
-    mpres.mpGeophysicalLineThicknessF = 5.0  # -- line thickness of coastal bo1 minutrders
+    mpres.mpGeophysicalLineThicknessF = (resx/1920)*5.0  # -- line thickness of coastal bo1 minutrders
     mpres.mpDataBaseVersion = "MediumRes"  # Map resolution
     mpres.mpDataResolution = 'Finest'  # Data resolution
     mpres.mpDataSetName = "Earth..4"  # -- set map data base version
@@ -226,11 +215,11 @@ def picture(vara, varb, number):
     var1res.vcRefMagnitudeF = 1.  # make vectors larger
     var1res.vcRefLengthF = 0.015  # ref vec length
     var1res.vcGlyphStyle = "WindBarb"  # select wind barbs
-    var1res.vcMinDistanceF = 0.038  # thin out windbarbs
+    var1res.vcMinDistanceF = 0.033#0.048  # thin out windbarbs
     var1res.vcMonoWindBarbColor = True  # Turns multiple Windbarb colors on and off
     var1res.vcLevelColors = Ngl.read_colormap_file("ncl_default")
     var1res.vcGlyphOpacityF = 1
-    var1res.vcWindBarbLineThicknessF = 8
+    var1res.vcWindBarbLineThicknessF = (resx/1920)*10
     var1res.vcWindBarbColor = "Black"
     var1res.vcWindBarbScaleFactorF = 1
     var1res.vcRefAnnoOn = False
@@ -403,7 +392,8 @@ def picture(vara, varb, number):
     Ngl.destroy(wks)
 
     # ---- Crop Graphics
-    cleaner.crop_image(number,'u_v_300_',wkres)
+    cleaner.crop_image(number,'u_v_300_',wkres,resx,resy)
+    #cleaner.crop_image_aspected(number,'u_v_300_',wkres,resx,resy)
 
 
     # #---- Merge Logo
@@ -429,8 +419,33 @@ def picture(vara, varb, number):
 
 
 def main():
+    ##Parsing Variable Values
+    parser = argparse.ArgumentParser()
+    parser.add_argument('resx')  # 350
+    parser.add_argument('resy')#
+    parser.add_argument('outputpath')
+    args = parser.parse_args()#gv[480#210    #480
+    resx=int(args.resx)
+    resy=int(args.resy)
+    dir_origin = "/home/alex/PycharmProjects/imuk"
+    dir_Produkt = args.outputpath
+    os.chdir(dir_Produkt)
+
+    for f in os.listdir(os.getcwd()):
+        os.remove(os.path.join(os.getcwd(), f))
+    ### Cleaning and Setup
+    varnumber = 2
+    vars = ["u", "v"]
+    varlevel = [300, 300]
+    variablepaths = cleaner.varnames(varnumber, vars,
+                                     varlevel,
+                                     dir_origin)  ##Getting every filepath in the directory like [[vara1,vara2],[varb1,varb2]]
+
+    timestepnumber = len(variablepaths[0])
+
+    ## Main Process
     for i in range(0, timestepnumber):
-        picture(variablepaths[0][i], variablepaths[1][i], i)
+        picture(variablepaths[0][i], variablepaths[1][i], i,resx,resy,dir_origin)
     return
 
 

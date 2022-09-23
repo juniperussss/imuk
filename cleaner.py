@@ -44,12 +44,12 @@ def archiving():
 
 
 
-def varnames(varnumber,varnames,varlevel):
+def varnames(varnumber,varnames,varlevel,projectfolder):
     from datetime import datetime
     import os
     import glob
     today = datetime.now()
-    filepath = os.getcwd() + "/database/input/icon/" + str(today.year) + "/" + str(today.month) + "/" + str(today.day)
+    filepath = projectfolder + "/database/input/icon/" + str(today.year) + "/" + str(today.month) + "/" + str(today.day)
     initialtimefolder = glob.glob(filepath + "/*")[0]
     print("Initialtimefolder: ", initialtimefolder)
     varalist=[]
@@ -183,12 +183,28 @@ def dates_for_subtitles(vara,number):
     hour = newdatetime_object.strftime("%H")
     return hour,weekday,datetime_object
 
-def crop_image(number,levelname,wkres):
+def crop_image(number,levelname,wkres,resx,resy):
     from PIL import Image
     im = Image.open(levelname + str(number) + ".png", mode='r')
-    left = 70
-    top = 960
-    right = wkres.wkWidth - 90
-    bottom = wkres.wkWidth - 780
+    left = wkres.wkWidth /55#70
+    top = wkres.wkWidth/4 #4 #960
+    right = wkres.wkWidth - wkres.wkWidth/43#90
+    bottom = wkres.wkWidth - wkres.wkWidth/5#780
+    im1 = im.crop((left, top, right, bottom))
+    left = 0
+    top = 0
+    right = resx
+    bottom =resy
+    #im2 = im1.crop((left, top, right, bottom))
+    im2 = im1.resize((resx, resy), resample=Image.BOX)
+    im2.save(levelname + str(number) + ".png", format='png')
+
+def crop_image_aspected(number,levelname,wkres,xres,yres):
+    from PIL import Image
+    im = Image.open(levelname + str(number) + ".png", mode='r')
+    left = 0
+    top = 0
+    right = xres
+    bottom =yres
     im1 = im.crop((left, top, right, bottom))
     im1.save(levelname + str(number) + ".png", format='png')

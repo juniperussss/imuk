@@ -157,9 +157,11 @@ def picture(vara,varb,varc,vard,number):
     wkres.wkForegroundColor = 'white'
     wkres.wkWidth   = 3840                             #-- width of workstation
     wkres.wkHeight  = 3840#2560                             #-- height of workstation
-    wks_type        = "png"                             #-- output type of workstation
-    wks             =  Ngl.open_wks(wks_type,'bd_sw_meteosat_'+str(number), wkres)  #-- open workstation
-
+    wks_type        = "png"    #-- output type of workstation
+    if (number==0):
+        wks = Ngl.open_wks(wks_type, '300_00' + str( number), wkres)  # -- open workstation
+    else:
+        wks = Ngl.open_wks(wks_type, '300_0' + str(30 * number), wkres)  # -- open workstation
 
     #---- Resources
 

@@ -13,12 +13,12 @@ import numpy as np
 import glob
 
 import cleaner
-"""
-fcst_hr_1 = np.arange(0, 78, 1)
-fcst_hr_2 = np.arange(78, 181, 3)
-fcst_hrs = np.concatenate((fcst_hr_1, fcst_hr_2))    
-"""
-fcst_hrs = np.arange(0, 5, 1)
+
+#fcst_hr_1 = np.arange(0, 78, 1)
+#fcst_hr_2 = np.arange(78, 181, 3)
+#fcst_hrs = np.concatenate((fcst_hr_1, fcst_hr_2))
+
+fcst_hrs = np.arange(0, 18, 3)
 
 cdt_date = datetime.utcnow()
 print(" has started at: ", cdt_date.strftime('%Y-%m-%d  %H:%M:%S'))
@@ -32,7 +32,7 @@ if int(cdt_date.strftime("%H")) >= 3 and int(cdt_date.strftime("%H")) <= 11:
 elif int(cdt_date.strftime("%H")) >= 15 and int(cdt_date.strftime("%H")) <= 23:
     init_time_hr = '12' 
 else:
-    init_time_hr = input('Enter the model run time ')
+    init_time_hr = '00'#input('Enter the model run time ')
     
 
 dir_origin= os.getcwd()
