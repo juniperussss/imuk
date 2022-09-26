@@ -28,8 +28,12 @@ Using opendata from the dwd to visualize and display synoptic Data
 -   700hpa
 -   850hpa
 
-H and L symbol problems
-300 hPa wind speed and unit check 
+thresholds of 300 hPa wind legend palette. 
+
+H and L symbol problems -> identified the issue as "cnLineLabelPlacementMode"
+https://www.ncl.ucar.edu/Document/Graphics/Resources/cn.shtml#cnLineLabelPlacementMode
+
+300 hPa wind speed and unit check = there is no problem, ncl converts ms to knot automatically
 
 ### COMPLETED
 - fixed Windbarb multiplyer
