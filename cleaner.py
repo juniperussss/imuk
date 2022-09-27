@@ -208,12 +208,3 @@ def crop_image_aspected(number,levelname,wkres,xres,yres):
     bottom =yres
     im1 = im.crop((left, top, right, bottom))
     im1.save(levelname + str(number) + ".png", format='png')
-
-
-def fcst_hrs():
-    import numpy as np
-    fcst_hr_1 = np.arange(0, 78, 1)
-    fcst_hr_2 = np.arange(78, 181, 3)
-    fcst_hrs = np.concatenate((fcst_hr_1, fcst_hr_2))
-
-    return fcst_hrs
