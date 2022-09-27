@@ -13,21 +13,11 @@ import metpy.calc as mpcalc
 from metpy.units import units
 import cleaner
 from datetime import date
-#---- Preliminaries (1)
-varnumber=2
-vars=["t","fi"]
-varlevel=[500,500]
-variablepaths=cleaner.varnames(varnumber,vars,varlevel) ##Getting every filepath in the directory like [[vara1,vara2],[varb1,varb2]]
-timestepnumber= len(variablepaths[0])
+import argparse
 
-dir_origin = os.getcwd()
-dir_Produkt = 'database/output/500/'
-os.chdir(dir_Produkt)
 
-for f in os.listdir(os.getcwd()):
-    os.remove(os.path.join(os.getcwd(), f))
 
-def picture(vara,varb,number):
+def picture(vara,varb,number,resx,resy,dir_origin):
     warnings.filterwarnings("ignore")
 
 
@@ -45,10 +35,6 @@ def picture(vara,varb,number):
     fn1          = vara#dir + '/database/input/icon/2022/8/2/00/t/500/outfile_merged_2022080200_000_004_500_T.grib2' #path name of model output
     f1           = Nio.open_file(os.path.join(vara))#, fn1)) #model output definition
 
-    print(f1.variables.keys()) # list of the variables briefly
-    for i in f1.variables: # main features of the variables
-        print(f1.variables[i].long_name, f1.variables[i].name, f1.variables[i].units, f1.variables[i].shape)
-
     lon1 = f1.variables['lon_0'][:] - 360
     lat1 = f1.variables['lat_0'][:]
     temp500 = f1.variables['TMP_P0_L100_GLL0'][:,:] -273.15
@@ -57,9 +43,6 @@ def picture(vara,varb,number):
     fn2          = varb#dir + '/database/input/icon/2022/8/2/00/fi/500/outfile_merged_2022080200_000_004_500_FI.grib2' #path name of model output
     f2           = Nio.open_file(os.path.join(varb))#, fn2)) #model output definition
 
-    print(f2.variables.keys()) # list of the variables briefly
-    for i in f2.variables: # main features of the variables
-        print(f2.variables[i].long_name, f2.variables[i].name, f2.variables[i].units, f2.variables[i].shape)
 
     lon2 = f2.variables['lon_0'][:] - 360
     lat2 = f2.variables['lat_0'][:]
@@ -100,10 +83,10 @@ def picture(vara,varb,number):
     wkres           =  Ngl.Resources()                  #-- generate an resources object for workstation
     wkres.wkBackgroundColor = 'white'
     wkres.wkForegroundColor = 'white'
-    wkres.wkWidth   = 3840                             #-- width of workstation
-    wkres.wkHeight  = 3840#2560                             #-- height of workstation
+    wkres.wkWidth   = 3 * resx# 3840                             #-- width of workstation
+    wkres.wkHeight  = 3 * resx #3840#2560                             #-- height of workstation
     wks_type        = "png"                             #-- output type of workstation
-    wks             =  Ngl.open_wks(wks_type,'gph_temp_500_' +str(number), wkres)  #-- open workstation
+    wks             =  Ngl.open_wks(wks_type,'500_' +str(number), wkres)  #-- open workstation
 
 
     #---- Resources
@@ -133,7 +116,7 @@ def picture(vara,varb,number):
 
     mpres.mpOutlineOn                   = True #-- turn on map outlines
     mpres.mpGeophysicalLineColor        = "black" #boundary color
-    mpres.mpGeophysicalLineThicknessF   = 5.0  # -- line thickness of coastal bo1 minutrders
+    mpres.mpGeophysicalLineThicknessF   = (resx / 1920) * 5.0  # -- line thickness of coastal bo1 minutrders
     mpres.mpDataBaseVersion             = "MediumRes"  #Map resolution
     mpres.mpDataResolution              = 'Finest' #Data resolution
     mpres.mpDataSetName                 = "Earth..4"  # -- set map data base version
@@ -339,110 +322,7 @@ def picture(vara,varb,number):
     Ngl.add_polymarker(wks, plot2, 9.732, 52.376, pmres) #marker locations
     #---- Annotations and Markers
 
-    def subtitles(wks, map, left_string, center_string, right_string):
-        ltres = Ngl.Resources()
-        ctres = Ngl.Resources()
-        rtres = Ngl.Resources()
-        ltres.nglDraw = False  # Make sure string is just created, not drawn.
-        ctres.nglDraw = False  # Make sure string is just created, not drawn.
-        rtres.nglDraw = False  # Make sure string is just created, not drawn.
-        # Retrieve font height of left axis string and use this to calculate
-        # size of subtitles.
 
-        font_height = Ngl.get_float(map.base, "tiXAxisFontHeightF")
-        ltres.txFontHeightF = font_height * 0.24  # Slightly smaller
-        rtres.txFontHeightF = font_height * 0.44  # Slightly smaller
-        ctres.txFontHeightF = font_height * 1.717  # Slightly smaller
-        #ttres.txFont = 'complex_roman'
-        ltres.txFontThicknessF = 5
-        rtres.txFontThicknessF = 5
-
-        # ttres.txBackgroundFillColor = np.array([0,0,0,0.55])
-        ctres.txBackgroundFillColor = np.array([1,1,1,0.1])
-
-        # Set some some annotation resources to describe how close text
-        # is to be attached to plot.
-
-        amres = Ngl.Resources() #amres = True
-        amres.amOrthogonalPosF = -0.70  # Top of plot plus a little extra
-        # to stay off the border.
-
-        # Create three strings to put at the top, using a slightly
-        # smaller font height than the axis titles.
-
-        if left_string != "":
-         txidl = Ngl.text(wks, map, left_string, mpres.mpLambertMeridianF, 51., ltres)
-
-         amres.amJust = "TopLeft"
-         amres.amParallelPosF = -0.5  # Left-justified
-         amres.amOrthogonalPosF = 0.56 #-0.55
-         annoidl = Ngl.add_annotation(map, txidl, amres)
-
-         if left_string != "":
-          txidl = Ngl.text(wks, map, left_string_2, mpres.mpLambertMeridianF, 51., ltres)
-
-          amres.amJust = "BottomLeft"
-          amres.amParallelPosF = -0.5  # Left-justified
-          amres.amOrthogonalPosF = 0.55 #-0.56
-          annoidl = Ngl.add_annotation(map, txidl, amres)
-
-        if center_string != "":
-         txidc = Ngl.text(wks, map, center_string, mpres.mpLambertMeridianF, 51., ctres)
-
-         amres.amJust = "TopCenter"
-         amres.amParallelPosF = 0.0  # Centered
-         amres.amOrthogonalPosF = 0.501 #-0.65
-         annoidc = Ngl.add_annotation(map, txidc, amres)
-
-        if right_string != "":
-         txidr = Ngl.text(wks, map, right_string, mpres.mpLambertMeridianF, 51., rtres)
-
-         amres.amJust = "TopRight"
-         amres.amParallelPosF = 0.5  # Right-justifed
-         amres.amOrthogonalPosF = 0.54 #-0.55
-         annoidr = Ngl.add_annotation(map, txidr, amres)
-
-        # if right_string != "":
-        #  txidr = Ngl.text(wks, map, right_string_2, mpres.mpLambertMeridianF, 51., rtres)
-
-        #  amres.amJust = "BottomRight"
-        #  amres.amParallelPosF = 0.5  # Right-justifed
-        #  amres.amOrthogonalPosF = 0.55 #-0.56
-        #  annoidr = Ngl.add_annotation(map, txidr, amres)
-
-        return
-
-    # pmres                    = Ngl.Resources() #pmres = True
-    # pmres.gsMarkerIndex      = 6 #marker index
-    # pmres.gsMarkerColor      = 'black'
-    # pmres.gsMarkerSizeF      = 0.003 #marker size
-    # pmres.gsMarkerThicknessF = 4.44
-    # pmres.gsLineThicknessF   = 8. #lines thickness
-
-    # marker_berlin            = Ngl.add_polymarker(wks, map, 13.405, 52.520, pmres) #marker locations
-    # marker_cologne           = Ngl.add_polymarker(wks, map, 6.960, 50.938, pmres) #marker locations
-    # marker_frankfurt         = Ngl.add_polymarker(wks, map, 8.682, 50.111, pmres) #marker locations
-    # marker_hamburg           = Ngl.add_polymarker(wks, map, 9.993, 53.551, pmres) #marker locations
-    # marker_hannover          = Ngl.add_polymarker(wks, map, 9.732, 52.376, pmres) #marker locations
-    # marker_munich            = Ngl.add_polymarker(wks, map, 11.582, 48.135, pmres) #marker locations
-    # marker_stuttgart         = Ngl.add_polymarker(wks, map, 9.183, 48.776, pmres) #marker locations
-
-    # txres                    = Ngl.Resources() #txres = True
-    # txres.txFontHeightF      = '0.0{}'.format(domain_area/5) #font height
-    # txres.txFontColor        = 'black'
-    # id_berlin                = Ngl.add_text(wks, map, 'Berlin', 13.405, 52.520+0.22, txres) #citys text locations
-    # id_cologne               = Ngl.add_text(wks, map, 'Cologne', 6.960, 50.938+0.22, txres) #citys text locations
-    # id_frankfurt             = Ngl.add_text(wks, map, 'Frankfurt', 8.682, 50.111+0.22, txres) #citys text locations
-    # id_hamburg               = Ngl.add_text(wks, map, 'Hamburg', 9.993, 53.551+0.22, txres) #citys text locations
-    # id_hannover              = Ngl.add_text(wks, map, 'Hannover', 9.732, 52.376+0.22, txres) #citys text locations
-    # id_munich                = Ngl.add_text(wks, map, 'Munich', 11.582, 48.135+0.22, txres) #citys text locations
-    # id_stuttgart             = Ngl.add_text(wks, map, 'Stuttgart', 9.183, 48.776+0.22, txres) #citys text locations
-
-    # annores                  = Ngl.Resources()
-    # annores.txFontHeightF    = '0.0{}'.format(domain_area/2)
-    # annores.txFontColor      = 'white'
-    # annores.txBackgroundFillColor = 'black'
-    # annotation               = Ngl.add_text(wks, map, 'O.K. Mihliardic', mpres.mpLambertMeridianF, mpres.mpMinLatF+(domain_area/100), annores) #citys text locations
     hour,weekday,datetime_object=cleaner.dates_for_subtitles(vara,number)
     left_string_2   = '500 hPa: ' + f1.variables['TMP_P0_L100_GLL0'].attributes['long_name'] +' & '+ f2.variables['GP_P0_L100_GLL0'].attributes['long_name'] #model output info
     left_string = 'ICON-Lauf: ' + 'Init: ' + str(datetime_object)  # model output info
@@ -460,13 +340,38 @@ def picture(vara,varb,number):
     Ngl.destroy(wks)
 
     # ---- Crop Graphics
-    cleaner.crop_image(number, 'gph_temp_500_', wkres)
+    cleaner.crop_image(number, '500_', wkres,resx,resy)
 
     print('\EU has finished at: ', datetime.utcnow().strftime('%Y-%m-%d  %H:%M:%S '), u'\u2714' )
 
 def main():
-    for i in range(0,timestepnumber):
-       picture(variablepaths[0][i],variablepaths[1][i],i)
+    ##Parsing Variable Values
+    parser = argparse.ArgumentParser()
+    parser.add_argument('resx')  # 350
+    parser.add_argument('resy')  #
+    parser.add_argument('outputpath')
+    args = parser.parse_args()  # gv[480#210    #480
+    resx = int(args.resx)
+    resy = int(args.resy)
+    dir_origin = "/home/alex/PycharmProjects/imuk"
+    dir_Produkt = args.outputpath
+    os.chdir(dir_Produkt)
+
+    for f in os.listdir(os.getcwd()):
+        os.remove(os.path.join(os.getcwd(), f))
+    ### Cleaning and Setup
+    varnumber = 2
+    vars = ["t", "fi"]
+    varlevel = [500, 500]
+    variablepaths = cleaner.varnames(varnumber, vars,
+                                     varlevel,
+                                     dir_origin)  ##Getting every filepath in the directory like [[vara1,vara2],[varb1,varb2]]
+
+    timestepnumber = len(variablepaths[0])
+
+    ## Main Process
+    for i in range(0, timestepnumber):
+        picture(variablepaths[0][i], variablepaths[1][i], i, resx, resy, dir_origin)
     return
 
 if __name__ == "__main__":

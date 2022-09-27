@@ -314,7 +314,7 @@ def picture(vara, varb, number, resx, resy, dir_origin):
     # cmap_colors = Ngl.read_colormap_file("GMT_wysiwygcont")
     # cmap_colors = cmap_colors[30:180:50]
     # cmap = np.delete(cmap, [1,5,11], axis=0)
-    cmap_colors = np.array([[0, 0, 0, 0], [0.2, 1, 0, 1], [0.13, 0.9, 1, 1], [0.99, 0, 0.99, 1]])
+    cmap_colors = np.array([[0, 0, 0, 0], [0.2, 1, 0, 1], [0.13, 0.9, 1, 1], [0.99, 0, 0.99, 1], [0.99, 0, 0, 1], [0.99, 0.99, 0, 1]])
     # cmap_colors = np.insert(cmap_colors, 0, [0,0,0,0], axis=0)
     # cmap_colors = np.insert(cmap_colors, 0, [0,0,0,0], axis=0)
     # cmap_colors = np.insert(cmap_colors, 0, [0,0,0,0], axis=0)
@@ -334,7 +334,7 @@ def picture(vara, varb, number, resx, resy, dir_origin):
     var2res.cnFillPalette = cmap_colors  # -- set the0 colormap to be used or 'NCL_default'
 
     var2res.cnLevelSelectionMode = "ExplicitLevels"
-    var2res.cnLevels = [31, 41, 51]
+    var2res.cnLevels = [31, 41, 51,62,72]
     # var2res.cnMinLevelValF       = -50
     # var2res.cnMaxLevelValF       = 10
     # var2res.cnLevelSpacingF      = 2

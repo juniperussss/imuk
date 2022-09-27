@@ -1,14 +1,5 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""
-Created on Mon Nov 14 20:19:33 2021
-@author: juniperus
-
-Revised on 20 Nov 2021 14:00:00
-@author: juniperus
-
-IMUK/Hannover
-"""
     
 #---- calling for the necessary libraries
 import os
@@ -28,24 +19,11 @@ import metpy.calc as mpcalc
 from metpy.units import units
 import cleaner
 from datetime import date
+import argparse
 
-### Cleaning and Setup
-varnumber=4
-vars=["clct_mod","pmsl","tot_prec","ww"]
-varlevel=["single","single", "single","single"]
-variablepaths=cleaner.varnames(varnumber,vars,varlevel) ##Getting every filepath in the directory like [[vara1,vara2],[varb1,varb2]]
 
-timestepnumber= len(variablepaths[0])
-
-#---- Preliminaries (1)
-dir_origin = os.getcwd()
-dir_Produkt = 'database/output/1000_gl/'
-os.chdir(dir_Produkt)
-
-for f in os.listdir(os.getcwd()):
-    os.remove(os.path.join(os.getcwd(), f))
 ###
-def picture(vara,varb,varc,vard,number):
+def picture(vara,varb,varc,vard,number,resx,resy,dir_origin):
     #---- Preliminaries (1)
 
     warnings.filterwarnings("ignore")
@@ -72,9 +50,6 @@ def picture(vara,varb,varc,vard,number):
     fn1          = vara#dir + '/database/input/icon/2022/8/2/00/clct_mod/outfile_merged_2022080200_000_004_CLCT_MOD.grib2' #path name of model output
     f1           = Nio.open_file(os.path.join(vara))#dir, fn1)) #model output definition
 
-    print(f1.variables.keys()) # list of the variables briefly
-    for i in f1.variables: # main features of the variables
-        print(f1.variables[i].long_name, f1.variables[i].name, f1.variables[i].units, f1.variables[i].shape)
 
     lon1 = f1.variables['lon_0'][:] - 360
     lat1 = f1.variables['lat_0'][:]
@@ -84,9 +59,6 @@ def picture(vara,varb,varc,vard,number):
     fn2          = varb #dir + '/database/input/icon/2022/8/2/00/pmsl/outfile_merged_2022080200_000_004_PMSL.grib2' #path name of model output
     f2           = Nio.open_file(os.path.join(varb))#dir, fn2)) #model output definition
 
-    print(f2.variables.keys()) # list of the variables briefly
-    for i in f2.variables: # main features of the variables
-        print(f2.variables[i].long_name, f2.variables[i].name, f2.variables[i].units, f2.variables[i].shape)
 
     lon2 = f2.variables['lon_0'][:] - 360
     lat2 = f2.variables['lat_0'][:]
@@ -97,9 +69,6 @@ def picture(vara,varb,varc,vard,number):
     fn3          = varc# dir + '/database/input/icon/2022/8/2/00/tot_prec/outfile_merged_2022080200_000_004_TOT_PREC.grib2' #path name of model output
     f3          = Nio.open_file(os.path.join(varc))#dir, fn3)) #model output definition
 
-    print(f3.variables.keys()) # list of the variables briefly
-    for i in f3.variables: # main features of the variables
-        print(f3.variables[i].long_name, f3.variables[i].name, f3.variables[i].units, f3.variables[i].shape)
 
     lon3 = f3.variables['lon_0'][:] - 360
     lat3 = f3.variables['lat_0'][:]
@@ -110,9 +79,6 @@ def picture(vara,varb,varc,vard,number):
     fn4          = vard #dir + '/database/input/icon/2022/8/2/00/ww/outfile_merged_2022080200_000_004_WW.grib2' #path name of model output
     f4          = Nio.open_file(os.path.join(vard))#dir, fn4)) #model output definition
 
-    print(f4.variables.keys()) # list of the variables briefly
-    for i in f4.variables: # main features of the variables
-        print(f4.variables[i].long_name, f4.variables[i].name, f4.variables[i].units, f4.variables[i].shape)
 
     lon4 = f4.variables['lon_0'][:] - 360
     lat4 = f4.variables['lat_0'][:]
@@ -155,13 +121,10 @@ def picture(vara,varb,varc,vard,number):
     wkres           =  Ngl.Resources()                  #-- generate an resources object for workstation
     wkres.wkBackgroundColor = 'white'
     wkres.wkForegroundColor = 'white'
-    wkres.wkWidth   = 3840                             #-- width of workstation
-    wkres.wkHeight  = 3840#2560                             #-- height of workstation
+    wkres.wkWidth   = 3*resx # 3840                             #-- width of workstation
+    wkres.wkHeight  = 3*resx #3840#2560                             #-- height of workstation
     wks_type        = "png"    #-- output type of workstation
-    if (number==0):
-        wks = Ngl.open_wks(wks_type, '300_00' + str( number), wkres)  # -- open workstation
-    else:
-        wks = Ngl.open_wks(wks_type, '300_0' + str(30 * number), wkres)  # -- open workstation
+    wks = Ngl.open_wks(wks_type, 'ground_' + str(number), wkres)#-- open workstation
 
     #---- Resources
 
@@ -190,7 +153,7 @@ def picture(vara,varb,varc,vard,number):
 
     mpres.mpOutlineOn                   = True #-- turn on map outlines
     mpres.mpGeophysicalLineColor        = "black" #boundary color
-    mpres.mpGeophysicalLineThicknessF   = 5.0  # -- line thickness of coastal bo1 minutrders
+    mpres.mpGeophysicalLineThicknessF   = (resx / 1920) * 5.0   # -- line thickness of coastal bo1 minutrders
     mpres.mpDataBaseVersion             = "MediumRes"  #Map resolution
     mpres.mpDataResolution              = 'Finest' #Data resolution
     mpres.mpDataSetName                 = "Earth..4"  # -- set map data base version
@@ -497,14 +460,35 @@ def picture(vara,varb,varc,vard,number):
     Ngl.destroy(wks)
 
     # ---- Crop Graphics
-    cleaner.crop_image(number, 'bd_sw_meteosat_', wkres)
+    cleaner.crop_image(number, 'ground_', wkres,resx,resy)
 
     print('\EU has finished at: ', datetime.utcnow().strftime('%Y-%m-%d  %H:%M:%S '), u'\u2714' )
     return
 
 def main():
+    ##Parsing Variable Values
+    parser = argparse.ArgumentParser()
+    parser.add_argument('resx')  # 350
+    parser.add_argument('resy')  #
+    parser.add_argument('outputpath')
+    args = parser.parse_args()  # gv[480#210    #480
+    resx = int(args.resx)
+    resy = int(args.resy)
+    dir_origin = "/home/alex/PycharmProjects/imuk"
+    dir_Produkt = args.outputpath
+    os.chdir(dir_Produkt)
+
+    for f in os.listdir(os.getcwd()):
+        os.remove(os.path.join(os.getcwd(), f))
+    ### Cleaning and Setup
+    varnumber = 4
+    vars = ["clct_mod", "pmsl", "tot_prec", "ww"]
+    varlevel = ["single", "single", "single", "single"]
+    variablepaths = cleaner.varnames(varnumber, vars,
+                                     varlevel,dir_origin)  ##Getting every filepath in the directory like [[vara1,vara2],[varb1,varb2]]
+    timestepnumber = len(variablepaths[0])
     for i in range(0,timestepnumber):
-       picture(variablepaths[0][i],variablepaths[1][i],variablepaths[2][i],variablepaths[3][i],i)
+       picture(variablepaths[0][i],variablepaths[1][i],variablepaths[2][i],variablepaths[3][i],i,resx,resy,dir_origin)
     return
 
 if __name__ == "__main__":

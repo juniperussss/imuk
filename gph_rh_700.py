@@ -1,14 +1,5 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""
-Created on Mon Nov 14 20:19:33 2021
-@author: juniperus
-
-Revised on 20 Nov 2021 14:00:00
-@author: juniperus
-
-IMUK/Hannover
-"""
 
 #---- calling for the necessary libraries
 import os
@@ -19,24 +10,9 @@ from datetime import datetime, timedelta
 from PIL import Image
 import metpy.calc as mpcalc
 import cleaner
-#---- Preliminaries (1)
-varnumber=2
-vars=["relhum","fi"]
-varlevel=[700,700]
-variablepaths=cleaner.varnames(varnumber,vars,varlevel) ##Getting every filepath in the directory like [[vara1,vara2],[varb1,varb2]]
+import argparse
 
-timestepnumber= len(variablepaths[0])
-
-
-dir_origin = os.getcwd()
-dir_Produkt = 'database/output/700/'
-os.chdir(dir_Produkt)
-
-for f in os.listdir(os.getcwd()):
-    os.remove(os.path.join(os.getcwd(), f))
-
-
-def picture(vara,varb,number):
+def picture(vara,varb,number,resx,resy,dir_origin):
     warnings.filterwarnings("ignore")
     current_date = datetime.utcnow()
     print("EU has started at: ", current_date.strftime('%Y-%m-%d  %H:%M:%S'))
@@ -60,10 +36,6 @@ def picture(vara,varb,number):
     fn1          = vara #dir + '/database/input/icon/2022/8/2/00/relhum/700/outfile_merged_2022080200_000_004_700_RELHUM.grib2' #path name of model output
     f1           = Nio.open_file(os.path.join(vara)) #model output definition
 
-    print(f1.variables.keys()) # list of the variables briefly
-    for i in f1.variables: # main features of the variables
-        print(f1.variables[i].long_name, f1.variables[i].name, f1.variables[i].units, f1.variables[i].shape)
-
     lon1 = f1.variables['lon_0'][:] - 360
     lat1 = f1.variables['lat_0'][:]
     rh700 = f1.variables['RH_P0_L100_GLL0'][:,:]
@@ -72,9 +44,6 @@ def picture(vara,varb,number):
     fn2          = varb#dir + '/database/input/icon/2022/8/2/00/fi/700/outfile_merged_2022080200_000_004_700_FI.grib2' #path name of model output
     f2           = Nio.open_file(os.path.join(varb))#, fn2)) #model output definition
 
-    print(f2.variables.keys()) # list of the variables briefly
-    for i in f2.variables: # main features of the variables
-        print(f2.variables[i].long_name, f2.variables[i].name, f2.variables[i].units, f2.variables[i].shape)
 
     lon2 = f2.variables['lon_0'][:] - 360
     lat2 = f2.variables['lat_0'][:]
@@ -115,8 +84,8 @@ def picture(vara,varb,number):
     wkres           =  Ngl.Resources()                  #-- generate an resources object for workstation
     wkres.wkBackgroundColor = 'white'
     wkres.wkForegroundColor = 'white'
-    wkres.wkWidth   = 3840                             #-- width of workstation
-    wkres.wkHeight  = 3840#2560                             #-- height of workstation
+    wkres.wkWidth   = 3 * resx #3840                             #-- width of workstation
+    wkres.wkHeight  = 3 * resx#3840#2560                             #-- height of workstation
     wks_type        = "png"                             #-- output type of workstation
     wks             =  Ngl.open_wks(wks_type,'gph_rh_700_' +str(number), wkres)  #-- open workstation
 
@@ -148,7 +117,7 @@ def picture(vara,varb,number):
 
     mpres.mpOutlineOn                   = True #-- turn on map outlines
     mpres.mpGeophysicalLineColor        = "black" #boundary color
-    mpres.mpGeophysicalLineThicknessF   = 5.0  # -- line thickness of coastal bo1 minutrders
+    mpres.mpGeophysicalLineThicknessF   = (resx / 1920) * 5.0   # -- line thickness of coastal bo1 minutrders
     mpres.mpDataBaseVersion             = "MediumRes"  #Map resolution
     mpres.mpDataResolution              = 'Finest' #Data resolution
     mpres.mpDataSetName                 = "Earth..4"  # -- set map data base version
@@ -362,14 +331,39 @@ def picture(vara,varb,number):
     Ngl.destroy(wks)
 
     # ---- Crop Graphics
-    cleaner.crop_image(number, 'gph_rh_700_', wkres)
+    cleaner.crop_image(number, 'gph_rh_700_', wkres,resx,resy)
 
     print('\EU has finished at: ', datetime.utcnow().strftime('%Y-%m-%d  %H:%M:%S '), u'\u2714' )
 
 
 def main():
-    for i in range(0,timestepnumber):
-       picture(variablepaths[0][i],variablepaths[1][i],i)
+    ##Parsing Variable Values
+    parser = argparse.ArgumentParser()
+    parser.add_argument('resx')  # 350
+    parser.add_argument('resy')  #
+    parser.add_argument('outputpath')
+    args = parser.parse_args()  # gv[480#210    #480
+    resx = int(args.resx)
+    resy = int(args.resy)
+    dir_origin = "/home/alex/PycharmProjects/imuk"
+    dir_Produkt = args.outputpath
+    os.chdir(dir_Produkt)
+
+    for f in os.listdir(os.getcwd()):
+        os.remove(os.path.join(os.getcwd(), f))
+    ### Cleaning and Setup
+    varnumber = 2
+    vars = ["relhum", "fi"]
+    varlevel = [700, 700]
+    variablepaths = cleaner.varnames(varnumber, vars,
+                                     varlevel,
+                                     dir_origin)  ##Getting every filepath in the directory like [[vara1,vara2],[varb1,varb2]]
+
+    timestepnumber = len(variablepaths[0])
+
+    ## Main Process
+    for i in range(0, timestepnumber):
+        picture(variablepaths[0][i], variablepaths[1][i], i, resx, resy, dir_origin)
     return
 
 if __name__ == "__main__":
