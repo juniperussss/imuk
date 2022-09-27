@@ -8,7 +8,7 @@ import numpy as np
 import warnings
 from datetime import datetime, timedelta
 from PIL import Image
-import metpy.calc as mpcalc 
+import metpy.calc as mpcalc
 from metpy.units import units
 import cleaner
 from datetime import date
@@ -17,7 +17,7 @@ import argparse
 
 
 ###
-def picture(vara, varb, number,resx,resy,dir_origin):
+def picture(vara, varb, number, resx, resy, dir_origin):
     warnings.filterwarnings("ignore")
     current_date = datetime.utcnow()
     print("EU has started at: ", current_date.strftime('%Y-%m-%d  %H:%M:%S'))
@@ -46,7 +46,7 @@ def picture(vara, varb, number,resx,resy,dir_origin):
 
     lon1 = f1.variables['lon_0'][:] - 360
     lat1 = f1.variables['lat_0'][:]
-    u = f1.variables['UGRD_P0_L100_GLL0'][:,:]
+    u = f1.variables['UGRD_P0_L100_GLL0'][:, :]
 
     dir = os.path.join(dir_origin)  # path of model output
     fn2 = varb  # '/database/input/icon/2022/8/19/00/v/300/outfile_merged_2022081900_000_004_300_V.grib2' #path name of model output
@@ -71,7 +71,7 @@ def picture(vara, varb, number,resx,resy,dir_origin):
 
     windspeed = mpcalc.wind_speed(np.array(u) * units('m/s'), np.array(v) * units('m/s'))
     windspeed_smoothed = mpcalc.smooth_n_point(windspeed, 9, 4)
-    
+
     # ---- Initial Time
 
     variable_name = [var for var in f1.variables.keys() if "UGRD_P0_L100_GLL0" in var][0]
@@ -92,13 +92,13 @@ def picture(vara, varb, number,resx,resy,dir_origin):
     # vld_time = vld_time.strftime('%d/%m/%Y %H') + 'UTC'
 
     # ---- Designing a workstation
-    aspect_ratio= resx/resy
-    #print(10 *aspect_ratio, 10*resy/resx)
+    aspect_ratio = resx / resy
+    # print(10 *aspect_ratio, 10*resy/resx)
     wkres = Ngl.Resources()  # -- generate an resources object for workstation
     wkres.wkBackgroundColor = 'white'
     wkres.wkForegroundColor = 'white'
-    wkres.wkWidth = 3*resx#0.081*3840#299#0.081*3840  # -- width of workstation
-    wkres.wkHeight = 3*resx#0.081*3840#224#0.081*3840#2560  # -- height of workstation
+    wkres.wkWidth = 3 * resx  # 0.081*3840#299#0.081*3840  # -- width of workstation
+    wkres.wkHeight = 3 * resx  # 0.081*3840#224#0.081*3840#2560  # -- height of workstation
     wks_type = "png"  # -- output type of workstation
     wks = Ngl.open_wks(wks_type, 'u_v_300_' + str(number), wkres)  # -- open workstation
 
@@ -119,20 +119,20 @@ def picture(vara, varb, number,resx,resy,dir_origin):
     mpres.nglMaximize = True  # expanding the draw
     mpres.nglDraw = False  # -- don't draw plot
     mpres.nglFrame = False  # -- don't advance frame
-    #mpres.mpShapeMode = "FreeAspect"
-    #mpres.vpXF = 0.5
-    #mpres.vpYF = 1
-    #mpres.vpWidthF = aspect_ratio
-    #mpres.vpHeightF = resy/resx
+    # mpres.mpShapeMode = "FreeAspect"
+    # mpres.vpXF = 0.5
+    # mpres.vpYF = 1
+    # mpres.vpWidthF = aspect_ratio
+    # mpres.vpHeightF = resy/resx
     # mpres.tfDoNDCOverlay   = True
-    #mpres.nglPaperMargin = 0
+    # mpres.nglPaperMargin = 0
 
     mpres.mpPerimOn = True
     mpres.mpPerimLineThicknessF = 4.
 
     mpres.mpOutlineOn = True  # -- turn on map outlines
     mpres.mpGeophysicalLineColor = "black"  # boundary color
-    mpres.mpGeophysicalLineThicknessF = (resx/1920)*5.0  # -- line thickness of coastal bo1 minutrders
+    mpres.mpGeophysicalLineThicknessF = (resx / 1920) * 5.0  # -- line thickness of coastal bo1 minutrders
     mpres.mpDataBaseVersion = "MediumRes"  # Map resolution
     mpres.mpDataResolution = 'Finest'  # Data resolution
     mpres.mpDataSetName = "Earth..4"  # -- set map data base version
@@ -215,11 +215,11 @@ def picture(vara, varb, number,resx,resy,dir_origin):
     var1res.vcRefMagnitudeF = 1.  # make vectors larger
     var1res.vcRefLengthF = 0.015  # ref vec length
     var1res.vcGlyphStyle = "WindBarb"  # select wind barbs
-    var1res.vcMinDistanceF = 0.033#0.048  # thin out windbarbs
+    var1res.vcMinDistanceF = 0.033  # 0.048  # thin out windbarbs
     var1res.vcMonoWindBarbColor = True  # Turns multiple Windbarb colors on and off
     var1res.vcLevelColors = Ngl.read_colormap_file("ncl_default")
     var1res.vcGlyphOpacityF = 1
-    var1res.vcWindBarbLineThicknessF = (resx/1920)*10
+    var1res.vcWindBarbLineThicknessF = (resx / 1920) * 10
     var1res.vcWindBarbColor = "Black"
     var1res.vcWindBarbScaleFactorF = 1
     var1res.vcRefAnnoOn = False
@@ -279,8 +279,8 @@ def picture(vara, varb, number,resx,resy,dir_origin):
     # var1res.lbPerimFillColor = np.array([0,0,0,0.83])
     # var1res.lbLabelOffsetF = 0.08
 
-    var1res.vfXArray = lon1 # processing of longitudes arrays
-    var1res.vfYArray = lat1 # processing of latitudes arrays
+    var1res.vfXArray = lon1  # processing of longitudes arrays
+    var1res.vfYArray = lat1  # processing of latitudes arrays
 
     # ---- Variable (2) Resources
 
@@ -381,20 +381,19 @@ def picture(vara, varb, number,resx,resy,dir_origin):
     center_string = ''  # center information bar
     # right_string_2 = 'Init: ' + str(initial_time)
     right_string = weekday.capitalize() + " " + str(hour) + " UTC"  # + vld_time #model time information
-    cleaner.subtitles(wks, map, left_string, center_string, right_string,mpres,left_string_2)  # assigning to main map
+    cleaner.subtitles(wks, map, left_string, center_string, right_string, mpres, left_string_2)  # assigning to main map
 
     # ---- Drawing Conclusion
 
-    #Ngl.maximize_plot(wks, map)
+    # Ngl.maximize_plot(wks, map)
     Ngl.draw(map)
     Ngl.frame(wks)
     # Ngl.delete_wks(wks)
     Ngl.destroy(wks)
 
     # ---- Crop Graphics
-    cleaner.crop_image(number,'u_v_300_',wkres,resx,resy)
-    #cleaner.crop_image_aspected(number,'u_v_300_',wkres,resx,resy)
-
+    cleaner.crop_image(number, 'u_v_300_', wkres, resx, resy)
+    # cleaner.crop_image_aspected(number,'u_v_300_',wkres,resx,resy)
 
     # #---- Merge Logo
     """
@@ -422,11 +421,11 @@ def main():
     ##Parsing Variable Values
     parser = argparse.ArgumentParser()
     parser.add_argument('resx')  # 350
-    parser.add_argument('resy')#
+    parser.add_argument('resy')  #
     parser.add_argument('outputpath')
-    args = parser.parse_args()#gv[480#210    #480
-    resx=int(args.resx)
-    resy=int(args.resy)
+    args = parser.parse_args()  # gv[480#210    #480
+    resx = int(args.resx)
+    resy = int(args.resy)
     dir_origin = "/home/alex/PycharmProjects/imuk"
     dir_Produkt = args.outputpath
     os.chdir(dir_Produkt)
@@ -445,7 +444,7 @@ def main():
 
     ## Main Process
     for i in range(0, timestepnumber):
-        picture(variablepaths[0][i], variablepaths[1][i], i,resx,resy,dir_origin)
+        picture(variablepaths[0][i], variablepaths[1][i], i, resx, resy, dir_origin)
     return
 
 
