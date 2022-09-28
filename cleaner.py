@@ -185,6 +185,7 @@ def dates_for_subtitles(vara,number):
 
 def crop_image(number,levelname,wkres,resx,resy,filenames):
     from PIL import Image
+    import os
     im = Image.open(levelname +  filenames[number] + ".png", mode='r')
     left = wkres.wkWidth /55#70
     top = wkres.wkWidth/4 #4 #960
@@ -198,6 +199,7 @@ def crop_image(number,levelname,wkres,resx,resy,filenames):
     #im2 = im1.crop((left, top, right, bottom))
     im2 = im1.resize((resx, resy), resample=Image.BOX)
     im2.save(levelname + filenames[number] + ".jpg", format='jpeg')
+    os.remove(levelname +  filenames[number] + ".png")
 
 def crop_image_aspected(number,levelname,wkres,xres,yres):
     from PIL import Image
