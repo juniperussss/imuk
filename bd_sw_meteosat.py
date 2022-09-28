@@ -124,7 +124,7 @@ def picture(vara,varb,varc,vard,number,resx,resy,dir_origin,filenames):
     wkres.wkWidth   = 3*resx # 3840                             #-- width of workstation
     wkres.wkHeight  = 3*resx #3840#2560                             #-- height of workstation
     wks_type        = "png"    #-- output type of workstation
-    wks = Ngl.open_wks(wks_type, 'ground_' + filenames[number], wkres)#-- open workstation
+    wks = Ngl.open_wks(wks_type, 'boden_' + filenames[number], wkres)#-- open workstation
 
     #---- Resources
 
@@ -460,7 +460,7 @@ def picture(vara,varb,varc,vard,number,resx,resy,dir_origin,filenames):
     Ngl.destroy(wks)
 
     # ---- Crop Graphics
-    cleaner.crop_image(number, 'ground_', wkres,resx,resy,filenames)
+    cleaner.crop_image(number, 'boden_', wkres,resx,resy,filenames)
 
     print('\EU has finished at: ', datetime.utcnow().strftime('%Y-%m-%d  %H:%M:%S '), u'\u2714' )
     return

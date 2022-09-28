@@ -197,7 +197,7 @@ def crop_image(number,levelname,wkres,resx,resy,filenames):
     bottom =resy
     #im2 = im1.crop((left, top, right, bottom))
     im2 = im1.resize((resx, resy), resample=Image.BOX)
-    im2.save(levelname + filenames[number] + ".png", format='png')
+    im2.save(levelname + filenames[number] + ".jpg", format='jpeg')
 
 def crop_image_aspected(number,levelname,wkres,xres,yres):
     from PIL import Image
@@ -207,7 +207,7 @@ def crop_image_aspected(number,levelname,wkres,xres,yres):
     right = xres
     bottom =yres
     im1 = im.crop((left, top, right, bottom))
-    im1.save(levelname + str(number) + ".png", format='png')
+    im1.save(levelname + str(number) + ".jpg", format='jpg')
 
 
 def fcst_hrsf():

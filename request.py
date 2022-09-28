@@ -8,7 +8,7 @@ Created on Thu Nov  4 17:31:52 2021
 
 import os, sys
 from datetime import datetime, timedelta
-from tqdm import tqdm
+#from tqdm import tqdm
 import numpy as np
 import glob
 
@@ -97,58 +97,58 @@ cdo.debug = True
 grids= dir_origin +'/database/ICON_GLOBAL2EUAU_025_EASY/target_grid_EUAU_025.txt'
 weights= dir_origin +'/database/ICON_GLOBAL2EUAU_025_EASY/weights_icogl2world_025_EUAU.nc'
 
-with tqdm(total=len(variables), position=0, leave=True, colour='green') as pbar:
-    for var in variables:
-        os.makedirs(dir_Nest + f'/{var}'+f'/{variables[var][1][1:]}')
-        os.path.join(dir_Nest + f'/{var}'+f'/{variables[var][1][1:]}')
-        os.chdir(dir_Nest + f'/{var}'+f'/{variables[var][1][1:]}')
-        
-        for hour in fcst_hrs:
-        
-            url_data = url_base +'{}/{}/icon_global_icosahedral_{}_{}{}_{}{}_{}.grib2.bz2'.format(
-                init_time_hr, var, variables[var][0], cdt_yrmoday, init_time_hr, str(hour).zfill(3), variables[var][1], str(var).upper())
-            
-            data_request = requests.get(url_data, stream=True)
-            if data_request.status_code == 200:
-                print(url_data)
-                print('{}'.format(var), u'\u2714')
-                
-            with open('icon_global_icosahedral_{}_{}{}_{}{}_{}.grib2.bz2'.format(
-                    variables[var][0], cdt_yrmoday, init_time_hr, str(hour).zfill(3), variables[var][1], str(var).upper()), 'wb') as f:
-                f.write(data_request.content)
-                
-            zip_command = 'bzip2 -d *.bz2' 
-            os.system(zip_command)
-        
-            ifile = dir_Nest + '/{}/{}/icon_global_icosahedral_{}_{}{}_{}{}_{}.grib2'.format(
-                var, variables[var][1][1:], variables[var][0], cdt_yrmoday, init_time_hr, str(hour).zfill(3), variables[var][1], str(var).upper()) 
-            # print(ifile)
-            
-            # cdo.sellonlatbox('-75,75,5,80', input=ifile, output='haha.grib2') #not necessary for this step
-            cdo.remap(grids, weights, input=ifile, output='ofile_{}_{}_{}_{}'.format(
-                ifile.split('_')[-4:][0], ifile.split('_')[-4:][1], 
-                ifile.split('_')[-4:][2], ifile.split('_')[-4:][3]), 
-                options='-f grb2')
-            
-            pbar.update()
-        
-        
-        # cdo.mergetime(input='*ofile*', output='outfile_merged_{}{}_{}_{}{}_{}.grib2'.format(
-            # cdt_yrmoday, init_time_hr,
-            # str(fcst_hrs[0]).zfill(3), str(fcst_hrs[-1]).zfill(3), 
-            # variables[var][1], str(var).upper(), options='-f grb2'))
-        
-        for ifile in glob.glob('*icosahedral*', recursive=True):
-            print("Removing ", ifile)
-            os.remove(ifile)
-            
-        # for ofile in glob.glob('*ofile*', recursive=True):
-            # print("Removing ", ofile)
-            # os.remove(ofile)
-            
-        os.chdir(dir_origin)
-        print(os.path.abspath(os.getcwd()) +" has completed at: ", cdt_date.strftime('%Y-%m-%d  %H:%M:%S'))
-  
+#with tqdm(total=len(variables), position=0, leave=True, colour='green') as pbar:
+for var in variables:
+    os.makedirs(dir_Nest + f'/{var}'+f'/{variables[var][1][1:]}')
+    os.path.join(dir_Nest + f'/{var}'+f'/{variables[var][1][1:]}')
+    os.chdir(dir_Nest + f'/{var}'+f'/{variables[var][1][1:]}')
+
+    for hour in fcst_hrs:
+
+        url_data = url_base +'{}/{}/icon_global_icosahedral_{}_{}{}_{}{}_{}.grib2.bz2'.format(
+            init_time_hr, var, variables[var][0], cdt_yrmoday, init_time_hr, str(hour).zfill(3), variables[var][1], str(var).upper())
+
+        data_request = requests.get(url_data, stream=True)
+        if data_request.status_code == 200:
+            print(url_data)
+            print('{}'.format(var), u'\u2714')
+
+        with open('icon_global_icosahedral_{}_{}{}_{}{}_{}.grib2.bz2'.format(
+                variables[var][0], cdt_yrmoday, init_time_hr, str(hour).zfill(3), variables[var][1], str(var).upper()), 'wb') as f:
+            f.write(data_request.content)
+
+        zip_command = 'bzip2 -d *.bz2'
+        os.system(zip_command)
+
+        ifile = dir_Nest + '/{}/{}/icon_global_icosahedral_{}_{}{}_{}{}_{}.grib2'.format(
+            var, variables[var][1][1:], variables[var][0], cdt_yrmoday, init_time_hr, str(hour).zfill(3), variables[var][1], str(var).upper())
+        # print(ifile)
+
+        # cdo.sellonlatbox('-75,75,5,80', input=ifile, output='haha.grib2') #not necessary for this step
+        cdo.remap(grids, weights, input=ifile, output='ofile_{}_{}_{}_{}'.format(
+            ifile.split('_')[-4:][0], ifile.split('_')[-4:][1],
+            ifile.split('_')[-4:][2], ifile.split('_')[-4:][3]),
+            options='-f grb2')
+
+        #pbar.update()
+
+
+    # cdo.mergetime(input='*ofile*', output='outfile_merged_{}{}_{}_{}{}_{}.grib2'.format(
+        # cdt_yrmoday, init_time_hr,
+        # str(fcst_hrs[0]).zfill(3), str(fcst_hrs[-1]).zfill(3),
+        # variables[var][1], str(var).upper(), options='-f grb2'))
+
+    for ifile in glob.glob('*icosahedral*', recursive=True):
+        print("Removing ", ifile)
+        os.remove(ifile)
+
+    # for ofile in glob.glob('*ofile*', recursive=True):
+        # print("Removing ", ofile)
+        # os.remove(ofile)
+
+    os.chdir(dir_origin)
+    print(os.path.abspath(os.getcwd()) +" has completed at: ", cdt_date.strftime('%Y-%m-%d  %H:%M:%S'))
+
 
 cleaner.cleaning_old_folders()
 cleaner.archiving()
