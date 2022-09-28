@@ -342,10 +342,11 @@ def main():
     parser.add_argument('resx')  # 350
     parser.add_argument('resy')  #
     parser.add_argument('outputpath')
+    parser.add_argument('inputpath')
     args = parser.parse_args()  # gv[480#210    #480
     resx = int(args.resx)
     resy = int(args.resy)
-    dir_origin = "/home/alex/PycharmProjects/imuk"
+    dir_origin = args.inputpath#"/home/alex/PycharmProjects/imuk"
     dir_Produkt = args.outputpath
     os.chdir(dir_Produkt)
 
