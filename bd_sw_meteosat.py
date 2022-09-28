@@ -23,7 +23,7 @@ import argparse
 
 
 ###
-def picture(vara,varb,varc,vard,number,resx,resy,dir_origin):
+def picture(vara,varb,varc,vard,number,resx,resy,dir_origin,filenames):
     #---- Preliminaries (1)
 
     warnings.filterwarnings("ignore")
@@ -124,7 +124,7 @@ def picture(vara,varb,varc,vard,number,resx,resy,dir_origin):
     wkres.wkWidth   = 3*resx # 3840                             #-- width of workstation
     wkres.wkHeight  = 3*resx #3840#2560                             #-- height of workstation
     wks_type        = "png"    #-- output type of workstation
-    wks = Ngl.open_wks(wks_type, 'ground_' + str(number), wkres)#-- open workstation
+    wks = Ngl.open_wks(wks_type, 'ground_' + filenames[number], wkres)#-- open workstation
 
     #---- Resources
 
@@ -460,7 +460,7 @@ def picture(vara,varb,varc,vard,number,resx,resy,dir_origin):
     Ngl.destroy(wks)
 
     # ---- Crop Graphics
-    cleaner.crop_image(number, 'ground_', wkres,resx,resy)
+    cleaner.crop_image(number, 'ground_', wkres,resx,resy,filenames)
 
     print('\EU has finished at: ', datetime.utcnow().strftime('%Y-%m-%d  %H:%M:%S '), u'\u2714' )
     return
@@ -487,8 +487,9 @@ def main():
     variablepaths = cleaner.varnames(varnumber, vars,
                                      varlevel,dir_origin)  ##Getting every filepath in the directory like [[vara1,vara2],[varb1,varb2]]
     timestepnumber = len(variablepaths[0])
+    filenames=cleaner.filenames()
     for i in range(0,timestepnumber):
-       picture(variablepaths[0][i],variablepaths[1][i],variablepaths[2][i],variablepaths[3][i],i,resx,resy,dir_origin)
+       picture(variablepaths[0][i],variablepaths[1][i],variablepaths[2][i],variablepaths[3][i],i,resx,resy,dir_origin,filenames)
     return
 
 if __name__ == "__main__":

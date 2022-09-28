@@ -14,17 +14,15 @@ import glob
 
 import cleaner
 
-# fcst_hr_1 = np.arange(0, 78, 1)
-# fcst_hr_2 = np.arange(78, 181, 3)
-# fcst_hrs = np.concatenate((fcst_hr_1, fcst_hr_2))    
-fcst_hrs = np.arange(0, 5, 1)
 
+
+fcst_hrs = cleaner.fcst_hrsf()
 fcst_hrs_output = []
 for output in fcst_hrs:
     fcst_hrs_string = str(output).zfill(3)
     fcst_hrs_output.append(fcst_hrs_string)
 
-fcst_hrs = cleaner.fcst_hrs()
+
 print(fcst_hrs)
 cdt_date = datetime.utcnow()
 print(" has started at: ", cdt_date.strftime('%Y-%m-%d  %H:%M:%S'))

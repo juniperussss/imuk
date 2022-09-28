@@ -183,9 +183,9 @@ def dates_for_subtitles(vara,number):
     hour = newdatetime_object.strftime("%H")
     return hour,weekday,datetime_object
 
-def crop_image(number,levelname,wkres,resx,resy):
+def crop_image(number,levelname,wkres,resx,resy,filenames):
     from PIL import Image
-    im = Image.open(levelname + str(number) + ".png", mode='r')
+    im = Image.open(levelname +  filenames[number] + ".png", mode='r')
     left = wkres.wkWidth /55#70
     top = wkres.wkWidth/4 #4 #960
     right = wkres.wkWidth - wkres.wkWidth/43#90
@@ -197,7 +197,7 @@ def crop_image(number,levelname,wkres,resx,resy):
     bottom =resy
     #im2 = im1.crop((left, top, right, bottom))
     im2 = im1.resize((resx, resy), resample=Image.BOX)
-    im2.save(levelname + str(number) + ".png", format='png')
+    im2.save(levelname + filenames[number] + ".png", format='png')
 
 def crop_image_aspected(number,levelname,wkres,xres,yres):
     from PIL import Image
@@ -208,3 +208,21 @@ def crop_image_aspected(number,levelname,wkres,xres,yres):
     bottom =yres
     im1 = im.crop((left, top, right, bottom))
     im1.save(levelname + str(number) + ".png", format='png')
+
+
+def fcst_hrsf():
+    import numpy as np
+    # fcst_hr_1 = np.arange(0, 78, 1)
+    # fcst_hr_2 = np.arange(78, 181, 3)
+    # fcst_hrs = np.concatenate((fcst_hr_1, fcst_hr_2))
+    fcst_hrs = np.arange(0, 5, 1)
+    return fcst_hrs
+def filenames():
+    from cleaner import fcst_hrsf
+    fcst_hrs = fcst_hrsf()
+    fcst_hrs_output = []
+    for output in fcst_hrs:
+        fcst_hrs_string = str(output).zfill(3)
+        fcst_hrs_output.append(fcst_hrs_string)
+    return fcst_hrs_output
+

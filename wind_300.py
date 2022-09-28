@@ -17,7 +17,7 @@ import argparse
 
 
 ###
-def picture(vara, varb, number, resx, resy, dir_origin):
+def picture(vara, varb, number, resx, resy, dir_origin,filenames):
     warnings.filterwarnings("ignore")
     current_date = datetime.utcnow()
     print("EU has started at: ", current_date.strftime('%Y-%m-%d  %H:%M:%S'))
@@ -100,7 +100,7 @@ def picture(vara, varb, number, resx, resy, dir_origin):
     wkres.wkWidth = 3 * resx  # 0.081*3840#299#0.081*3840  # -- width of workstation
     wkres.wkHeight = 3 * resx  # 0.081*3840#224#0.081*3840#2560  # -- height of workstation
     wks_type = "png"  # -- output type of workstation
-    wks = Ngl.open_wks(wks_type, 'u_v_300_' + str(number), wkres)  # -- open workstation
+    wks = Ngl.open_wks(wks_type, '300_' + filenames[number], wkres)  # -- open workstation
 
     # ---- Resources
 
@@ -392,7 +392,7 @@ def picture(vara, varb, number, resx, resy, dir_origin):
     Ngl.destroy(wks)
 
     # ---- Crop Graphics
-    cleaner.crop_image(number, 'u_v_300_', wkres, resx, resy)
+    cleaner.crop_image(number, '300_', wkres, resx, resy,filenames)
     # cleaner.crop_image_aspected(number,'u_v_300_',wkres,resx,resy)
 
     # #---- Merge Logo
@@ -442,9 +442,10 @@ def main():
 
     timestepnumber = len(variablepaths[0])
 
+    filenames=cleaner.filenames()
     ## Main Process
     for i in range(0, timestepnumber):
-        picture(variablepaths[0][i], variablepaths[1][i], i, resx, resy, dir_origin)
+        picture(variablepaths[0][i], variablepaths[1][i], i, resx, resy, dir_origin,filenames)
     return
 
 
