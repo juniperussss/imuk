@@ -314,7 +314,7 @@ def picture(vara, varb, number, resx, resy, dir_origin,filenames):
     # cmap_colors = Ngl.read_colormap_file("GMT_wysiwygcont")
     # cmap_colors = cmap_colors[30:180:50]
     # cmap = np.delete(cmap, [1,5,11], axis=0)
-    cmap_colors = np.array([[0, 0, 0, 0], [0.2, 1, 0, 1], [0.13, 0.9, 1, 1], [0.99, 0, 0.99, 1], [0.99, 0, 0, 1], [0.99, 0.99, 0, 1]])
+    cmap_colors = np.array([[0, 0, 0, 0],[0, 0, 0, 0],[0, 0, 0, 0], [0.2, 1, 0, 1], [0.13, 0.9, 1, 1], [0.99, 0, 0.99, 1], [0.99, 0, 0, 1], [0.99, 0.99, 0, 1]])
     # cmap_colors = np.insert(cmap_colors, 0, [0,0,0,0], axis=0)
     # cmap_colors = np.insert(cmap_colors, 0, [0,0,0,0], axis=0)
     # cmap_colors = np.insert(cmap_colors, 0, [0,0,0,0], axis=0)
@@ -334,7 +334,7 @@ def picture(vara, varb, number, resx, resy, dir_origin,filenames):
     var2res.cnFillPalette = cmap_colors  # -- set the0 colormap to be used or 'NCL_default'
 
     var2res.cnLevelSelectionMode = "ExplicitLevels"
-    var2res.cnLevels = [31, 41, 51,62,72]
+    var2res.cnLevels = [10,20,31, 41, 51,62,72]
     # var2res.cnMinLevelValF       = -50
     # var2res.cnMaxLevelValF       = 10
     # var2res.cnLevelSpacingF      = 2
@@ -383,14 +383,71 @@ def picture(vara, varb, number, resx, resy, dir_origin,filenames):
     right_string = weekday.capitalize() + " " + str(hour) + " UTC"  # + vld_time #model time information
     cleaner.subtitles(wks, map, left_string, center_string, right_string, mpres, left_string_2)  # assigning to main map
 
+    # Legends #
+    def add_labelbar(wks, map, cmap):
+        gsres = Ngl.Resources()  # Line resources.
+
+        delta_lon = 4.0
+        delta_lat = 2.1
+        start_lon = -50
+        start_lat = 40
+        txres = Ngl.Resources()  # For labeling the label bar.
+        txres.txFontHeightF = 0.015
+        gid = []
+        lid = []
+        tid = []
+        for i in range(4, 14, 1):
+            lon0 = start_lon #+ (i - 4) * delta_lon
+            lon1 = lon0 + delta_lon
+            lat0 = start_lat + (i - 4) * delta_lat
+            lat1 = start_lat + delta_lat
+            lons = [lon0, lon1, lon1, lon0, lon0]
+            lats = [lat0, lat0, lat1, lat1, lat0]
+            gsres.gsFillColor = cmap[i - 4]  # Change fill color.
+            gid.append(Ngl.add_polygon(wks, map, lons, lats, gsres))
+            lid.append(Ngl.add_polyline(wks, map, lons, lats, gsres))
+            if (i == 4):
+                tid.append(Ngl.add_text(wks, map, "34.55", lon0, lat0 - delta_lat, txres))
+            elif (i == 6):
+                tid.append(Ngl.add_text(wks, map, "34.61", lon0, lat0 - delta_lat, txres))
+            elif (i == 8):
+                tid.append(Ngl.add_text(wks, map, "34.67", lon0, lat0 - delta_lat, txres))
+            elif (i == 10):
+                tid.append(Ngl.add_text(wks, map, "34.73", lon0, lat0 - delta_lat, txres))
+            elif (i == 12):
+                tid.append(Ngl.add_text(wks, map, "34.79", lon0, lat0 - delta_lat, txres))
+            else:
+                tid.append(Ngl.add_text(wks, map, "34.85", start_lon + 10 * delta_lon, lat0 - delta_lat, txres))
+
+        return
+
+    def labelbar(wks,map,cmap):
+        gres = Ngl.Resources() #Line Ressources
+        xstart = 0
+        ystart = 0.1*wkres.wkHeight
+        xend = 0.05*wkres.wkWidth
+        yend =0.15*wkres.wkHeight
+        lons = [lon0, lon1, lon1, lon0, lon0]
+        lats = [lat0, lat0, lat1, lat1, lat0]
+        xs=[xstart,xend,xend,xstart,xstart]
+        ys=[ystart,ystart,yend,yend,ystart]
+        gid=[]
+        gres.gsFillColor = cmap[0]  # Change fill color.
+        #gid.append(Ngl.add_polygon(wks, map, xs, ys, gres))
+        gid.append(Ngl.polygon(wks, xs, ys, gres))
     # ---- Drawing Conclusion
 
     # Ngl.maximize_plot(wks, map)
+    cmap = ["brown4", "yellow1", "navyblue", "forestgreen", "hotpink", "purple", \
+            "slateblue", "thistle", "deeppink4", "darkgoldenrod"]
+    #add_labelbar(wks,map,cmap)
+    #labelbar(wks,map,cmap)
     Ngl.draw(map)
     Ngl.frame(wks)
     # Ngl.delete_wks(wks)
-    Ngl.destroy(wks)
+    Ngl.destroy(wks)#
 
+    cleaner.legend(number,'300_',10,wkres.wkWidth,wkres.wkHeight,cmap_colors,list(var2res.cnLevels),filenames,0)
     # ---- Crop Graphics
     cleaner.crop_image(number, '300_', wkres, resx, resy,filenames)
     # cleaner.crop_image_aspected(number,'u_v_300_',wkres,resx,resy)

@@ -79,15 +79,25 @@ def picture(vara,varb,varc,vard,number,resx,resy,dir_origin,filenames):
     fn4          = vard #dir + '/database/input/icon/2022/8/2/00/ww/outfile_merged_2022080200_000_004_WW.grib2' #path name of model output
     f4          = Nio.open_file(os.path.join(vard))#dir, fn4)) #model output definition
 
-
+    #print(f4)
     lon4 = f4.variables['lon_0'][:] - 360
     lat4 = f4.variables['lat_0'][:]
     ww = f4.variables["WIWW_P0_L1_GLL0"][:,:]
-
+    #print(lon4)
+    wwconverted=[] #np.zeros((len(lat4),len(lon4)),dtype="<U50")
+    #print(ww[10][10])
+    #print(len(lat4))
+    for j in range(0, len(lon4)):
+        for i in range(0,len(lat4)):
+            if ww[i][j]<10:
+                insert = "0"+ str(int(ww[i][j]))
+            else:
+                insert= str(int(ww[i][j]))
+            wwconverted.append("11212800201001120000300004014752028601117"+insert+"6086792")
     '''fatal:NclGRIB2: Deleting reference to parameter; unable to decode grid template 3.101'''
     '''see: https://www.nco.ncep.noaa.gov/pmb/docs/grib2/grib2_doc/grib2_temp3-101.shtml'''
     '''see: https://www.dwd.de/DE/leistungen/opendata/help/modelle/Opendata_cdo_EN.pdf;jsessionid=F701F7DD8FE2D5E7E6AF606CB877DA9C.live11043?__blob=publicationFile&v=3'''
-
+    #print(wwconverted)
 
     #---- Preliminaries (2)
 
@@ -414,8 +424,6 @@ def picture(vara,varb,varc,vard,number,resx,resy,dir_origin,filenames):
     var3res.sfXArray = lon3 # processing of longitudes arrays
     var3res.sfYArray = lat3 # processing of latitudes arrays
 
-
-
     #---- Integration of Resources of BaseMap and Variables
     pmres                    = Ngl.Resources() #pmres = True
     pmres.gsMarkerIndex      = 1 #marker index
@@ -425,21 +433,27 @@ def picture(vara,varb,varc,vard,number,resx,resy,dir_origin,filenames):
     pmres.gsLineThicknessF   = 8. #lines thickness
     map     = Ngl.map(wks, mpres)
     # lnid = Ngl.add_polyline(wks, map, lon0, lat0, plres)
-    plot1    = Ngl.contour(wks, clct, var1res) #gsn_csm_contour command
-    plot2    = Ngl.contour(wks, pmsl, var2res) #gsn_csm_contour command
-    plot3    = Ngl.contour(wks, rain, var3res) #gsn_csm_contour command
-    Ngl.add_polymarker(wks, plot2, 9.732, 52.376, pmres) #marker locations
+    #plot1    = Ngl.contour(wks, clct, var1res) #gsn_csm_contour command
+    #plot2    = Ngl.contour(wks, pmsl, var2res) #gsn_csm_contour command
+    #plot3    = Ngl.contour(wks, rain, var3res) #gsn_csm_contour command
+
+
+    #Ngl.wmsetp("wbs",10)
+
+    #Ngl.add_polymarker(wks, plot2, 9.732, 52.376, pmres) #marker locations
 
     # Ngl.overlay(map, lnid)
-    Ngl.overlay(map, plot1)
-    Ngl.overlay(map, plot3)
-    Ngl.overlay(map, plot2)
+    #Ngl.overlay(map, plot1)
+    #Ngl.overlay(map, plot3)
+    #Ngl.overlay(map, plot2)
+    #Ngl.overlay(map, plot4)
 
     #
     #Ngl.wmsetp("ezf",1)
     #Ngl.wmstnm(wks,lon4,lat4,ww)
     #Ngl.overlay(map, plot4)
     #END
+
 
     #---- Annotations and Markers
 
@@ -455,10 +469,22 @@ def picture(vara,varb,varc,vard,number,resx,resy,dir_origin,filenames):
 
     # Ngl.maximize_plot(wks, map)
     Ngl.draw(map)
+    ### Draw Stationdata
+    lata= 52
+    longa= 10
+    wwconverteda="11678600751048021580300004055053013614007457085814"
+    Ngl.wmsetp("ezf", 1)  # Scale
+    #Ngl.wmsetp("wbc", 0.0)  # Scale of Circle
+    #Ngl.wmsetp("wbl", 0.0)  # Scale of Text
+    #Ngl.wmstnm(wks,lata,longa,wwconverteda)
+    #Ngl@wmlabs(wks,lata,longa,"SUN")
     Ngl.frame(wks)
+
+    ####
+    #Ngl.end()
     # Ngl.delete_wks(wks)
     Ngl.destroy(wks)
-
+    print('boden_' + filenames[number])
     # ---- Crop Graphics
     cleaner.crop_image(number, 'boden_', wkres,resx,resy,filenames)
 
@@ -488,6 +514,7 @@ def main():
     variablepaths = cleaner.varnames(varnumber, vars,
                                      varlevel,dir_origin)  ##Getting every filepath in the directory like [[vara1,vara2],[varb1,varb2]]
     timestepnumber = len(variablepaths[0])
+    print(timestepnumber)
     filenames=cleaner.filenames()
     for i in range(0,timestepnumber):
        picture(variablepaths[0][i],variablepaths[1][i],variablepaths[2][i],variablepaths[3][i],i,resx,resy,dir_origin,filenames)

@@ -113,7 +113,6 @@ dependencies:
   - munkres=1.1.4=pyh9f0ad1d_0
   - ncl=6.6.2=hfc90af8_40
   - ncurses=6.3=h27087fc_1
-  - netcdf-fortran=4.6.0=nompi_hc402ea5_100
   - netcdf4=1.6.0=nompi_py310h55e1e36_102
   - nspr=4.32=h9c3ff4c_1
   - nss=3.78=h2350873_0

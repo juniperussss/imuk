@@ -228,3 +228,40 @@ def filenames():
         fcst_hrs_output.append(fcst_hrs_string)
     return fcst_hrs_output
 
+def legend(number,levelname,stepsize,width,heigth,colormap,levels,filenames,stepstart):
+    from PIL import Image, ImageDraw as D
+    import numpy as np
+    import os
+    im = Image.open(levelname + filenames[number] + ".png", mode='r')
+    left = 0
+    top = 0
+    xmin = 0.03*width
+    xmax = 0.07*width
+    ymin = 0.745*heigth
+    ymax = 0.6*heigth
+    shape= [(0.75*xmin,ymin),(2*xmax,ymax)]#
+    shaper=[(100,100),(250,250)]
+    draw = D.Draw(im)
+    draw.rectangle(shape, fill="white")
+    ylast= ymin
+    ysteps= int(max(levels)/stepsize) +1 #How many Levels are needed
+    print(ysteps)
+    ydelta = (ymin-ymax)/ysteps
+    print(ydelta)
+   # colormap=["yellow","red","green","blue", "purple", "black","white","orange"]
+    ci=0
+    for i in range(stepstart,ysteps*stepsize-(2*ysteps),ysteps):
+        ylow= ylast
+        yhigh=ylow-ydelta
+        #print(yhigh/heigth)
+        shape=[(xmin,yhigh),(xmax,ylow)]
+        fill = tuple(np.array(colormap[ci]*256).astype(int))
+        print(fill)
+        draw = D.Draw(im)
+        draw.rectangle(shape, fill=fill, outline="black")
+        ylast=yhigh
+        ci +=1
+    im.save(levelname + filenames[number] + ".png", format='png')
+    #os.remove(levelname +  filenames[number] + ".png")
+
+
