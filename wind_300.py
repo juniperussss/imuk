@@ -314,7 +314,7 @@ def picture(vara, varb, number, resx, resy, dir_origin,filenames):
     # cmap_colors = Ngl.read_colormap_file("GMT_wysiwygcont")
     # cmap_colors = cmap_colors[30:180:50]
     # cmap = np.delete(cmap, [1,5,11], axis=0)
-    cmap_colors = np.array([[0, 0, 0, 0],[0, 0, 0, 0],[0, 0, 0, 0], [0.2, 1, 0, 1], [0.13, 0.9, 1, 1], [0.99, 0, 0.99, 1], [0.99, 0, 0, 1], [0.99, 0.99, 0, 1]])
+    cmap_colors = np.array([[0, 0, 0, 0], [0.2, 1, 0, 1], [0.13, 0.9, 1, 1], [0.99, 0, 0.99, 1], [0.99, 0, 0, 1], [0.99, 0.99, 0, 1]])
     # cmap_colors = np.insert(cmap_colors, 0, [0,0,0,0], axis=0)
     # cmap_colors = np.insert(cmap_colors, 0, [0,0,0,0], axis=0)
     # cmap_colors = np.insert(cmap_colors, 0, [0,0,0,0], axis=0)
@@ -334,7 +334,7 @@ def picture(vara, varb, number, resx, resy, dir_origin,filenames):
     var2res.cnFillPalette = cmap_colors  # -- set the0 colormap to be used or 'NCL_default'
 
     var2res.cnLevelSelectionMode = "ExplicitLevels"
-    var2res.cnLevels = [10,20,31, 41, 51,62,72]
+    var2res.cnLevels = [31, 41, 51,62,72]
     # var2res.cnMinLevelValF       = -50
     # var2res.cnMaxLevelValF       = 10
     # var2res.cnLevelSpacingF      = 2
@@ -447,29 +447,11 @@ def picture(vara, varb, number, resx, resy, dir_origin,filenames):
     # Ngl.delete_wks(wks)
     Ngl.destroy(wks)#
 
-    cleaner.legend(number,'300_',10,wkres.wkWidth,wkres.wkHeight,cmap_colors,list(var2res.cnLevels),filenames,0)
+    cleaner.legend(number,'300_',10,wkres.wkWidth,wkres.wkHeight,cmap_colors,list(var2res.cnLevels),filenames,0, "m/s")
     # ---- Crop Graphics
     cleaner.crop_image(number, '300_', wkres, resx, resy,filenames)
     # cleaner.crop_image_aspected(number,'u_v_300_',wkres,resx,resy)
 
-    # #---- Merge Logo
-    """
-    # Opening the primary image (used in background)
-    img1 = Image.open(r'u_v_300_' + str(number) +".png")
-
-    parent=os.path.dirname('u_v_300_' + str(number) +".png")
-    print(parent)
-    kek =os.path.dirname(__file__) + '/database/output/icons/imuk.png'
-    # Opening the secondary image (overlay image)
-    img2 = Image.open(kek)
-
-    # Pasting img2 image on top of img1
-    # starting at coordinates (0, 0)
-    img1.paste(img2, (wkres.wkWidth -680, 0), mask=img2)
-
-    # Displaying the image
-    img1.show()
-    """
     print('\EU has finished at: ', datetime.utcnow().strftime('%Y-%m-%d  %H:%M:%S '), u'\u2714')
     return
 

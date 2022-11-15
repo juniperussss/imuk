@@ -228,10 +228,9 @@ def filenames():
         fcst_hrs_output.append(fcst_hrs_string)
     return fcst_hrs_output
 
-def legend(number,levelname,stepsize,width,heigth,colormap,levels,filenames,stepstart):
-    from PIL import Image, ImageDraw as D
+def legendBACK(number,levelname,stepsize,width,heigth,colormap,levels,filenames,stepstart, unit):
+    from PIL import Image, ImageDraw as D, ImageFont
     import numpy as np
-    import os
     im = Image.open(levelname + filenames[number] + ".png", mode='r')
     left = 0
     top = 0
@@ -243,11 +242,11 @@ def legend(number,levelname,stepsize,width,heigth,colormap,levels,filenames,step
     shaper=[(100,100),(250,250)]
     draw = D.Draw(im)
     draw.rectangle(shape, fill="white")
+    myFont=ImageFont.truetype('/ressources/fonts/liberation/LiberationSerif-Regular.ttf', 60)
+    draw.text((1.05 * xmax, 0.99*ymax), unit, fill=(0, 0, 0), font=myFont)
     ylast= ymin
     ysteps= int(max(levels)/stepsize) +1 #How many Levels are needed
-    print(ysteps)
     ydelta = (ymin-ymax)/ysteps
-    print(ydelta)
    # colormap=["yellow","red","green","blue", "purple", "black","white","orange"]
     ci=0
     for i in range(stepstart,ysteps*stepsize-(2*ysteps),ysteps):
@@ -256,12 +255,56 @@ def legend(number,levelname,stepsize,width,heigth,colormap,levels,filenames,step
         #print(yhigh/heigth)
         shape=[(xmin,yhigh),(xmax,ylow)]
         fill = tuple(np.array(colormap[ci]*256).astype(int))
-        print(fill)
         draw = D.Draw(im)
-        draw.rectangle(shape, fill=fill, outline="black")
+        draw.rectangle(shape, fill=fill, outline="black", width=3)
+        if ci < len(levels):
+            draw.text((1.05*xmax, 0.99*yhigh), str(levels[ci]), fill = (0, 0, 0),font=myFont)
         ylast=yhigh
         ci +=1
     im.save(levelname + filenames[number] + ".png", format='png')
     #os.remove(levelname +  filenames[number] + ".png")
 
 
+def legend(number,levelname,stepsize,width,heigth,colormap,levels,filenames,stepstart, unit):
+    from PIL import Image, ImageDraw as D, ImageFont
+    import numpy as np
+    im = Image.open(levelname + filenames[number] + ".png", mode='r')
+    left = 0
+    top = 0
+    xmin = 0.03*width
+    xmax = 0.07*width
+    ymin = 0.745*heigth
+    ymax = 0.6*heigth
+    shape= [(0.75*xmin,ymin),(2*xmax,ymax)]#
+    shaper=[(100,100),(250,250)]
+    draw = D.Draw(im)
+    draw.rectangle(shape, fill="white")
+    myFont=ImageFont.truetype('/ressources/fonts/liberation/LiberationSerif-Regular.ttf', 60)
+    draw.text((1.05 * xmax, 0.99*ymax), unit, fill=(0, 0, 0), font=myFont)
+    ylast= ymin
+    ysteps= int(max(levels)/stepsize) #+1 #How many Levels are needed
+    ydelta = (ymin-ymax)/ysteps
+    gesammtrange= ymin-ymax
+    maxval= max(levels)
+   # colormap=["yellow","red","green","blue", "purple", "black","white","orange"]
+    ci=0
+    while ci< len(levels):
+        print(ci)
+        if ci== 0:
+            deltav= levels[ci]
+        else:
+            deltav= levels[ci] -levels[ci-1]
+
+        anteil = deltav/maxval
+        ylow= ylast
+        yhigh=ylow-anteil*gesammtrange
+        shape=[(xmin,yhigh),(xmax,ylow)]
+        fill = tuple(np.array(colormap[ci]*256).astype(int))
+        draw = D.Draw(im)
+        draw.rectangle(shape, fill=fill, outline="black", width=3)
+        if ci < len(levels):
+            draw.text((1.05*xmax, 0.99*yhigh), str(levels[ci]), fill = (0, 0, 0),font=myFont)
+        ylast=yhigh
+        ci +=1
+    im.save(levelname + filenames[number] + ".png", format='png')
+    #os.remove(levelname +  filenames[number] + ".png")

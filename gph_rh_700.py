@@ -331,7 +331,7 @@ def picture(vara,varb,number,resx,resy,dir_origin,filenames):
     Ngl.destroy(wks)
 
     # ---- Crop Graphics
-    cleaner.legend(number, '700_', 11, wkres.wkWidth, wkres.wkHeight, cmap_colors, list(var1res.cnLevels), filenames, 0)
+    cleaner.legend(number, '700_', 11, wkres.wkWidth, wkres.wkHeight, cmap_colors, list(var1res.cnLevels), filenames, 0, "%")
     cleaner.crop_image(number, '700_', wkres,resx,resy,filenames)
 
     print('\EU has finished at: ', datetime.utcnow().strftime('%Y-%m-%d  %H:%M:%S '), u'\u2714' )
