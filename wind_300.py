@@ -447,7 +447,7 @@ def picture(vara, varb, number, resx, resy, dir_origin,filenames):
     # Ngl.delete_wks(wks)
     Ngl.destroy(wks)#
 
-    cleaner.legend(number,'300_',10,wkres.wkWidth,wkres.wkHeight,cmap_colors,list(var2res.cnLevels),filenames,0, "m/s")
+    cleaner.legend(number,'300_',10,wkres.wkWidth,wkres.wkHeight,cmap_colors,list(var2res.cnLevels),filenames,0, "m/s",dir_origin,resx)
     # ---- Crop Graphics
     cleaner.crop_image(number, '300_', wkres, resx, resy,filenames)
     # cleaner.crop_image_aspected(number,'u_v_300_',wkres,resx,resy)

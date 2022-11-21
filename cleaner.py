@@ -51,7 +51,6 @@ def varnames(varnumber,varnames,varlevel,projectfolder):
     today = datetime.now()
     filepath = projectfolder + "/database/input/icon/" + str(today.year) + "/" + str(today.month) + "/" + str(today.day)
     initialtimefolder = glob.glob(filepath + "/*")[0]
-    print("Initialtimefolder: ", initialtimefolder)
     varalist=[]
     for i in range(0,varnumber):
         varname = varnames[i]
@@ -265,7 +264,7 @@ def legendBACK(number,levelname,stepsize,width,heigth,colormap,levels,filenames,
     #os.remove(levelname +  filenames[number] + ".png")
 
 
-def legend(number,levelname,stepsize,width,heigth,colormap,levels,filenames,stepstart, unit):
+def legend(number,levelname,stepsize,width,heigth,colormap,levels,filenames,stepstart, unit,inputpath,resx):
     from PIL import Image, ImageDraw as D, ImageFont
     import numpy as np
     im = Image.open(levelname + filenames[number] + ".png", mode='r')
@@ -279,8 +278,9 @@ def legend(number,levelname,stepsize,width,heigth,colormap,levels,filenames,step
     shaper=[(100,100),(250,250)]
     draw = D.Draw(im)
     draw.rectangle(shape, fill="white")
-    myFont=ImageFont.truetype('/ressources/fonts/liberation/LiberationSerif-Regular.ttf', 60)
-    draw.text((1.05 * xmax, 0.99*ymax), unit, fill=(0, 0, 0), font=myFont)
+    fontsize= int( (resx/1920) *60)
+    myFont=ImageFont.truetype(inputpath+'/ressources/fonts/liberation/LiberationSerif-Regular.ttf', fontsize)
+    draw.text((1.5 * xmax, 0.99*ymax), unit, fill=(0, 0, 0), font=myFont)
     ylast= ymin
     ysteps= int(max(levels)/stepsize) #+1 #How many Levels are needed
     ydelta = (ymin-ymax)/ysteps
@@ -289,7 +289,6 @@ def legend(number,levelname,stepsize,width,heigth,colormap,levels,filenames,step
    # colormap=["yellow","red","green","blue", "purple", "black","white","orange"]
     ci=0
     while ci< len(levels):
-        print(ci)
         if ci== 0:
             deltav= levels[ci]
         else:
@@ -302,7 +301,9 @@ def legend(number,levelname,stepsize,width,heigth,colormap,levels,filenames,step
         fill = tuple(np.array(colormap[ci]*256).astype(int))
         draw = D.Draw(im)
         draw.rectangle(shape, fill=fill, outline="black", width=3)
-        if ci < len(levels):
+        if ci < len(levels) and levels[ci]%1< 0.5:
+            #draw= D.Draw(im)
+            #draw.rectangle(shape, fill=fill, outline="black", width=3)
             draw.text((1.05*xmax, 0.99*yhigh), str(levels[ci]), fill = (0, 0, 0),font=myFont)
         ylast=yhigh
         ci +=1
