@@ -18,7 +18,7 @@ Using opendata from the dwd to visualize and display synoptic Data
 ### 300 hPa
 ![300](./database/output/300/u_v_300_0.png )
 ## Todos
-- Implent significant Weather to Groundlevel
+- Implent significant Weather to Groundlevel (K)
     (https://www.ncl.ucar.edu/Applications/weather_sym.shtml)
     
 - optimize Colorscale for 850 hPa and Groundlevel
@@ -33,9 +33,10 @@ thresholds of 300 hPa wind legend palette.
 H and L symbol problems -> identified the issue as "cnLineLabelPlacementMode"
 https://www.ncl.ucar.edu/Document/Graphics/Resources/cn.shtml#cnLineLabelPlacementMode
 
-300 hPa wind speed and unit check = there is no problem, ncl converts ms to knot automatically
+
 
 ### COMPLETED
+- 300 hPa wind speed and unit check = there is no problem, ncl converts ms to knot automatically -> clarify with M
 - fixed Windbarb multiplyer
 - cronjob automation
 - Request.py update for twice download per day
