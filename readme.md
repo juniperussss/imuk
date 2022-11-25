@@ -27,7 +27,30 @@ Using opendata from the dwd to visualize and display synoptic Data
     
     ![image](https://user-images.githubusercontent.com/94772818/204003616-50d03426-ea10-44ca-b844-f7bbd342b20a.png)
 
-    
+    Example: 
+    #Weather SYMBOLS
+
+        sym1res                  = Ngl.Resources() #symres = True
+        sym1res.txFont           = 'weather1' #alphabetical set for severe weather icons
+
+            symres.txFontHeightF    = 0.05 #font height
+            symres.txFontColor      = 'darkorange' #font color
+
+            symres.txFontThicknessF = 1.25 #font thickness
+
+            sym_hail                = Ngl.add_text(wks, map, 'z', 35.75, 34.5, symres) #icon locations
+            sym_torn                = Ngl.add_text(wks, map, '4', 33.10, 34.5, symres) #icon locations
+
+        sym2res                  = Ngl.Resources() #symres = True
+        sym2res.txFont           = 'weather2' #alphabetical set for severe weather icons
+
+        sym3res                  = Ngl.Resources() #symres = True
+        sym3res.txFont           = 'o_weather1' #alphabetical set for severe weather icons
+
+        sym4res                  = Ngl.Resources() #symres = True
+        sym4res.txFont           = 'o_weather2' #alphabetical set for severe weather icons
+
+
 - optimize Colorscale for 850 hPa and Groundlevel
 - add ~~Infobar~~ and Legend for
 -   300hpa
