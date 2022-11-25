@@ -20,6 +20,13 @@ Using opendata from the dwd to visualize and display synoptic Data
 ## Todos
 - Implent significant Weather to Groundlevel (K)
     (https://www.ncl.ucar.edu/Applications/weather_sym.shtml)
+    (https://www.ncl.ucar.edu/Document/Graphics/Images/font36.png)
+    (https://www.ncl.ucar.edu/Document/Graphics/Images/font37.png)
+    (https://www.ncl.ucar.edu/Document/Graphics/Images/font136.png)
+    (https://www.ncl.ucar.edu/Document/Graphics/Images/font137.png)
+    
+    ![image](https://user-images.githubusercontent.com/94772818/204003616-50d03426-ea10-44ca-b844-f7bbd342b20a.png)
+
     
 - optimize Colorscale for 850 hPa and Groundlevel
 - add ~~Infobar~~ and Legend for
