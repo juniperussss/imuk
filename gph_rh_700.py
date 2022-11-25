@@ -220,7 +220,7 @@ def picture(vara,varb,number,resx,resy,dir_origin,filenames):
     var1res.cnFillPalette    = cmap_colors #-- set the0 colormap to be used or 'NCL_default'
 
     var1res.cnLevelSelectionMode = "ExplicitLevels"
-    var1res.cnLevels             = [ 7.5,15,22.5, 30, 60,67.5,75,82.5, 90, 92,95]
+    var1res.cnLevels             = [ 7.5,15,22.5, 30, 60,67.5,75,82.5, 90, 92.5,95.5]
     # var1res.cnMinLevelValF       = 0
     # var1res.cnMaxLevelValF       = 100
     # var1res.cnLevelSpacingF      = 5

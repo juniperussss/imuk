@@ -268,44 +268,62 @@ def legend(number,levelname,stepsize,width,heigth,colormap,levels,filenames,step
     from PIL import Image, ImageDraw as D, ImageFont
     import numpy as np
     im = Image.open(levelname + filenames[number] + ".png", mode='r')
+    ## Drawing the outer rectangle
     left = 0
     top = 0
     xmin = 0.03*width
     xmax = 0.07*width
     ymin = 0.745*heigth
     ymax = 0.6*heigth
-    shape= [(0.75*xmin,ymin),(2*xmax,ymax)]#
+    shape= [(0.75*xmin,1.01*ymin),(1.75*xmax,ymax)]#
     shaper=[(100,100),(250,250)]
     draw = D.Draw(im)
+    fontsize= int( (resx/1920) *100)
     draw.rectangle(shape, fill="white")
-    fontsize= int( (resx/1920) *60)
+
     myFont=ImageFont.truetype(inputpath+'/ressources/fonts/liberation/LiberationSerif-Regular.ttf', fontsize)
-    draw.text((1.5 * xmax, 0.99*ymax), unit, fill=(0, 0, 0), font=myFont)
+    draw.text((1.45 * xmax, 0.99*ymax), unit, fill=(0, 0, 0), font=myFont)
+    # Calculating inner rectangle
     ylast= ymin
     ysteps= int(max(levels)/stepsize) #+1 #How many Levels are needed
     ydelta = (ymin-ymax)/ysteps
     gesammtrange= ymin-ymax
     maxval= max(levels)
-   # colormap=["yellow","red","green","blue", "purple", "black","white","orange"]
     ci=0
+    outlinewidth=int( (resx/1920) *3)
+    ##Drawing inner rectangles
     while ci< len(levels):
         if ci== 0:
             deltav= levels[ci]
         else:
             deltav= levels[ci] -levels[ci-1]
-
+    # Calculating percentage
         anteil = deltav/maxval
         ylow= ylast
         yhigh=ylow-anteil*gesammtrange
         shape=[(xmin,yhigh),(xmax,ylow)]
         fill = tuple(np.array(colormap[ci]*256).astype(int))
         draw = D.Draw(im)
-        draw.rectangle(shape, fill=fill, outline="black", width=3)
+        draw.rectangle(shape, fill=fill, outline="black", width=outlinewidth)
+        if str(colormap[ci]) == "[0. 0. 0. 0.]":
+            print("yeah")
+            xmintrans= xmin
+            xmaxtrans= xmax
+            ylowtrans = ylow
+            yhightrans =yhigh
         if ci < len(levels) and levels[ci]%1< 0.5:
             #draw= D.Draw(im)
             #draw.rectangle(shape, fill=fill, outline="black", width=3)
             draw.text((1.05*xmax, 0.99*yhigh), str(levels[ci]), fill = (0, 0, 0),font=myFont)
         ylast=yhigh
         ci +=1
+    
+    #### Adding Fake Transparency ######
+    imtrans = Image.open(inputpath+'/ressources/img/trans3.png', mode='r')
+    xtransdelta= int(xmaxtrans-xmintrans)
+    ytransdelta= int(abs(yhightrans-ylowtrans))
+    resized = imtrans.resize((xtransdelta-outlinewidth,ytransdelta-2*outlinewidth))
+    im.paste(resized, (int(xmintrans+outlinewidth),int(yhightrans+outlinewidth)))
+
     im.save(levelname + filenames[number] + ".png", format='png')
     #os.remove(levelname +  filenames[number] + ".png")
