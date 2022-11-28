@@ -505,8 +505,8 @@ def main():
     dir_Produkt = args.outputpath
     os.chdir(dir_Produkt)
 
-    for f in os.listdir(os.getcwd()):
-        os.remove(os.path.join(os.getcwd(), f))
+    # for f in os.listdir(os.getcwd()):
+      #  os.remove(os.path.join(os.getcwd(), f))
     ### Cleaning and Setup
     varnumber = 4
     vars = ["clct_mod", "pmsl", "tot_prec", "ww"]
