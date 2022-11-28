@@ -11,10 +11,10 @@ from datetime import datetime, timedelta
 #from tqdm import tqdm
 import numpy as np
 import glob
-
+import argparse
 import cleaner
 
-
+parser = argparse.ArgumentParser()
 
 fcst_hrs = cleaner.fcst_hrsf()
 fcst_hrs_output = []
@@ -39,9 +39,10 @@ else:
     init_time_hr = '00'#input('Enter the model run time ')
     
 
-dir_origin= os.getcwd()
-dir_Parent = 'database/input/icon/'
-os.chdir(dir_Parent)
+#dir_origin= os.getcwd()
+#dir_Parent = 'database/input/icon/'
+parser.add_argument('dir_origin')  # 350
+os.chdir(dir_origin)
 cleaner.cleaning_old_today_folders()
 if not os.path.exists('{}/{}/{}/{}'.format(cdt_yr, cdt_mo, cdt_day, init_time_hr)):
     try:
