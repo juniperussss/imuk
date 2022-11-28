@@ -41,7 +41,8 @@ else:
 
 #dir_origin= os.getcwd()
 #dir_Parent = 'database/input/icon/'
-parser.add_argument('dir_origin')  # 350
+parser.add_argument('inputpath')  # 350
+dir_origin = args.inputpath
 os.chdir(dir_origin)
 cleaner.cleaning_old_today_folders()
 if not os.path.exists('{}/{}/{}/{}'.format(cdt_yr, cdt_mo, cdt_day, init_time_hr)):
