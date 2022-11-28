@@ -58,7 +58,7 @@ else:
     
 os.path.join( '{}/{}/{}/{}'.format(cdt_yr, cdt_mo, cdt_day, init_time_hr))
 os.chdir( '{}/{}/{}/{}'.format(cdt_yr, cdt_mo, cdt_day, init_time_hr))
-dir_Nest = os.path.join(os.getcwd())
+dir_Nest = os.path.join(dir_origin)#os.getcwd())
 print('entered into', dir_Nest)
 
 import requests
