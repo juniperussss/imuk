@@ -41,6 +41,7 @@ else:
 
 #dir_origin= os.getcwd()
 #dir_Parent = 'database/input/icon/'
+args = parser.parse_args()
 parser.add_argument('inputpath')  # 350
 dir_origin = args.inputpath
 os.chdir(dir_origin)
