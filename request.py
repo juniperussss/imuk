@@ -41,8 +41,9 @@ else:
 
 #dir_origin= os.getcwd()
 #dir_Parent = 'database/input/icon/'
-args = parser.parse_args()
+
 parser.add_argument('inputpath')  # 350
+args = parser.parse_args()
 dir_origin = args.inputpath
 os.chdir(dir_origin)
 cleaner.cleaning_old_today_folders()
