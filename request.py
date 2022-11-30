@@ -156,5 +156,5 @@ for var in variables:
     print(os.path.abspath(os.getcwd()) +" has completed at: ", cdt_date.strftime('%Y-%m-%d  %H:%M:%S'))
 
 
-cleaner.cleaning_old_folders()
-cleaner.archiving()
+#cleaner.cleaning_old_folders()
+#cleaner.archiving()

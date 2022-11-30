@@ -60,7 +60,7 @@ def varnames(varnumber,varnames,varlevel,projectfolder):
         else:
             varalist.append( (glob.glob(initialtimefolder + "/" + varname + "/" + str(level) + "/*")))
 
-    print(varalist)
+    #print(varalist)
     return varalist
 
 
@@ -217,8 +217,9 @@ def fcst_hrsf():
     # fcst_hr_2 = np.arange(78, 181, 3)
     # fcst_hrs = np.concatenate((fcst_hr_1, fcst_hr_2))
     
-    #fcst_hrs = np.arange(0, 181, 12)
-    fcst_hrs = np.arange(0, 5, 1)
+    fcst_hrs = np.arange(0, 181, 12)
+    #fcst_hrs = np.arange(0, 5, 1)
+    #fcst_hrs= [0,12]
     
     return fcst_hrs
 def filenames():
