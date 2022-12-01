@@ -110,7 +110,7 @@ for var in variables:
     os.chdir(dir_Nest + f'/{var}'+f'/{variables[var][1][1:]}')
 
     for hour in fcst_hrs:
-
+        print(hour)
         url_data = url_base +'{}/{}/icon_global_icosahedral_{}_{}{}_{}{}_{}.grib2.bz2'.format(
             init_time_hr, var, variables[var][0], cdt_yrmoday, init_time_hr, str(hour).zfill(3), variables[var][1], str(var).upper())
 

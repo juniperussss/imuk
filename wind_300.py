@@ -374,7 +374,7 @@ def picture(vara, varb, number, resx, resy, dir_origin,filenames):
 
     # ---- Annotations and Markers
 
-    hour, weekday, datetime_object = cleaner.dates_for_subtitles(vara, number)
+    hour, weekday, datetime_object = cleaner.dates_for_subtitles(vara, number,filenames)
     left_string_2 = '300 hPa: ' + f1.variables['UGRD_P0_L100_GLL0'].attributes['long_name'] + ' & ' + \
                     f2.variables['VGRD_P0_L100_GLL0'].attributes['long_name']  # model output info
     left_string = 'ICON-Lauf: ' + 'Init: ' + str(datetime_object)  # model output info
@@ -485,6 +485,7 @@ def main():
     filenames=cleaner.filenames()
     ## Main Process
     for i in range(0, timestepnumber):
+        print(i)
         picture(variablepaths[0][i], variablepaths[1][i], i, resx, resy, dir_origin,filenames)
     return
 

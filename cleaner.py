@@ -171,13 +171,24 @@ def subtitles(wks, map, left_string, center_string, right_string,mpres,left_stri
 
         return
 
-def dates_for_subtitles(vara,number):
+def dates_for_subtitles(vara,number,filenames):
     import os
     from datetime import datetime, timedelta
     strObj = os.path.basename(vara)  # Get Filestring
     strObj = strObj[6:16:]  # Cut to Datestring
     datetime_object = datetime.strptime(strObj, '%Y%m%d%H')  # Convert Datestring to Datetimeobject
-    newdatetime_object = datetime_object + timedelta(hours=number * 3)
+    # Check which timedelta needs to be used
+    if number >0:
+        oldtime =filenames[number-1]
+        newtime = filenames[number]
+    else:
+        oldtime=0
+        newtime = filenames[number]
+
+    deltatime=abs(int(oldtime)-int(newtime))
+    #print(abs(int(oldtime)-int(newtime)))
+    #tdatetime_object = datetime.strptime(tstrObj, '%Y%m%d%H') 
+    newdatetime_object = datetime_object + timedelta(hours=number * deltatime)
     weekday = newdatetime_object.strftime("%a")  # Extract Weekday from Datetimeobject
     hour = newdatetime_object.strftime("%H")
     return hour,weekday,datetime_object
@@ -217,9 +228,9 @@ def fcst_hrsf():
     # fcst_hr_2 = np.arange(78, 181, 3)
     # fcst_hrs = np.concatenate((fcst_hr_1, fcst_hr_2))
     
-    fcst_hrs = np.arange(0, 181, 12)
+    #fcst_hrs = np.arange(0, 181, 12)
     #fcst_hrs = np.arange(0, 5, 1)
-    #fcst_hrs= [0,12]
+    fcst_hrs= [0,12,24,36]
     
     return fcst_hrs
 def filenames():

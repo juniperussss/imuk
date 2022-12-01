@@ -313,7 +313,7 @@ def picture(vara,varb,number,resx,resy,dir_origin,filenames):
     Ngl.add_polymarker(wks, plot2, 9.732, 52.376, pmres) #marker locations
 
     #---- Annotations and Markers
-    hour, weekday, datetime_object = cleaner.dates_for_subtitles(vara, number)
+    hour, weekday, datetime_object = cleaner.dates_for_subtitles(vara, number,filenames)
     left_string_2   = '700 hPa: ' + f1.variables['RH_P0_L100_GLL0'].attributes['long_name'] +' & '+ f2.variables['GP_P0_L100_GLL0'].attributes['long_name'] #model output info                                          ' #center information bar
     # right_string_2 = 'Init: ' + str(initial_time)
     left_string = 'ICON-Lauf: ' + 'Init: ' + str(datetime_object)  # model output info
