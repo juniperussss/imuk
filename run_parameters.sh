@@ -1,5 +1,5 @@
 #request
-/home/alex/miniforge3/envs/imuk/bin/python /home/alex/imuk/request.py /home/alex/imuk /home/alex/imuk/database/input/icon 
+#/home/alex/miniforge3/envs/imuk/bin/python /home/alex/imuk/request.py /home/alex/imuk /home/alex/imuk/database/input/icon 
 
 
 #Wind
