@@ -481,11 +481,12 @@ def main():
                                      dir_origin)  ##Getting every filepath in the directory like [[vara1,vara2],[varb1,varb2]]
 
     timestepnumber = len(variablepaths[0])
-
+    #print(variablepaths)
     filenames=cleaner.filenames()
     ## Main Process
     for i in range(0, timestepnumber):
-        print(i)
+        #print(i)
+        #print(variablepaths[0][i])
         picture(variablepaths[0][i], variablepaths[1][i], i, resx, resy, dir_origin,filenames)
     return
 

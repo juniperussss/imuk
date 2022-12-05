@@ -110,10 +110,9 @@ for var in variables:
     os.chdir(dir_Nest + f'/{var}'+f'/{variables[var][1][1:]}')
 
     for hour in fcst_hrs:
-        print(hour)
         url_data = url_base +'{}/{}/icon_global_icosahedral_{}_{}{}_{}{}_{}.grib2.bz2'.format(
             init_time_hr, var, variables[var][0], cdt_yrmoday, init_time_hr, str(hour).zfill(3), variables[var][1], str(var).upper())
-
+        #print(url_data)
         data_request = requests.get(url_data, stream=True)
         if data_request.status_code == 200:
             print(url_data)
@@ -128,7 +127,7 @@ for var in variables:
 
         ifile = dir_Nest + '/{}/{}/icon_global_icosahedral_{}_{}{}_{}{}_{}.grib2'.format(
             var, variables[var][1][1:], variables[var][0], cdt_yrmoday, init_time_hr, str(hour).zfill(3), variables[var][1], str(var).upper())
-        # print(ifile)
+        print(ifile)
 
         # cdo.sellonlatbox('-75,75,5,80', input=ifile, output='haha.grib2') #not necessary for this step
         cdo.remap(grids, weights, input=ifile, output='ofile_{}_{}_{}_{}'.format(
@@ -156,5 +155,5 @@ for var in variables:
     print(os.path.abspath(os.getcwd()) +" has completed at: ", cdt_date.strftime('%Y-%m-%d  %H:%M:%S'))
 
 
-#cleaner.cleaning_old_folders()
-#cleaner.archiving()
+cleaner.cleaning_old_folders()
+cleaner.archiving()

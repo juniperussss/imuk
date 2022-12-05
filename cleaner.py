@@ -52,13 +52,15 @@ def varnames(varnumber,varnames,varlevel,projectfolder):
     filepath = projectfolder + "/database/input/icon/" + str(today.year) + "/" + str(today.month) + "/" + str(today.day)
     initialtimefolder = glob.glob(filepath + "/*")[0]
     varalist=[]
+
     for i in range(0,varnumber):
         varname = varnames[i]
         level = varlevel[i]
         if (level == "single"):
-            varalist.append((glob.glob(initialtimefolder + "/" + varname + "/*")))
+            varalist.append((sorted(glob.glob(initialtimefolder + "/" + varname + "/*"))))
         else:
-            varalist.append( (glob.glob(initialtimefolder + "/" + varname + "/" + str(level) + "/*")))
+            varalist.append( (sorted(glob.glob(initialtimefolder + "/" + varname + "/" + str(level) + "/*"))))
+        
 
     #print(varalist)
     return varalist
@@ -187,7 +189,13 @@ def dates_for_subtitles(vara,number,filenames):
 
     deltatime=abs(int(oldtime)-int(newtime))
     #print(abs(int(oldtime)-int(newtime)))
+    
     #tdatetime_object = datetime.strptime(tstrObj, '%Y%m%d%H') 
+    fcst_hrs=fcst_hrsf()
+    if len(fcst_hrs)>0:
+        deltatime=int(abs(fcst_hrs[1]-fcst_hrs[0]))
+    else:
+        deltatime=0
     newdatetime_object = datetime_object + timedelta(hours=number * deltatime)
     weekday = newdatetime_object.strftime("%a")  # Extract Weekday from Datetimeobject
     hour = newdatetime_object.strftime("%H")
@@ -228,9 +236,9 @@ def fcst_hrsf():
     # fcst_hr_2 = np.arange(78, 181, 3)
     # fcst_hrs = np.concatenate((fcst_hr_1, fcst_hr_2))
     
-    #fcst_hrs = np.arange(0, 181, 12)
+    fcst_hrs = np.arange(0, 181, 12)
     #fcst_hrs = np.arange(0, 5, 1)
-    fcst_hrs= [0,12,24,36]
+    #fcst_hrs= [0,12,36]
     
     return fcst_hrs
 def filenames():
