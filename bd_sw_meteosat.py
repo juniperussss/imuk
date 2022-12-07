@@ -20,6 +20,7 @@ from metpy.units import units
 import cleaner
 from datetime import date
 import argparse
+from icecream import ic
 
 
 ###
@@ -403,7 +404,7 @@ def picture(vara,varb,varc,vard,number,resx,resy,dir_origin,filenames):
     var3res.cnFillPalette    = cmap_colors #-- set the0 colormap to be used or 'NCL_default'
 
     var3res.cnLevelSelectionMode = "ExplicitLevels"
-    var3res.cnLevels             = [ 1.5, 4, 6, 12, 24, 10**6]
+    var3res.cnLevels             =[0.5,2,4,6,12,20,10**6]# [ 1.5, 4, 6, 12, 24, 10**6]
     #var3res.cnMinLevelValF       = 0.1
     #var3res.cnMaxLevelValF       = 1.01
     #var3res.cnLevelSpacingF      = 0.1
@@ -432,10 +433,14 @@ def picture(vara,varb,varc,vard,number,resx,resy,dir_origin,filenames):
     pmres.gsMarkerThicknessF = 40
     pmres.gsLineThicknessF   = 8. #lines thickness
     map     = Ngl.map(wks, mpres)
+
+
     # lnid = Ngl.add_polyline(wks, map, lon0, lat0, plres)
-    #plot1    = Ngl.contour(wks, clct, var1res) #gsn_csm_contour command
-    #plot2    = Ngl.contour(wks, pmsl, var2res) #gsn_csm_contour command
-    #plot3    = Ngl.contour(wks, rain, var3res) #gsn_csm_contour command
+    plot1    = Ngl.contour(wks, clct, var1res) #gsn_csm_contour command
+    plot2    = Ngl.contour(wks, pmsl, var2res) #gsn_csm_contour command
+    if number>0:
+        plot3    = Ngl.contour(wks, rain, var3res) #gsn_csm_contour command
+    
 
 
     #Ngl.wmsetp("wbs",10)
@@ -443,9 +448,10 @@ def picture(vara,varb,varc,vard,number,resx,resy,dir_origin,filenames):
     #Ngl.add_polymarker(wks, plot2, 9.732, 52.376, pmres) #marker locations
 
     # Ngl.overlay(map, lnid)
-    #Ngl.overlay(map, plot1)
-    #Ngl.overlay(map, plot3)
-    #Ngl.overlay(map, plot2)
+    Ngl.overlay(map, plot1)
+    if number>0:
+        Ngl.overlay(map, plot3)
+    Ngl.overlay(map, plot2)
     #Ngl.overlay(map, plot4)
 
     #
@@ -470,10 +476,10 @@ def picture(vara,varb,varc,vard,number,resx,resy,dir_origin,filenames):
     # Ngl.maximize_plot(wks, map)
     Ngl.draw(map)
     ### Draw Stationdata
-    lata= 52
-    longa= 10
-    wwconverteda="11678600751048021580300004055053013614007457085814"
-    Ngl.wmsetp("ezf", 1)  # Scale
+    #lata= 52
+    #longa= 10
+    #wwconverteda="11678600751048021580300004055053013614007457085814"
+    #Ngl.wmsetp("ezf", 1)  # Scale
     #Ngl.wmsetp("wbc", 0.0)  # Scale of Circle
     #Ngl.wmsetp("wbl", 0.0)  # Scale of Text
     #Ngl.wmstnm(wks,lata,longa,wwconverteda)
@@ -486,6 +492,11 @@ def picture(vara,varb,varc,vard,number,resx,resy,dir_origin,filenames):
     Ngl.destroy(wks)
     print('boden_' + filenames[number])
     # ---- Crop Graphics
+
+    if number>0:
+        levellist=list(var3res.cnLevels)
+        levellist.pop()
+        cleaner.legend(number, 'boden_', 11, wkres.wkWidth, wkres.wkHeight, cmap_colors, levellist, filenames, 0, "mm",dir_origin,resx)
     cleaner.crop_image(number, 'boden_', wkres,resx,resy,filenames)
 
     print('\EU has finished at: ', datetime.utcnow().strftime('%Y-%m-%d  %H:%M:%S '), u'\u2714' )
@@ -514,6 +525,7 @@ def main():
     variablepaths = cleaner.varnames(varnumber, vars,
                                      varlevel,dir_origin)  ##Getting every filepath in the directory like [[vara1,vara2],[varb1,varb2]]
     timestepnumber = len(variablepaths[0])
+    #print(variablepaths)
     print(timestepnumber)
     filenames=cleaner.filenames()
     for i in range(0,timestepnumber):
