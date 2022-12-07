@@ -20,7 +20,7 @@ from metpy.units import units
 import cleaner
 from datetime import date
 import argparse
-from icecream import ic
+#from icecream import ic
 
 
 ###
