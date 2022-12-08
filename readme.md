@@ -63,7 +63,18 @@ thresholds of 300 hPa wind legend palette.
 H and L symbol problems -> identified the issue as "cnLineLabelPlacementMode"
 https://www.ncl.ucar.edu/Document/Graphics/Resources/cn.shtml#cnLineLabelPlacementMode
 
+Accumulation to instant \\
 
+IDK how to chance varc in the picture definition in line 27
+but the code proposal is in the following
+
+rain = f3.variables['TPRATE_P8_L1_GLL0_acc'][:,:]
+rain = np.array(f3.variables['TPRATE_P8_L1_GLL0_acc'][:,:])
+rain_previous = np.array(f3.variables['TPRATE_P8_L1_GLL0_acc'][:,:])
+rain_instant = rain - rain_previous
+
+#line 442
+plot3    = Ngl.contour(wks, rain_instant, var3res) #gsn_csm_contour command
 
 ### COMPLETED
 - 300 hPa wind speed and unit check = there is no problem, ncl converts ms to knot automatically -> clarify with M
