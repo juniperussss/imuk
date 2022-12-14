@@ -11,5 +11,7 @@
 #/home/alex/miniforge3/envs/imuk/bin/python /home/alex/imuk/gph_rh_700.py 1920 1080 /home/alex/imuk/database/output/700 /home/alex/imuk
 
 #Groundlevel
-/home/alex/miniforge3/envs/imuk/bin/python /home/alex/imuk/bd_sw_meteosat.py 1920 1080 /home/alex/imuk/database/output/1000_gl /home/alex/imuk
+#/home/alex/miniforge3/envs/imuk/bin/python /home/alex/imuk/bd_sw_meteosat.py 1920 1080 /home/alex/imuk/database/output/1000_gl /home/alex/imuk
 
+#Beta
+/home/alex/miniforge3/envs/imuk/bin/python /home/alex/imuk/bd_sw_meteosat_beta.py 1920 1080 /home/alex/imuk/database/output/1000_gl /home/alex/imuk
