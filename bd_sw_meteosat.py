@@ -24,7 +24,7 @@ import argparse
 
 
 ###
-def picture(vara,varb,varc,vard,number,resx,resy,dir_origin,filenames):
+def picture(vara,varb,varc,vard,number,resx,resy,dir_origin,filenames,rain_parameter):
     #---- Preliminaries (1)
 
     warnings.filterwarnings("ignore")
@@ -70,10 +70,21 @@ def picture(vara,varb,varc,vard,number,resx,resy,dir_origin,filenames):
     fn3          = varc# dir + '/database/input/icon/2022/8/2/00/tot_prec/outfile_merged_2022080200_000_004_TOT_PREC.grib2' #path name of model output
     f3          = Nio.open_file(os.path.join(varc))#dir, fn3)) #model output definition
 
-
+    
     lon3 = f3.variables['lon_0'][:] - 360
     lat3 = f3.variables['lat_0'][:]
     rain = f3.variables['TPRATE_P8_L1_GLL0_acc'][:,:]
+    rain = np.array(f3.variables['TPRATE_P8_L1_GLL0_acc'][:,:])
+    if number != 0:
+        dir         = os.path.join(dir_origin) #path of model output
+        fn3p          = rain_parameter# dir + '/database/input/icon/2022/8/2/00/tot_prec/outfile_merged_2022080200_000_004_TOT_PREC.grib2' #path name of model output
+        f3p          = Nio.open_file(os.path.join(rain_parameter))#dir, fn3)) #model output definition
+
+        
+        rain_previous = np.array(f3p.variables['TPRATE_P8_L1_GLL0_acc'][:,:])
+        rain_instant = rain - rain_previous
+    else:
+      rain_instant = rain 
 
 
     dir         = os.path.join(dir_origin) #path of model output
@@ -383,7 +394,10 @@ def picture(vara,varb,varc,vard,number,resx,resy,dir_origin,filenames):
     #cmap_colors = ("(/0,0,0/)",
     #                 "(/0,0,.2/)", "(/0,0,.4/)", "(/0,0,.6/)", "(/0,0,.8/)", "(/0.6,0,0.6/)",\
     #                 "(/.6,0.01,0.21/)")
-    cmap_colors = Ngl.read_colormap_file("MPL_cool")
+    #cmap_colors = Ngl.read_colormap_file("MPL_cool")
+    cmap_colors = np.array([[0.5,0.64,0.65,0.4],[0.32,0.73,0.87,0.5],[0.33,0.34,0.93,0.6],[0.07,0.06,0.74,0.8],[0.6,0,0.6,1],
+                            [0.6,0.01,0.07,1]])
+    
     # cmap_colors = cmap_colors[2:]
     # cmap = np.delete(cmap, [1,5,11], axis=0)
     cmap_colors = np.insert(cmap_colors, 0, [0,0,0,0], axis=0)
@@ -404,7 +418,7 @@ def picture(vara,varb,varc,vard,number,resx,resy,dir_origin,filenames):
     var3res.cnFillPalette    = cmap_colors #-- set the0 colormap to be used or 'NCL_default'
 
     var3res.cnLevelSelectionMode = "ExplicitLevels"
-    var3res.cnLevels             =[0.5,2,4,6,12,20,10**6]# [ 1.5, 4, 6, 12, 24, 10**6]
+    var3res.cnLevels             =[0.5,2,4,6,12,24]# [ 1.5, 4, 6, 12, 24, 10**6]
     #var3res.cnMinLevelValF       = 0.1
     #var3res.cnMaxLevelValF       = 1.01
     #var3res.cnLevelSpacingF      = 0.1
@@ -439,7 +453,7 @@ def picture(vara,varb,varc,vard,number,resx,resy,dir_origin,filenames):
     plot1    = Ngl.contour(wks, clct, var1res) #gsn_csm_contour command
     plot2    = Ngl.contour(wks, pmsl, var2res) #gsn_csm_contour command
     if number>0:
-        plot3    = Ngl.contour(wks, rain, var3res) #gsn_csm_contour command
+        plot3    = Ngl.contour(wks, rain_instant, var3res) #gsn_csm_contour command
     
 
 
@@ -495,7 +509,7 @@ def picture(vara,varb,varc,vard,number,resx,resy,dir_origin,filenames):
 
     if number>0:
         levellist=list(var3res.cnLevels)
-        levellist.pop()
+        #levellist.pop()
         cleaner.legend(number, 'boden_', 11, wkres.wkWidth, wkres.wkHeight, cmap_colors, levellist, filenames, 0, "mm",dir_origin,resx)
     cleaner.crop_image(number, 'boden_', wkres,resx,resy,filenames)
 
@@ -529,7 +543,14 @@ def main():
     print(timestepnumber)
     filenames=cleaner.filenames()
     for i in range(0,timestepnumber):
-       picture(variablepaths[0][i],variablepaths[1][i],variablepaths[2][i],variablepaths[3][i],i,resx,resy,dir_origin,filenames)
+
+       if i==0:
+        rain_parameter = np.array([])
+       else:
+        rain_parameter = variablepaths[2][i-1]
+
+       
+       picture(variablepaths[0][i],variablepaths[1][i],variablepaths[2][i],variablepaths[3][i],i,resx,resy,dir_origin,filenames,rain_parameter)
     return
 
 if __name__ == "__main__":
