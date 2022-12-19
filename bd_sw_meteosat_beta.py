@@ -509,7 +509,7 @@ def picture(vara,varb,varc,vard,number,resx,resy,dir_origin,filenames,rain_param
 
     if number>0:
         levellist=list(var3res.cnLevels)
-        levellist.pop()
+        #levellist.pop()
         cleaner.legend(number, 'boden_', 11, wkres.wkWidth, wkres.wkHeight, cmap_colors, levellist, filenames, 0, "mm",dir_origin,resx)
     cleaner.crop_image(number, 'boden_', wkres,resx,resy,filenames)
 
