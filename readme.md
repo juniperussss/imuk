@@ -17,6 +17,10 @@ Using opendata from the dwd to visualize and display synoptic Data
 
 ### 300 hPa
 ![300](./database/output/300/u_v_300_0.png )
+
+#Definition for station based geolocations
+https://www.latlong.net
+
 ## Todos
 - Implent significant Weather to Groundlevel (K)
     (https://www.ncl.ucar.edu/Applications/weather_sym.shtml)
