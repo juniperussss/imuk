@@ -1,4 +1,0 @@
-[ZoneTransfer]
-ZoneId=3
-ReferrerUrl=https://oscar.wmo.int/surface//index.html
-HostUrl=https://oscar.wmo.int/surface//rest/api/search/download/stationSRs?data=%7B%22operation%22%3A%22AND%22%2C%22nrt%22%3Afalse%2C%22quickSearch%22%3Afalse%2C%22variableIds%22%3A%5B%2210040%22%2C%22266%22%5D%2C%22variableName%22%3A%22Present%20weather%2C%20Present%20weather%22%2C%22operatingStatusId%22%3A10%2C%22assessedStatusId%22%3A10%2C%22wmoRaOrCountryId%22%3A%22W-6%22%2C%22tableParams%22%3A%7B%22page%22%3A1%2C%22count%22%3A10%2C%22filter%22%3A%7B%7D%2C%22sorting%22%3A%7B%22region%22%3A%22asc%22%2C%22territory%22%3A%22asc%22%7D%2C%22group%22%3A%7B%7D%2C%22groupBy%22%3Anull%7D%2C%22filetype%22%3A%22csv%22%7D
