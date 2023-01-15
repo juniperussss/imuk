@@ -22,6 +22,26 @@ Using opendata from the dwd to visualize and display synoptic Data
 https://www.latlong.net
 
 ## Todos
+
+- Take a glance these links apart from the link that you sent me
+
+https://www.youtube.com/watch?v=Xf2YuIzVS7g
+https://www.youtube.com/watch?v=xQx2214buVU
+
+- I found a new method to draw ground stations (I am sure that it works because I tried to use)
+
+https://www.pyngl.ucar.edu/Examples/Images/wmstnm02_lg.png
+https://www.pyngl.ucar.edu/Examples/Scripts/wmstnm02.py
+
+https://www.pyngl.ucar.edu/Examples/Images/wmstnm03.0.png
+https://www.pyngl.ucar.edu/Examples/Scripts/wmstnm03.py
+
+- how to use guide this method in NCL
+
+https://www.pyngl.ucar.edu/Functions/Ngl.wmstnm.shtml
+
+
+
 - Implent significant Weather to Groundlevel (K)
     (https://www.ncl.ucar.edu/Applications/weather_sym.shtml)
     (https://www.ncl.ucar.edu/Document/Graphics/Images/font36.png)
