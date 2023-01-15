@@ -22,7 +22,8 @@ Using opendata from the dwd to visualize and display synoptic Data
 https://www.latlong.net
 
 ## Todos
-
+Generate Stationlists
+https://oscar.wmo.int/surface//index.html#/search/station#stationSearchResults
 - Take a glance these links apart from the link that you sent me
 
 https://www.youtube.com/watch?v=Xf2YuIzVS7g
