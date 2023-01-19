@@ -31,9 +31,9 @@ cdt_mo = cdt_date.month
 cdt_day = cdt_date.day
 cdt_yrmoday = cdt_date.strftime('%Y%m%d')
 
-if int(cdt_date.strftime("%H")) >= 3 and int(cdt_date.strftime("%H")) <= 11:
+if int(cdt_date.strftime("%H")) >= 4 and int(cdt_date.strftime("%H")) <= 11:
     init_time_hr = '00'
-elif int(cdt_date.strftime("%H")) >= 15 and int(cdt_date.strftime("%H")) <= 23:
+elif int(cdt_date.strftime("%H")) >= 16 and int(cdt_date.strftime("%H")) <= 23:
     init_time_hr = '12' 
 else:
     init_time_hr = '00'#input('Enter the model run time ')
