@@ -24,28 +24,10 @@ https://www.latlong.net
 ## Todos
 - optimize performance
 - json based buffrfiles
-- hours as an outside variable
-Generate Stationlists
-https://oscar.wmo.int/surface//index.html#/search/station#stationSearchResults
-- Take a glance these links apart from the link that you sent me
-
-https://www.youtube.com/watch?v=Xf2YuIzVS7g
-https://www.youtube.com/watch?v=xQx2214buVU
-
-- I found a new method to draw ground stations (I am sure that it works because I tried to use)
-
-https://www.pyngl.ucar.edu/Examples/Images/wmstnm02_lg.png
-https://www.pyngl.ucar.edu/Examples/Scripts/wmstnm02.py
-
-https://www.pyngl.ucar.edu/Examples/Images/wmstnm03.0.png
-https://www.pyngl.ucar.edu/Examples/Scripts/wmstnm03.py
-
-- how to use guide this method in NCL
-
-https://www.pyngl.ucar.edu/Functions/Ngl.wmstnm.shtml
 
 
 
+### Significant Weather
 - Implent significant Weather to Groundlevel (K)
     (https://www.ncl.ucar.edu/Applications/weather_sym.shtml)
     (https://www.ncl.ucar.edu/Document/Graphics/Images/font36.png)
@@ -79,6 +61,26 @@ https://www.pyngl.ucar.edu/Functions/Ngl.wmstnm.shtml
         sym4res.txFont           = 'o_weather2' #alphabetical set for severe weather icons
 
 
+#### Generate Stationlists
+  https://oscar.wmo.int/surface//index.html#/search/station#stationSearchResults
+- Take a glance these links apart from the link that you sent me
+
+    https://www.youtube.com/watch?v=Xf2YuIzVS7g
+    https://www.youtube.com/watch?v=xQx2214buVU
+
+- I found a new method to draw ground stations (I am sure that it works because I tried to use)
+
+    https://www.pyngl.ucar.edu/Examples/Images/wmstnm02_lg.png
+    https://www.pyngl.ucar.edu/Examples/Scripts/wmstnm02.py
+
+    https://www.pyngl.ucar.edu/Examples/Images/wmstnm03.0.png
+    https://www.pyngl.ucar.edu/Examples/Scripts/wmstnm03.py
+
+- how to use guide this method in NCL
+
+    https://www.pyngl.ucar.edu/Functions/Ngl.wmstnm.shtml
+
+### Colors and Legends
 - optimize Colorscale for 850 hPa and Groundlevel
 - add ~~Infobar~~ and Legend for
 -   300hpa
@@ -86,25 +88,17 @@ https://www.pyngl.ucar.edu/Functions/Ngl.wmstnm.shtml
 -   700hpa
 -   850hpa
 
-thresholds of 300 hPa wind legend palette. 
+### Bugs
 
-H and L symbol problems -> identified the issue as "cnLineLabelPlacementMode"
-https://www.ncl.ucar.edu/Document/Graphics/Resources/cn.shtml#cnLineLabelPlacementMode
+- H and L symbol problems -> identified the issue as "cnLineLabelPlacementMode"
+- https://www.ncl.ucar.edu/Document/Graphics/Resources/cn.shtml#cnLineLabelPlacementMode
 
-Accumulation to instant \\
 
-IDK how to chance varc in the picture definition in line 27
-but the code proposal is in the following
 
-    rain = f3.variables['TPRATE_P8_L1_GLL0_acc'][:,:]
-    rain = np.array(f3.variables['TPRATE_P8_L1_GLL0_acc'][:,:])
-    rain_previous = np.array(f3.variables['TPRATE_P8_L1_GLL0_acc'][:,:])
-    rain_instant = rain - rain_previous
-
-    #line 442 should be changed!
-    plot3    = Ngl.contour(wks, rain_instant, var3res) #gsn_csm_contour command
 
 ### COMPLETED
+-- ~~hours as an outside variable~~
+- Accumulation to instant Rain
 - 300 hPa wind speed and unit check = there is no problem, ncl converts ms to knot automatically -> clarify with M
 - fixed Windbarb multiplyer
 - cronjob automation
