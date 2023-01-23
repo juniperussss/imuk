@@ -44,14 +44,18 @@ def archiving():
 
 
 
-def varnames(varnumber,varnames,varlevel,projectfolder):
+def varnames(varnumber,varnames,varlevel,projectfolder,filenames):
     from datetime import datetime
     import os
     import glob
+    import numpy as np
+    #from cleaner import filenames
     today = datetime.now()
     filepath = projectfolder + "/database/input/icon/" + str(today.year) + "/" + str(today.month) + "/" + str(today.day)
     initialtimefolder = glob.glob(filepath + "/*")[0]
+    print("inial:",initialtimefolder)
     varalist=[]
+    varafilterdlist=[[] for _ in range(varnumber)]
 
     for i in range(0,varnumber):
         varname = varnames[i]
@@ -61,9 +65,15 @@ def varnames(varnumber,varnames,varlevel,projectfolder):
         else:
             varalist.append( (sorted(glob.glob(initialtimefolder + "/" + varname + "/" + str(level) + "/*"))))
         
+    ## Filtering
+    for h in filenames:
+        for i in range(len(varalist)):
+            for j in range(len(varalist[i])):
 
-    #print(varalist)
-    return varalist
+                if ('_'+h+'_' in varalist[i][j]) == True:
+                    varafilterdlist[i].append(varalist[i][j])
+    print(varafilterdlist)
+    return varafilterdlist
 
 
 def cleaning_old_folders():
@@ -186,14 +196,18 @@ def dates_for_subtitles(vara,number,filenames):
     else:
         oldtime=0
         newtime = filenames[number]
-
+    #print("num",number)
     deltatime=abs(int(oldtime)-int(newtime))
     #print(abs(int(oldtime)-int(newtime)))
     
     #tdatetime_object = datetime.strptime(tstrObj, '%Y%m%d%H') 
-    fcst_hrs=fcst_hrsf()
+    fcst_hrs=filenames
     if len(fcst_hrs)>0:
-        deltatime=int(abs(fcst_hrs[1]-fcst_hrs[0]))
+        if number >0:
+            deltatime=int(abs(int(fcst_hrs[number])-int(fcst_hrs[number-1])))
+            #print("delta",deltatime, number, fcst_hrs[number])
+        else:
+            deltatime = 0
     else:
         deltatime=0
     newdatetime_object = datetime_object + timedelta(hours=number * deltatime)
@@ -236,16 +250,16 @@ def fcst_hrsf():
     # fcst_hr_2 = np.arange(78, 181, 3)
     # fcst_hrs = np.concatenate((fcst_hr_1, fcst_hr_2))
     
-    fcst_hrs = np.arange(0, 181, 12)
+    fcst_hrs = np.arange(0, 181, 3)
     #fcst_hrs = np.arange(0, 5, 1)
     #fcst_hrs= [0,12,36]
     
     return fcst_hrs
-def filenames():
-    from cleaner import fcst_hrsf
-    fcst_hrs = fcst_hrsf()
+def filenames(timerange):
+    #from cleaner import fcst_hrsf
+    #fcst_hrs = fcst_hrsf()
     fcst_hrs_output = []
-    for output in fcst_hrs:
+    for output in timerange:
         fcst_hrs_string = str(output).zfill(3)
         fcst_hrs_output.append(fcst_hrs_string)
     return fcst_hrs_output

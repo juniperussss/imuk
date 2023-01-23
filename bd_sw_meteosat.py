@@ -523,10 +523,13 @@ def main():
     parser.add_argument('resy')  #
     parser.add_argument('outputpath')
     parser.add_argument('inputpath')
+    parser.add_argument('timerangestart')
+    parser.add_argument('timerangestop')
+    parser.add_argument('timerangestepsize')
     args = parser.parse_args()  # gv[480#210    #480
     resx = int(args.resx)
     resy = int(args.resy)
-    dir_origin =args.inputpath #"/home/alex/PycharmProjects/imuk"
+    dir_origin = args.inputpath
     dir_Produkt = args.outputpath
     os.chdir(dir_Produkt)
 
@@ -536,21 +539,27 @@ def main():
     varnumber = 4
     vars = ["clct_mod", "pmsl", "tot_prec", "ww"]
     varlevel = ["single", "single", "single", "single"]
+    timerange = np.arange(int(args.timerangestart), int(args.timerangestop),
+                          int(args.timerangestepsize))  # [0,3,6,9,180]# np.arange(0,12,3)
+    filenames = cleaner.filenames(timerange)
     variablepaths = cleaner.varnames(varnumber, vars,
-                                     varlevel,dir_origin)  ##Getting every filepath in the directory like [[vara1,vara2],[varb1,varb2]]
+                                     varlevel,
+                                     dir_origin,
+                                     filenames)  ##Getting every filepath in the directory like [[vara1,vara2],[varb1,varb2]]
+
     timestepnumber = len(variablepaths[0])
-    #print(variablepaths)
-    print(timestepnumber)
-    filenames=cleaner.filenames()
-    for i in range(0,timestepnumber):
+    # print(variablepaths)
 
-       if i==0:
-        rain_parameter = np.array([])
-       else:
-        rain_parameter = variablepaths[2][i-1]
+    ## Main Process
+    for i in range(0, len(timerange)):
+        # print(variablepaths[0][i])
+        if i == 0:
+            rain_parameter = np.array([])
+        else:
+            rain_parameter = variablepaths[2][i - 1]
 
-       
-       picture(variablepaths[0][i],variablepaths[1][i],variablepaths[2][i],variablepaths[3][i],i,resx,resy,dir_origin,filenames,rain_parameter)
+        picture(variablepaths[0][i], variablepaths[1][i], variablepaths[2][i], variablepaths[3][i], i, resx, resy,
+                dir_origin, filenames, rain_parameter)
     return
 
 if __name__ == "__main__":

@@ -351,10 +351,13 @@ def main():
     parser.add_argument('resy')  #
     parser.add_argument('outputpath')
     parser.add_argument('inputpath')
+    parser.add_argument('timerangestart')
+    parser.add_argument('timerangestop')
+    parser.add_argument('timerangestepsize')
     args = parser.parse_args()  # gv[480#210    #480
     resx = int(args.resx)
     resy = int(args.resy)
-    dir_origin = args.inputpath#"/home/alex/PycharmProjects/imuk"
+    dir_origin = args.inputpath
     dir_Produkt = args.outputpath
     os.chdir(dir_Produkt)
 
@@ -364,15 +367,21 @@ def main():
     varnumber = 2
     vars = ["t", "fi"]
     varlevel = [500, 500]
+    timerange = np.arange(int(args.timerangestart), int(args.timerangestop),
+                          int(args.timerangestepsize))  # [0,3,6,9,180]# np.arange(0,12,3)
+    filenames = cleaner.filenames(timerange)
     variablepaths = cleaner.varnames(varnumber, vars,
                                      varlevel,
-                                     dir_origin)  ##Getting every filepath in the directory like [[vara1,vara2],[varb1,varb2]]
+                                     dir_origin,
+                                     filenames)  ##Getting every filepath in the directory like [[vara1,vara2],[varb1,varb2]]
 
     timestepnumber = len(variablepaths[0])
-    filenames=cleaner.filenames()
+    # print(variablepaths)
+
     ## Main Process
-    for i in range(0, timestepnumber):
-        picture(variablepaths[0][i], variablepaths[1][i], i, resx, resy, dir_origin,filenames)
+    for i in range(0, len(timerange)):
+        # print(variablepaths[0][i])
+        picture(variablepaths[0][i], variablepaths[1][i], i, resx, resy, dir_origin, filenames)
     return
 
 if __name__ == "__main__":
