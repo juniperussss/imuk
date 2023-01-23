@@ -11,7 +11,7 @@ import glob
 
 INPUT = '/home/alex/Dokumente/BUFR/'#sn.0010.bin'
 #VERBOSE = 1  # verbose error reporting
-file_list = glob.glob(INPUT +'sn.0000.bin')
+file_list = glob.glob(INPUT +'sn.0024.bin')
 d = pd.read_csv('../documentation/StationSearchResults.csv')
 print(file_list)
 filterdlist =[]
@@ -38,104 +38,44 @@ def example():
             # i.e. unpack the data values
             codes_set(bufr, 'unpack', 1)
 
-            # ---------------------------------------------
-            # get values for keys holding a single value
-            # ---------------------------------------------
-            # Native type integer
-
-            #key = 'blockNumber'
-            """
-            try:
-                print('  %s: %s' % (key, codes_get(bufr, key)))
-            except CodesInternalError as err:
-                print('Error with key="%s" : %s' % (key, err.msg))
-
-
-            # Native type integer
-            key = 'stationOrSitename'
-            try:
-                print('  %s: %s' % (key, codes_get(bufr, key)))
-            except CodesInternalError as err:
-                print('Error with key="%s" : %s' % (key, err.msg))
-
-            """
-            # Native type float
             #keyb = 'stationNumber'
             keyc= 'latitude'
             keyd= 'longitude'
             keye= 'pastWeather1'
 
-            """
             try:
-                print('  %s: %s' % (keyb, codes_get(bufr, keyb)))
+                listofs=[round(codes_get(bufr, keyc),2),round(codes_get(bufr, keyd),2), codes_get(bufr,keye)] #,codes_get(bufr, keye)])
+                if ((d['Latround'] == listofs[0]) & (d['Longround'] == listofs[1])).any() == True:
+                    filterdlist.append([listofs])
+                # delete handle
+                codes_release(bufr)
             except CodesInternalError as err:
-                print('Error with key="%s" : %s' % (keyb, err.msg))
-            """
-            try:
-                listofstations.append([codes_get(bufr, keyc),codes_get(bufr, keyd)]) #,codes_get(bufr, keye)])
-            except CodesInternalError as err:
+
                 pass
                 #print('Error with key="%s" : %s' % (keye, err.msg))
-            """
-            # Native type string
-            key = 'stationOrSitename'
-            try:
-                print('  %s: %s' % (key, codes_get(bufr, key)))
-            except CodesInternalError as err:
-                print('Error with key="%s" : %s' % (key, err.msg))
-            #----------------------------
-            # get values for an array
-            # --------------------------------
-            # Native type integer
-
-            key = 'bufrdcExpandedDescriptors'
-
-            # get size
-            num = codes_get_size(bufr, key)
-            print('  size of %s is: %s' % (key, num))
-
-            # get values
-            values = codes_get_array(bufr, key)
-            for i in range(len(values)):
-                print("   %d %06d" % (i + 1, values[i]))
-
-            # Native type float
-            key = 'numericValues'
-
-            # get size
-            num = codes_get_size(bufr, key)
-            print('  size of %s is: %s' % (key, num))
-
-            # get values
-            values = codes_get_array(bufr, key)
-            for i in range(len(values)):
-                print("   %d %.10e" % (i + 1, values[i]))
-
-            """
-            # ----
             cnt += 1
 
-            # delete handle
-            codes_release(bufr)
 
         # close the file
         f.close()
-
         #print(listofstations)
+        """"
         for j in range(len(listofstations)):
-            if (listofstations[j][0] in d.Latitude.values) ==True and (listofstations[j][1] in d.Latitude.values):
+            if ((d['Latround'] == listofstations[j][0]) & (d['Longround'] == listofstations[j][1])).any() ==True:
                 filterdlist.append([listofstations[j]])
-
+        """
+    print("hier kommt der Filter",filterdlist)
 
 
 def main():
     try:
         example()
     except CodesInternalError as err:
+        print(err)
         pass
         return 1
 
-    print(filterdlist)
+
     """
     try:
         example()

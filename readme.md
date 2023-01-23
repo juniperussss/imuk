@@ -24,6 +24,7 @@ https://www.latlong.net
 ## Todos
 - optimize performance
 - json based buffrfiles
+- hours as an outside variable
 Generate Stationlists
 https://oscar.wmo.int/surface//index.html#/search/station#stationSearchResults
 - Take a glance these links apart from the link that you sent me
