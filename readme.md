@@ -97,7 +97,7 @@ https://www.latlong.net
 
 
 ### COMPLETED
--- hours as an outside variable
+- hours as an outside variable
 - Accumulation to instant Rain
 - 300 hPa wind speed and unit check = there is no problem, ncl converts ms to knot automatically -> clarify with M
 - fixed Windbarb multiplyer
