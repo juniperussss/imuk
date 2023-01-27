@@ -23,6 +23,10 @@ https://www.latlong.net
 
 ## Todos
 - optimize performance
+round-off ✓ round(variable, 2)
+truncation error ✖
+numerical instability ✖
+dynamical instability ✖
 - json based buffrfiles
 
 
