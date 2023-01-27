@@ -40,6 +40,8 @@ https://www.latlong.net
 
 2. without changing the data
 
+I found a way is a package which is called "Cython" (C based compiler in Python). But first we need to discuss, if we decide to apply, we should write more code but it may allow us to increase the compiling time up to %30.
+
 - json based buffrfiles
 
 
