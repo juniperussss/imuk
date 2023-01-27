@@ -23,15 +23,19 @@ https://www.latlong.net
 
 ## Todos
 - optimize performance
-round-off ✓ 
+
+Four notions need to investigate 
+1. round-off ✓ 
 ![image](https://user-images.githubusercontent.com/94772818/214997143-4b209248-fbba-464d-ae2d-59db10d11ffa.png)
 ![image](https://user-images.githubusercontent.com/94772818/214997196-c5afb58a-4a78-408c-9d9a-1f96e9a3528b.png)
 ![image](https://user-images.githubusercontent.com/94772818/214997260-af56f4bd-9cde-48ab-912c-426a98f262e8.png)
 
-round(variable, 2)
-truncation error ✖
-numerical instability ✖
-dynamical instability ✖
+round(product_array_name, 2) -> %19 increase the calculation time
+
+truncation analysis ✖ seems impossible atm
+numerical instability ✖ seems impossible atm
+dynamical instability ✖ seems impossible atm
+
 - json based buffrfiles
 
 
