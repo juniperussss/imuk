@@ -23,29 +23,30 @@ https://www.latlong.net
 
 ## Todos
 - optimize performance
+
+1.with changing the data
+
+    Four notions need to investigate 
+    1.1. round-off ✓ 
+![image](https://user-images.githubusercontent.com/94772818/214997143-4b209248-fbba-464d-ae2d-59db10d11ffa.png)
+![image](https://user-images.githubusercontent.com/94772818/214997196-c5afb58a-4a78-408c-9d9a-1f96e9a3528b.png)
+![image](https://user-images.githubusercontent.com/94772818/214997260-af56f4bd-9cde-48ab-912c-426a98f262e8.png)
+
+    round(product_array_name, 2) -> %19 increase the calculation time
+
+    1.2. truncation analysis ✖ seems impossible atm
+    1.3. numerical instability ✖ seems impossible atm
+    1.4. dynamical instability ✖ seems impossible atm
+
+2. without changing the data
+
+I found a way is a package which is called "Cython" (C based compiler in Python). But first we need to discuss, if we decide to apply, we should write more code but it may allow us to increase the compiling time up to %30.
+
 - json based buffrfiles
-- hours as an outside variable
-Generate Stationlists
-https://oscar.wmo.int/surface//index.html#/search/station#stationSearchResults
-- Take a glance these links apart from the link that you sent me
-
-https://www.youtube.com/watch?v=Xf2YuIzVS7g
-https://www.youtube.com/watch?v=xQx2214buVU
-
-- I found a new method to draw ground stations (I am sure that it works because I tried to use)
-
-https://www.pyngl.ucar.edu/Examples/Images/wmstnm02_lg.png
-https://www.pyngl.ucar.edu/Examples/Scripts/wmstnm02.py
-
-https://www.pyngl.ucar.edu/Examples/Images/wmstnm03.0.png
-https://www.pyngl.ucar.edu/Examples/Scripts/wmstnm03.py
-
-- how to use guide this method in NCL
-
-https://www.pyngl.ucar.edu/Functions/Ngl.wmstnm.shtml
 
 
 
+### Significant Weather
 - Implent significant Weather to Groundlevel (K)
     (https://www.ncl.ucar.edu/Applications/weather_sym.shtml)
     (https://www.ncl.ucar.edu/Document/Graphics/Images/font36.png)
@@ -79,6 +80,26 @@ https://www.pyngl.ucar.edu/Functions/Ngl.wmstnm.shtml
         sym4res.txFont           = 'o_weather2' #alphabetical set for severe weather icons
 
 
+#### Generate Stationlists
+  https://oscar.wmo.int/surface//index.html#/search/station#stationSearchResults
+- Take a glance these links apart from the link that you sent me
+
+    https://www.youtube.com/watch?v=Xf2YuIzVS7g
+    https://www.youtube.com/watch?v=xQx2214buVU
+
+- I found a new method to draw ground stations (I am sure that it works because I tried to use)
+
+    https://www.pyngl.ucar.edu/Examples/Images/wmstnm02_lg.png
+    https://www.pyngl.ucar.edu/Examples/Scripts/wmstnm02.py
+
+    https://www.pyngl.ucar.edu/Examples/Images/wmstnm03.0.png
+    https://www.pyngl.ucar.edu/Examples/Scripts/wmstnm03.py
+
+- how to use guide this method in NCL
+
+    https://www.pyngl.ucar.edu/Functions/Ngl.wmstnm.shtml
+
+### Colors and Legends
 - optimize Colorscale for 850 hPa and Groundlevel
 - add ~~Infobar~~ and Legend for
 -   300hpa
@@ -86,25 +107,17 @@ https://www.pyngl.ucar.edu/Functions/Ngl.wmstnm.shtml
 -   700hpa
 -   850hpa
 
-thresholds of 300 hPa wind legend palette. 
+### Bugs
 
-H and L symbol problems -> identified the issue as "cnLineLabelPlacementMode"
-https://www.ncl.ucar.edu/Document/Graphics/Resources/cn.shtml#cnLineLabelPlacementMode
+- H and L symbol problems -> identified the issue as "cnLineLabelPlacementMode"
+- https://www.ncl.ucar.edu/Document/Graphics/Resources/cn.shtml#cnLineLabelPlacementMode
 
-Accumulation to instant \\
 
-IDK how to chance varc in the picture definition in line 27
-but the code proposal is in the following
 
-    rain = f3.variables['TPRATE_P8_L1_GLL0_acc'][:,:]
-    rain = np.array(f3.variables['TPRATE_P8_L1_GLL0_acc'][:,:])
-    rain_previous = np.array(f3.variables['TPRATE_P8_L1_GLL0_acc'][:,:])
-    rain_instant = rain - rain_previous
-
-    #line 442 should be changed!
-    plot3    = Ngl.contour(wks, rain_instant, var3res) #gsn_csm_contour command
 
 ### COMPLETED
+- hours as an outside variable
+- Accumulation to instant Rain
 - 300 hPa wind speed and unit check = there is no problem, ncl converts ms to knot automatically -> clarify with M
 - fixed Windbarb multiplyer
 - cronjob automation
