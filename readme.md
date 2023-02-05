@@ -4,19 +4,19 @@ Using opendata from the dwd to visualize and display synoptic Data
 
 ## Current Visualisation
 ### Groundlevel
-![Groundlevel](./Dokumentation/pics/boden_000.jpg )
+![Groundlevel](./documentation/pics/boden_000.jpg )
 
 ### 850 hPa
-![850](./database/output/850/gph_temp_850_0.png )
+![850](./documentation/pics/gph_temp_850_0.png )
 
 ### 700 hPa
-![700](./database/output/700/gph_rh_700_0.png )
+![700](./documentation/pics/gph_rh_700_0.png )
 
 ### 500 hPa
-![500](./database/output/500/gph_temp_500_0.png )
+![500](./documentation/pics/gph_temp_500_0.png )
 
 ### 300 hPa
-![300](./database/output/300/u_v_300_0.png )
+![300](./documentation/pics/300/u_v_300_0.png )
 
 #Definition for station based geolocations
 https://www.latlong.net
