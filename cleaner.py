@@ -364,3 +364,111 @@ def legend(number,levelname,stepsize,width,heigth,colormap,levels,filenames,step
 
     im.save(levelname + filenames[number] + ".png", format='png')
     #os.remove(levelname +  filenames[number] + ".png")
+
+
+def metarww(metarstring):
+    metarstring=metarstring.split(", ")[0]
+    match metarstring:
+        ##fog and mist
+        case "patches of fog":
+            ww = 41
+        case "shallow fog":
+            ww = 42
+        case "partial fog":
+            ww=44
+        case "fog":
+            ww=45
+        case "freezing fog":
+            ww=49
+        case "mist":
+            ww=10
+
+        #Drizzle
+        case "light drizzle":
+            ww= 51
+        case "drizzle":
+            ww= 53
+        case " heavy drizzle":
+            ww = 53
+        case "light drizle and rain":
+            ww=58
+
+        #rain
+        case "light rain"  :
+            ww=61
+        case "light freezing rain"  :
+            ww=66
+
+        case "light rain and drizzle":
+            ww=58
+        case "light rain and snow":
+            ww=68
+        case "rain":
+            ww=63
+        case "rain and snow":
+            ww=63
+
+        #Snow
+        case "light snow" :
+            ww=71
+        case "snow" :
+            ww=75
+        case "heavy snow"  :
+            ww=75
+        case "light snow grains":
+            ww = 77
+        case "light ice pellets"  :
+            ww=79
+
+        #Showers
+        case "light rain showers":
+            ww=80
+        case "rain showers":
+            ww=81
+        case "light snow showers":
+            ww=85
+        case "nearby showers":
+            ww=16
+
+        #Thunderstorm
+        case "light thunderstorm with rain":
+            ww=95
+        case "thunderstorm":
+            ww=95
+        case "thunderstorm with rain":
+            ww=95
+        case "light thunderstorm with snow":
+            ww=95
+        case "nearby thunderstorm":
+            ww=17
+        #unknown
+        case "unknown precipitation":
+            ww=0
+        case "_":
+            ww=0
+
+
+    return ww
+
+def nclww(ww):
+    import pandas as pd
+    data = pd.read_csv('wwfont.csv')  # Dataframe with all Stations of europe
+    wwletter
+    return wwletter
+def pressurereduction(p,height,t):
+    import math
+
+    if t <9.1 :
+            e=5.6402*(-0.0916+math.exp(0.06*t))
+    else:
+            e=18.2194*(1.0463-math.exp(-0.0666*t))
+
+
+    x= (9.81/(287.05*((t+273.15)+0.12*e+0.0065*height)))
+    pmsl=p*math.exp(x)
+    return pmsl
+#def imdatconvert():
+ #   precition_data_indicator = "a"
+
+  #  imdat=
+
