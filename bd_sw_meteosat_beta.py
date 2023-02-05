@@ -117,6 +117,7 @@ def picture(vara,varb,varc,vard,number,resx,resy,dir_origin,filenames,rain_param
     lon5= data['lon'].tolist()
     lat5= data['lat'].tolist()
     wwsym= data['weathersymbol'].tolist()
+    wwcolour= data['weathercolour'].tolist()
 
     #---- Preliminaries (2)
 
@@ -450,7 +451,7 @@ def picture(vara,varb,varc,vard,number,resx,resy,dir_origin,filenames,rain_param
 
     txres                    = Ngl.Resources()
     txres.txFont = "weather1"
-    txres.txFontHeightF = 0.015
+    txres.txFontHeightF = 0.03
     #---- Integration of Resources of BaseMap and Variables
     pmres                    = Ngl.Resources() #pmres = True
     pmres.gsMarkerIndex      = 1 #marker index
@@ -490,6 +491,17 @@ def picture(vara,varb,varc,vard,number,resx,resy,dir_origin,filenames,rain_param
     #---- Annotations and Markers
     if number==0:
         for i in range(len(wwsym)):
+            if wwcolour[i] == "green":
+                txres.txFontColor = "green"
+            elif wwcolour[i] == "yellow":
+                txres.txFontColor = "yellow"
+                txres.txFontHeightF = 0.02
+            elif wwcolour[i] == "magenta":
+                txres.txFontColor = "magenta"
+            elif wwcolour[i] == "red":
+                txres.txFontColor = "red"
+            else:
+                txres.txFontColor = "white"
             try:
                 txt = Ngl.add_text(wks, plot2, wwsym[i], lon5[i], lat5[i],txres)
             except TypeError:
