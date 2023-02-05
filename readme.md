@@ -4,7 +4,7 @@ Using opendata from the dwd to visualize and display synoptic Data
 
 ## Current Visualisation
 ### Groundlevel
-![Groundlevel](./database/output/1000_gl/bd_sw_meteosat_0.png )
+![Groundlevel](./Dokumentation/pics/boden_000.jpg )
 
 ### 850 hPa
 ![850](./database/output/850/gph_temp_850_0.png )
