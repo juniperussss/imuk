@@ -141,12 +141,7 @@ I found a way is a package which is called "Cython" (C based compiler in Python)
 - copy .bashrc_conda to ~
 - crontab -e
 - set shell to bash and Bash enviroment:
-```
-- SHELL=/bin/bash
-BASH_ENV=~/.bashrc_conda 
-MAILTO="user"
-* */1 * * *  /bin/bash ~/imuk/automation/automation.sh /dev/null
-```
+
 
 ## Dokumentation
 ### Colorscale for 700 hPa
