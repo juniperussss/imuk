@@ -9,12 +9,12 @@ import glob
 #print(d.loc[d['Latitude']==52.464428])
 #print(52.464428 in d.values)
 
-INPUT = '/home/alex/Dokumente/BUFR/Neus'#sn.0010.bin''home/alex/'#
+INPUT = '/home/alex/Dokumente/BUFR/Neus/sn.0002.bin'#sn.0010.bin''home/alex/'#
 #VERBOSE = 1  # verbose error reporting
 #file_list = glob.glob(INPUT +'/sn.0000.bin')#'bufr.out')#
-file_list = '/home/alex/PycharmProjects/imuk/BUFR/jsontest.bufr'
+file_list = glob.glob('/home/alex/Dokumente/BUFR/Neus/*')
 d = pd.read_csv('../documentation/StationSearchResults.csv')
-print(file_list)
+#print(file_list)
 filterdlist =[]
 
 def example():

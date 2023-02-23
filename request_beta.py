@@ -14,8 +14,8 @@ import glob
 import argparse
 import cleaner
 import time
-
-start_time = time.time()
+from testmeta import metarrequest
+from multiprocessing import Pool, cpu_count
 parser = argparse.ArgumentParser()
 
 fcst_hrs = cleaner.fcst_hrsf()
@@ -64,7 +64,7 @@ os.path.join( '{}/{}/{}/{}'.format(cdt_yr, cdt_mo, cdt_day, init_time_hr))
 os.chdir( '{}/{}/{}/{}'.format(cdt_yr, cdt_mo, cdt_day, init_time_hr))
 dir_Nest = os.path.join(os.getcwd())
 print('entered into', dir_Nest)
-
+metarrequest(dir_origin)
 import requests
 class p(object):
     def __init__(self, name):
@@ -79,7 +79,8 @@ class p(object):
 #             "v": ['pressure-level', '_300'],
 #             "relhum": ['pressure-level', '_700'],
 #               "fi": ['pressure-level', '_700']}
-
+global variables
+"""
 variables = {p('t'): ['pressure-level', '_500'],
              p('t'): ['pressure-level', '_700'],
              p('t'): ['pressure-level', '_850'],
@@ -93,8 +94,15 @@ variables = {p('t'): ['pressure-level', '_500'],
              p("ww"): ['single-level', ''],
              p("pmsl"): ['single-level', ''],
              p("tot_prec"): ['single-level', '']}
+"""
+vars=["t","t","t","clct_mod","u","v","relhum","fi","fi","fi","ww","pmsl","tot_prec"]
+levels=['pressure-level','pressure-level','pressure-level','single-level','pressure-level','pressure-level','pressure-level','pressure-level','pressure-level','pressure-level','single-level','single-level','single-level']
+gph=['_500',"_700","_850","","_300","_300","_700","_500","_700","_850","","",""]
+variables= list(zip(vars,levels, gph))
+number=np.arange(0,len(variables))
+#print(variables[0][0])
 #same variable issue for temperature and geopotential height !
-
+#print(variables["t"][1])
 url_base = 'https://opendata.dwd.de/weather/nwp/icon/grib/'
 
 from cdo import Cdo
@@ -105,17 +113,18 @@ cdo.debug = True
 grids= dir_origin +'/database/ICON_GLOBAL2EUAU_025_EASY/target_grid_EUAU_025.txt'
 weights= dir_origin +'/database/ICON_GLOBAL2EUAU_025_EASY/weights_icogl2world_025_EUAU.nc'
 
-#with tqdm(total=len(variables), position=0, leave=True, colour='green') as pbar:
-for var in variables:
-    print(var)
-    print(variables[var])
-    os.makedirs(dir_Nest + f'/{var}'+f'/{variables[var][1][1:]}')
-    os.path.join(dir_Nest + f'/{var}'+f'/{variables[var][1][1:]}')
-    os.chdir(dir_Nest + f'/{var}'+f'/{variables[var][1][1:]}')
+
+def varrequest(number):
+    #print(f'/_{variables[number][1]}'+variables[number][2][1:])
+    var= variables[number][0]
+
+    os.makedirs(dir_Nest + f'/{var}'+f'/{variables[number][2][1:]}')
+    os.path.join(dir_Nest + f'/{var}'+f'/{variables[number][2][1:]}')
+    os.chdir(dir_Nest + f'/{var}'+f'/{variables[number][2][1:]}')
 
     for hour in fcst_hrs:
         url_data = url_base +'{}/{}/icon_global_icosahedral_{}_{}{}_{}{}_{}.grib2.bz2'.format(
-            init_time_hr, var, variables[var][0], cdt_yrmoday, init_time_hr, str(hour).zfill(3), variables[var][1], str(var).upper())
+            init_time_hr, var, variables[number][1], cdt_yrmoday, init_time_hr, str(hour).zfill(3), variables[number][2], str(var).upper())
         #print(url_data)
         data_request = requests.get(url_data, stream=True)
         if data_request.status_code == 200:
@@ -123,14 +132,14 @@ for var in variables:
             print('{}'.format(var), u'\u2714')
 
         with open('icon_global_icosahedral_{}_{}{}_{}{}_{}.grib2.bz2'.format(
-                variables[var][0], cdt_yrmoday, init_time_hr, str(hour).zfill(3), variables[var][1], str(var).upper()), 'wb') as f:
+                variables[number][1], cdt_yrmoday, init_time_hr, str(hour).zfill(3), variables[number][2], str(var).upper()), 'wb') as f:
             f.write(data_request.content)
 
         zip_command = 'bzip2 -d *.bz2'
         os.system(zip_command)
 
         ifile = dir_Nest + '/{}/{}/icon_global_icosahedral_{}_{}{}_{}{}_{}.grib2'.format(
-            var, variables[var][1][1:], variables[var][0], cdt_yrmoday, init_time_hr, str(hour).zfill(3), variables[var][1], str(var).upper())
+            var, variables[number][2][1:], variables[number][1], cdt_yrmoday, init_time_hr, str(hour).zfill(3), variables[number][2], str(var).upper())
         print(ifile)
 
         # cdo.sellonlatbox('-75,75,5,80', input=ifile, output='haha.grib2') #not necessary for this step
@@ -142,23 +151,21 @@ for var in variables:
         #pbar.update()
 
 
-    # cdo.mergetime(input='*ofile*', output='outfile_merged_{}{}_{}_{}{}_{}.grib2'.format(
-        # cdt_yrmoday, init_time_hr,
-        # str(fcst_hrs[0]).zfill(3), str(fcst_hrs[-1]).zfill(3),
-        # variables[var][1], str(var).upper(), options='-f grb2'))
-
     for ifile in glob.glob('*icosahedral*', recursive=True):
         print("Removing ", ifile)
         os.remove(ifile)
 
-    # for ofile in glob.glob('*ofile*', recursive=True):
-        # print("Removing ", ofile)
-        # os.remove(ofile)
 
     os.chdir(dir_origin)
     print(os.path.abspath(os.getcwd()) +" has completed at: ", cdt_date.strftime('%Y-%m-%d  %H:%M:%S'))
 
 
-cleaner.cleaning_old_folders()
+
 #cleaner.archiving()
-print("--- %s seconds ---" % (time.time() - start_time))
+
+if __name__ == "__main__":
+    start_time = time.time()
+    with Pool() as pool:
+        pool.map(varrequest, number)
+    cleaner.cleaning_old_folders()
+    print("--- %s seconds ---" % (time.time() - start_time))

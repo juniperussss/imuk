@@ -21,12 +21,25 @@ import cleaner
 from datetime import date
 import argparse
 import pandas as pd
+import numpy.ma as ma
 #from icecream import ic
+from multiprocessing import Pool, cpu_count
+import time
 
 
 ###
-def picture(vara,varb,varc,vard,number,resx,resy,dir_origin,filenames,rain_parameter):
-    #---- Preliminaries (1)
+#def picture(vara,varb,varc,vard,number,resx,resy,dir_origin,filenames,rain_parameter):
+def picture(number):
+    vara=varap[number]
+    varb = varbp[number]
+    varc = varcp[number]
+    vard = vardp[number]
+    resx = resxs[number]
+    resy= resys[number]
+    dir_origin= dir_origins[number]
+    rain_parameter=rain_parameters[number]
+
+
 
     warnings.filterwarnings("ignore")
     current_date = datetime.utcnow()
@@ -53,18 +66,18 @@ def picture(vara,varb,varc,vard,number,resx,resy,dir_origin,filenames,rain_param
     f1           = Nio.open_file(os.path.join(vara))#dir, fn1)) #model output definition
 
 
-    lon1 = f1.variables['lon_0'][:] - 360
-    lat1 = f1.variables['lat_0'][:]
-    clct = f1.variables['VAR_0_6_199_P0_L1_GLL0'][:,:]
+    lon1 = ma.round(f1.variables['lon_0'][:] - 360,2)
+    lat1 = ma.round(f1.variables['lat_0'][:],2)
+    clct = ma.round(f1.variables['VAR_0_6_199_P0_L1_GLL0'][:,:],2)
 
     dir         = os.path.join(dir_origin) #path of model output
     fn2          = varb #dir + '/database/input/icon/2022/8/2/00/pmsl/outfile_merged_2022080200_000_004_PMSL.grib2' #path name of model output
     f2           = Nio.open_file(os.path.join(varb))#dir, fn2)) #model output definition
 
 
-    lon2 = f2.variables['lon_0'][:] - 360
-    lat2 = f2.variables['lat_0'][:]
-    pmsl = f2.variables['PRMSL_P0_L101_GLL0'][:,:]/100
+    lon2 = ma.round(f2.variables['lon_0'][:] - 360,2)
+    lat2 = ma.round(f2.variables['lat_0'][:],2)
+    pmsl = ma.round(f2.variables['PRMSL_P0_L101_GLL0'][:,:]/100,2)
 
 
     dir         = os.path.join(dir_origin) #path of model output
@@ -72,48 +85,48 @@ def picture(vara,varb,varc,vard,number,resx,resy,dir_origin,filenames,rain_param
     f3          = Nio.open_file(os.path.join(varc))#dir, fn3)) #model output definition
 
     
-    lon3 = f3.variables['lon_0'][:] - 360
-    lat3 = f3.variables['lat_0'][:]
-    rain = f3.variables['TPRATE_P8_L1_GLL0_acc'][:,:]
-    rain = np.array(f3.variables['TPRATE_P8_L1_GLL0_acc'][:,:])
+    lon3 = ma.round(f3.variables['lon_0'][:] - 360,2)
+    lat3 = ma.round(f3.variables['lat_0'][:],2)
+    #rain = f3.variables['TPRATE_P8_L1_GLL0_acc'][:,:]
+    rain = ma.round(np.array(f3.variables['TPRATE_P8_L1_GLL0_acc'][:,:]),2)
     if number != 0:
         dir         = os.path.join(dir_origin) #path of model output
         fn3p          = rain_parameter# dir + '/database/input/icon/2022/8/2/00/tot_prec/outfile_merged_2022080200_000_004_TOT_PREC.grib2' #path name of model output
         f3p          = Nio.open_file(os.path.join(rain_parameter))#dir, fn3)) #model output definition
 
         
-        rain_previous = np.array(f3p.variables['TPRATE_P8_L1_GLL0_acc'][:,:])
+        rain_previous = ma.round(np.array(f3p.variables['TPRATE_P8_L1_GLL0_acc'][:,:]),2)
         rain_instant = rain - rain_previous
     else:
       rain_instant = rain 
 
 
-    dir         = os.path.join(dir_origin) #path of model output
-    fn4          = vard #dir + '/database/input/icon/2022/8/2/00/ww/outfile_merged_2022080200_000_004_WW.grib2' #path name of model output
-    f4          = Nio.open_file(os.path.join(vard))#dir, fn4)) #model output definition
+    #dir         = os.path.join(dir_origin) #path of model output
+    #fn4          = vard #dir + '/database/input/icon/2022/8/2/00/ww/outfile_merged_2022080200_000_004_WW.grib2' #path name of model output
+    #f4          = Nio.open_file(os.path.join(vard))#dir, fn4)) #model output definition
 
     #print(f4)
-    lon4 = f4.variables['lon_0'][:] - 360
-    lat4 = f4.variables['lat_0'][:]
-    ww = f4.variables["WIWW_P0_L1_GLL0"][:,:]
+    #lon4 = f4.variables['lon_0'][:] - 360
+    #lat4 = f4.variables['lat_0'][:]
+    #ww = f4.variables["WIWW_P0_L1_GLL0"][:,:]
     #print(lon4)
-    wwconverted=[] #np.zeros((len(lat4),len(lon4)),dtype="<U50")
+    #wwconverted=[] #np.zeros((len(lat4),len(lon4)),dtype="<U50")
     #print(ww[10][10])
     #print(len(lat4))
-    for j in range(0, len(lon4)):
-        for i in range(0,len(lat4)):
-            if ww[i][j]<10:
-                insert = "0"+ str(int(ww[i][j]))
-            else:
-                insert= str(int(ww[i][j]))
-            wwconverted.append("11212800201001120000300004014752028601117"+insert+"6086792")
+    #for j in range(0, len(lon4)):
+     #   for i in range(0,len(lat4)):
+      #      if ww[i][j]<10:
+       #         insert = "0"+ str(int(ww[i][j]))
+        #    else:
+         #       insert= str(int(ww[i][j]))
+          #  wwconverted.append("11212800201001120000300004014752028601117"+insert+"6086792")
     '''fatal:NclGRIB2: Deleting reference to parameter; unable to decode grid template 3.101'''
     '''see: https://www.nco.ncep.noaa.gov/pmb/docs/grib2/grib2_doc/grib2_temp3-101.shtml'''
     '''see: https://www.dwd.de/DE/leistungen/opendata/help/modelle/Opendata_cdo_EN.pdf;jsessionid=F701F7DD8FE2D5E7E6AF606CB877DA9C.live11043?__blob=publicationFile&v=3'''
     #print(wwconverted)
 
-    data = pd.read_csv(dir_origin+'/BUFR/metardata.csv')  # Dataframe with all Stations of europe
-    print(data.keys())
+    data = pd.read_csv(dir_origin+'/BUFR/metarcompare.csv')  # Dataframe with all Stations of europe
+    #print(data.keys())
     lon5= data['lon'].tolist()
     lat5= data['lat'].tolist()
     wwsym= data['weathersymbol'].tolist()
@@ -151,8 +164,8 @@ def picture(vara,varb,varc,vard,number,resx,resy,dir_origin,filenames,rain_param
     wkres           =  Ngl.Resources()                  #-- generate an resources object for workstation
     wkres.wkBackgroundColor = 'white'
     wkres.wkForegroundColor = 'white'
-    wkres.wkWidth   = 3*resx # 3840                             #-- width of workstation
-    wkres.wkHeight  = 3*resx #3840#2560                             #-- height of workstation
+    wkres.wkWidth   = 1.5*resx # 3840                             #-- width of workstation
+    wkres.wkHeight  = 1.5*resx #3840#2560                             #-- height of workstation
     wks_type        = "png"    #-- output type of workstation
     wks = Ngl.open_wks(wks_type, 'boden_' + filenames[number], wkres)#-- open workstation
 
@@ -547,6 +560,7 @@ def picture(vara,varb,varc,vard,number,resx,resy,dir_origin,filenames,rain_param
     return
 
 def main():
+    global varap,varbp, varcp, vardp ,numbers, resxs ,resys ,dir_origins ,filenames, rain_parameters
     ##Parsing Variable Values
     parser = argparse.ArgumentParser()
     parser.add_argument('resx')  # 350
@@ -582,6 +596,7 @@ def main():
     # print(variablepaths)
 
     ## Main Process
+    """""
     for i in range(0, len(timerange)):
         # print(variablepaths[0][i])
         if i == 0:
@@ -591,7 +606,38 @@ def main():
 
         picture(variablepaths[0][i], variablepaths[1][i], variablepaths[2][i], variablepaths[3][i], i, resx, resy,
                 dir_origin, filenames, rain_parameter)
+    """""
+
+    rain_parameters=[]
+    varap= variablepaths[0]
+    varbp= variablepaths[1]
+    varcp = variablepaths[2]
+    vardp= variablepaths[3]
+    numbers =[] #np.arange(0,len(timerange))
+    resxs=[resx]*len(timerange)
+    resys=[resy]*len(timerange)
+    dir_origins= [dir_origin]*len(timerange)
+    #filenamess= [filenames]*len(timerange)
+    for i in range(0, len(timerange)):
+        # print(variablepaths[0][i])
+        if i == 0:
+            rain_parameters.append(np.array([]))
+        else:
+            rain_parameters.append(variablepaths[2][i - 1])
+        numbers.append(i)
+
+    #elements= varap + varbp +varcp+ vardp + numbers+ resxs +resys +dir_origins +filenamess+ rain_parameter
+    elements = list(zip(varap,varbp, varcp, vardp ,numbers, resxs ,resys ,dir_origins ,filenames, rain_parameters))
+    print(elements)
+    print(len(elements))
+    with Pool() as pool:
+        pool.map(picture,numbers)
+        #pool.close()
+        #pool.join()
+        #pool.starmap(picture,[varap,varbp,varcp,vardp,numbers,resx,resy,dir_origin,filenames,rain_parameter])
     return
 
 if __name__ == "__main__":
+    start_time = time.time()
     main()
+    print("--- %s seconds ---" % (time.time() - start_time))
