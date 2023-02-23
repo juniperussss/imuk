@@ -1,9 +1,9 @@
 . ~/.bashrc_miniconda3
 conda activate imuk
 
-start = 0
-end = 168
-stepsize = 3
+start=0
+end=168
+stepsize=3
 path_input=/localdata/weathermaps/imuk
 path_output=/localdata/weathermaps/webside/klein
 
