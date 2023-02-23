@@ -16,7 +16,7 @@ ydim_2=420
 xdim_3=945
 ydim_3=480
 
-python /localdata/weathermaps/imuk/request.py /localdata/weathermaps/imuk /localdata/weathermaps/imuk/database/input/icon
+python /localdata/weathermaps/imuk/request_beta.py /localdata/weathermaps/imuk /localdata/weathermaps/imuk/database/input/icon
 echo "data readed"
 
 python /localdata/weathermaps/imuk/wind_300.py $xdim_1 $ydim_1 $path_output $path_input $start $end $stepsize
@@ -27,4 +27,4 @@ python /localdata/weathermaps/imuk/gph_temp_500.py $xdim_1 $ydim_1 $path_output 
 echo "500 small finished"
 python /localdata/weathermaps/imuk/gph_rh_700.py $xdim_1 $ydim_1 $path_output $path_input $start $end $stepsize
 echo "700 small finished"
-python /localdata/weathermaps/imuk/bd_sw_meteosat.py $xdim_1 $ydim_1 $path_output $path_input $start $end $stepsize
+python /localdata/weathermaps/imuk/bd_sw_meteosat_beta.py $xdim_1 $ydim_1 $path_output $path_input $start $end $stepsize
