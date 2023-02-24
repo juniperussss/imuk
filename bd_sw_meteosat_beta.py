@@ -196,7 +196,7 @@ def picture(number):
 
     mpres.mpOutlineOn                   = True #-- turn on map outlines
     mpres.mpGeophysicalLineColor        = "black" #boundary color
-    mpres.mpGeophysicalLineThicknessF   = (resx / 1920) * 5.0   # -- line thickness of coastal bo1 minutrders
+    mpres.mpGeophysicalLineThicknessF   = (resx / 1920) * 2.0   # -- line thickness of coastal bo1 minutrders
     mpres.mpDataBaseVersion             = "MediumRes"  #Map resolution
     mpres.mpDataResolution              = 'Finest' #Data resolution
     mpres.mpDataSetName                 = "Earth..4"  # -- set map data base version
