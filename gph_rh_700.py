@@ -263,7 +263,9 @@ def picture(vara,varb,number,resx,resy,dir_origin,filenames):
     var2res.cnLineLabelBackgroundColor = -1
     var2res.cnLineLabelFontColor = 'black'
     var2res.cnLineLabelsOn = True
-    var2res.cnLineLabelPlacementMode = "constant"
+    var2res.cnLineLabelPlacementMode = "computed" #randomized places labels wrong, constant doesnt draw high/lows
+    var2res.cnLabelMasking = True #mimic behavior of constant line label placement mode
+    var2res.cnLineLabelBackgroundColor="transparent"
     var2res.cnInfoLabelOn = False
     # var2res.cnConstFEnableFill = False
     # var2res.cnConstFLabelOn = False
