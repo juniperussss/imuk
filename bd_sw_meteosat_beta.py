@@ -164,8 +164,8 @@ def picture(number):
     wkres           =  Ngl.Resources()                  #-- generate an resources object for workstation
     wkres.wkBackgroundColor = 'white'
     wkres.wkForegroundColor = 'white'
-    wkres.wkWidth   = 1.5*resx # 3840                             #-- width of workstation
-    wkres.wkHeight  = 1.5*resx #3840#2560                             #-- height of workstation
+    wkres.wkWidth   = 3*resx # 3840                             #-- width of workstation
+    wkres.wkHeight  = 3*resx #3840#2560                             #-- height of workstation
     wks_type        = "png"    #-- output type of workstation
     wks = Ngl.open_wks(wks_type, 'boden_' + filenames[number], wkres)#-- open workstation
 
