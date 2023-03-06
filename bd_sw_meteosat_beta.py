@@ -347,11 +347,17 @@ def picture(number):
     var2res.cnLinesOn = True
     var2res.cnLineThicknessF = 20
     var2res.cnLineColor = 'black'
-    var2res.cnLineLabelBackgroundColor = -1
+    #var2res.cnLineLabelBackgroundColor = -1
     var2res.cnLineLabelFontColor = 'black'
     var2res.cnLineLabelsOn = True
-    var2res.cnLineLabelPlacementMode = "constant"
+    var2res.cnLineLabelPlacementMode = "computed" #randomized places labels wrong, constant doesnt draw high/lows
+    var2res.cnLabelMasking = True #mimic behavior of constant line label placement mode
+    var2res.cnLineLabelBackgroundColor="transparent"
+    var2res.cnLineLabelInterval  = 1 #Label on every line
+    var2res.cnConstFLabelConstantSpacingF = 1
     var2res.cnInfoLabelOn = False
+    var2res.cnLineLabelFont = "times-bold"
+    var2res.cnLineLabelFontHeightF = 0.008
     # var2res.cnConstFEnableFill = False
     # var2res.cnConstFLabelOn = False
     # var2res.cnSmoothingOn = True
@@ -375,9 +381,10 @@ def picture(number):
     var2res.cnLowLabelString = "T"
     var2res.cnHighLabelFontColor = 'white'
     var2res.cnLowLabelFontColor = 'white'
+    #ar2res.cnHighLowLabelOverlapMode =
     # var2res.cnLowLabelFontHeightF = 0.012 #larger L labels
     # var2res.cnHighLabelFontHeightF = 0.020 #larger H labels
-    var2res.cnLowLabelBackgroundColor = -1
+    var2res.cnLowLabelBackgroundColor = "Transparent"
     var2res.cnHighLabelBackgroundColor = -1
 
     var2res.sfXArray = lon2 # processing of longitudes arrays
@@ -480,6 +487,7 @@ def picture(number):
     plot2    = Ngl.contour(wks, pmsl, var2res) #gsn_csm_contour command
     if number>0:
         plot3    = Ngl.contour(wks, rain_instant, var3res) #gsn_csm_contour command
+    #plot4 = Ngl.contour(wks, pmsl, var4res)  # gsn_csm_contour command
     
 
 
@@ -492,7 +500,7 @@ def picture(number):
     if number>0:
         Ngl.overlay(map, plot3)
     Ngl.overlay(map, plot2)
-    #Ngl.overlay(map, plot4)
+
 
     #
     #Ngl.wmsetp("ezf",1)
