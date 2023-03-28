@@ -1,6 +1,6 @@
 # IMUK synoptic weather wall
 
-Using opendata from the dwd to visualize and display synoptic Data
+Using opendata from the dwd and NOAA to visualize and display synoptic Data
 
 ## Current Visualisation
 ### Groundlevel
@@ -18,29 +18,9 @@ Using opendata from the dwd to visualize and display synoptic Data
 ### 300 hPa
 ![300](./documentation/pics/300/u_v_300_0.png )
 
-#Definition for station based geolocations
-https://www.latlong.net
 
 ## Todos
-- optimize performance
 
-1.with changing the data
-
-    Four notions need to investigate 
-    1.1. round-off ✓ 
-![image](https://user-images.githubusercontent.com/94772818/214997143-4b209248-fbba-464d-ae2d-59db10d11ffa.png)
-![image](https://user-images.githubusercontent.com/94772818/214997196-c5afb58a-4a78-408c-9d9a-1f96e9a3528b.png)
-![image](https://user-images.githubusercontent.com/94772818/214997260-af56f4bd-9cde-48ab-912c-426a98f262e8.png)
-
-    round(product_array_name, 2) -> %19 increase the calculation time
-
-    1.2. truncation analysis ✖ seems impossible atm
-    1.3. numerical instability ✖ seems impossible atm
-    1.4. dynamical instability ✖ seems impossible atm
-
-2. without changing the data
-
-I found a way is a package which is called "Cython" (C based compiler in Python). But first we need to discuss, if we decide to apply, we should write more code but it may allow us to increase the compiling time up to %30.
 
 - json based buffrfiles
 
@@ -82,10 +62,7 @@ I found a way is a package which is called "Cython" (C based compiler in Python)
 
 #### Generate Stationlists
   https://oscar.wmo.int/surface//index.html#/search/station#stationSearchResults
-- Take a glance these links apart from the link that you sent me
 
-    https://www.youtube.com/watch?v=Xf2YuIzVS7g
-    https://www.youtube.com/watch?v=xQx2214buVU
 
 - I found a new method to draw ground stations (I am sure that it works because I tried to use)
 
@@ -109,13 +86,26 @@ I found a way is a package which is called "Cython" (C based compiler in Python)
 
 ### Bugs
 
-- H and L symbol problems -> identified the issue as "cnLineLabelPlacementMode"
-- https://www.ncl.ucar.edu/Document/Graphics/Resources/cn.shtml#cnLineLabelPlacementMode
-
-
-
-
 ### COMPLETED
+- optimize performance
+
+1.with changing the data
+
+    Four notions need to investigate 
+    1.1. round-off ✓ 
+![image](https://user-images.githubusercontent.com/94772818/214997143-4b209248-fbba-464d-ae2d-59db10d11ffa.png)
+![image](https://user-images.githubusercontent.com/94772818/214997196-c5afb58a-4a78-408c-9d9a-1f96e9a3528b.png)
+![image](https://user-images.githubusercontent.com/94772818/214997260-af56f4bd-9cde-48ab-912c-426a98f262e8.png)
+
+    round(product_array_name, 2) -> %19 increase the calculation time
+
+    1.2. truncation analysis ✖ seems impossible atm
+    1.3. numerical instability ✖ seems impossible atm
+    1.4. dynamical instability ✖ seems impossible atm
+
+2. without changing the data
+
+I found a way is a package which is called "Cython" (C based compiler in Python). But first we need to discuss, if we decide to apply, we should write more code but it may allow us to increase the compiling time up to %30.
 - hours as an outside variable
 - Accumulation to instant Rain
 - 300 hPa wind speed and unit check = there is no problem, ncl converts ms to knot automatically -> clarify with M
