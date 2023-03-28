@@ -20,12 +20,26 @@ from metpy.units import units
 import cleaner
 from datetime import date
 import argparse
+import pandas as pd
+import numpy.ma as ma
 #from icecream import ic
+from multiprocessing import Pool, cpu_count
+import time
 
 
 ###
-def picture(vara,varb,varc,vard,number,resx,resy,dir_origin,filenames,rain_parameter):
-    #---- Preliminaries (1)
+#def picture(vara,varb,varc,vard,number,resx,resy,dir_origin,filenames,rain_parameter):
+def picture(number):
+    vara=varap[number]
+    varb = varbp[number]
+    varc = varcp[number]
+    vard = vardp[number]
+    resx = resxs[number]
+    resy= resys[number]
+    dir_origin= dir_origins[number]
+    rain_parameter=rain_parameters[number]
+
+
 
     warnings.filterwarnings("ignore")
     current_date = datetime.utcnow()
@@ -52,18 +66,18 @@ def picture(vara,varb,varc,vard,number,resx,resy,dir_origin,filenames,rain_param
     f1           = Nio.open_file(os.path.join(vara))#dir, fn1)) #model output definition
 
 
-    lon1 = f1.variables['lon_0'][:] - 360
-    lat1 = f1.variables['lat_0'][:]
-    clct = f1.variables['VAR_0_6_199_P0_L1_GLL0'][:,:]
+    lon1 = ma.round(f1.variables['lon_0'][:] - 360,2)
+    lat1 = ma.round(f1.variables['lat_0'][:],2)
+    clct = ma.round(f1.variables['VAR_0_6_199_P0_L1_GLL0'][:,:],2)
 
     dir         = os.path.join(dir_origin) #path of model output
     fn2          = varb #dir + '/database/input/icon/2022/8/2/00/pmsl/outfile_merged_2022080200_000_004_PMSL.grib2' #path name of model output
     f2           = Nio.open_file(os.path.join(varb))#dir, fn2)) #model output definition
 
 
-    lon2 = f2.variables['lon_0'][:] - 360
-    lat2 = f2.variables['lat_0'][:]
-    pmsl = f2.variables['PRMSL_P0_L101_GLL0'][:,:]/100
+    lon2 = ma.round(f2.variables['lon_0'][:] - 360,2)
+    lat2 = ma.round(f2.variables['lat_0'][:],2)
+    pmsl = ma.round(f2.variables['PRMSL_P0_L101_GLL0'][:,:]/100,2)
 
 
     dir         = os.path.join(dir_origin) #path of model output
@@ -71,45 +85,52 @@ def picture(vara,varb,varc,vard,number,resx,resy,dir_origin,filenames,rain_param
     f3          = Nio.open_file(os.path.join(varc))#dir, fn3)) #model output definition
 
     
-    lon3 = f3.variables['lon_0'][:] - 360
-    lat3 = f3.variables['lat_0'][:]
-    rain = f3.variables['TPRATE_P8_L1_GLL0_acc'][:,:]
-    rain = np.array(f3.variables['TPRATE_P8_L1_GLL0_acc'][:,:])
+    lon3 = ma.round(f3.variables['lon_0'][:] - 360,2)
+    lat3 = ma.round(f3.variables['lat_0'][:],2)
+    #rain = f3.variables['TPRATE_P8_L1_GLL0_acc'][:,:]
+    rain = ma.round(np.array(f3.variables['TPRATE_P8_L1_GLL0_acc'][:,:]),2)
     if number != 0:
         dir         = os.path.join(dir_origin) #path of model output
         fn3p          = rain_parameter# dir + '/database/input/icon/2022/8/2/00/tot_prec/outfile_merged_2022080200_000_004_TOT_PREC.grib2' #path name of model output
         f3p          = Nio.open_file(os.path.join(rain_parameter))#dir, fn3)) #model output definition
 
         
-        rain_previous = np.array(f3p.variables['TPRATE_P8_L1_GLL0_acc'][:,:])
+        rain_previous = ma.round(np.array(f3p.variables['TPRATE_P8_L1_GLL0_acc'][:,:]),2)
         rain_instant = rain - rain_previous
     else:
       rain_instant = rain 
 
 
-    dir         = os.path.join(dir_origin) #path of model output
-    fn4          = vard #dir + '/database/input/icon/2022/8/2/00/ww/outfile_merged_2022080200_000_004_WW.grib2' #path name of model output
-    f4          = Nio.open_file(os.path.join(vard))#dir, fn4)) #model output definition
+    #dir         = os.path.join(dir_origin) #path of model output
+    #fn4          = vard #dir + '/database/input/icon/2022/8/2/00/ww/outfile_merged_2022080200_000_004_WW.grib2' #path name of model output
+    #f4          = Nio.open_file(os.path.join(vard))#dir, fn4)) #model output definition
 
     #print(f4)
-    lon4 = f4.variables['lon_0'][:] - 360
-    lat4 = f4.variables['lat_0'][:]
-    ww = f4.variables["WIWW_P0_L1_GLL0"][:,:]
+    #lon4 = f4.variables['lon_0'][:] - 360
+    #lat4 = f4.variables['lat_0'][:]
+    #ww = f4.variables["WIWW_P0_L1_GLL0"][:,:]
     #print(lon4)
-    wwconverted=[] #np.zeros((len(lat4),len(lon4)),dtype="<U50")
+    #wwconverted=[] #np.zeros((len(lat4),len(lon4)),dtype="<U50")
     #print(ww[10][10])
     #print(len(lat4))
-    for j in range(0, len(lon4)):
-        for i in range(0,len(lat4)):
-            if ww[i][j]<10:
-                insert = "0"+ str(int(ww[i][j]))
-            else:
-                insert= str(int(ww[i][j]))
-            wwconverted.append("11212800201001120000300004014752028601117"+insert+"6086792")
+    #for j in range(0, len(lon4)):
+     #   for i in range(0,len(lat4)):
+      #      if ww[i][j]<10:
+       #         insert = "0"+ str(int(ww[i][j]))
+        #    else:
+         #       insert= str(int(ww[i][j]))
+          #  wwconverted.append("11212800201001120000300004014752028601117"+insert+"6086792")
     '''fatal:NclGRIB2: Deleting reference to parameter; unable to decode grid template 3.101'''
     '''see: https://www.nco.ncep.noaa.gov/pmb/docs/grib2/grib2_doc/grib2_temp3-101.shtml'''
     '''see: https://www.dwd.de/DE/leistungen/opendata/help/modelle/Opendata_cdo_EN.pdf;jsessionid=F701F7DD8FE2D5E7E6AF606CB877DA9C.live11043?__blob=publicationFile&v=3'''
     #print(wwconverted)
+
+    data = pd.read_csv(dir_origin+'/BUFR/metar_groundlevel.csv')  # Dataframe with all Stations of europe
+    #print(data.keys())
+    lon5= data['lon'].tolist()
+    lat5= data['lat'].tolist()
+    wwsym= data['weathersymbol'].tolist()
+    wwcolour= data['weathercolour'].tolist()
 
     #---- Preliminaries (2)
 
@@ -143,8 +164,8 @@ def picture(vara,varb,varc,vard,number,resx,resy,dir_origin,filenames,rain_param
     wkres           =  Ngl.Resources()                  #-- generate an resources object for workstation
     wkres.wkBackgroundColor = 'white'
     wkres.wkForegroundColor = 'white'
-    wkres.wkWidth   = 3*resx # 3840                             #-- width of workstation
-    wkres.wkHeight  = 3*resx #3840#2560                             #-- height of workstation
+    wkres.wkWidth   = 1.5*resx # 3840                             #-- width of workstation
+    wkres.wkHeight  = 1.5*resx #3840#2560                             #-- height of workstation
     wks_type        = "png"    #-- output type of workstation
     wks = Ngl.open_wks(wks_type, 'boden_' + filenames[number], wkres)#-- open workstation
 
@@ -175,7 +196,7 @@ def picture(vara,varb,varc,vard,number,resx,resy,dir_origin,filenames,rain_param
 
     mpres.mpOutlineOn                   = True #-- turn on map outlines
     mpres.mpGeophysicalLineColor        = "black" #boundary color
-    mpres.mpGeophysicalLineThicknessF   = (resx / 1920) * 5.0   # -- line thickness of coastal bo1 minutrders
+    mpres.mpGeophysicalLineThicknessF   = (resx / 1920) * 2.0   # -- line thickness of coastal bo1 minutrders
     mpres.mpDataBaseVersion             = "MediumRes"  #Map resolution
     mpres.mpDataResolution              = 'Finest' #Data resolution
     mpres.mpDataSetName                 = "Earth..4"  # -- set map data base version
@@ -326,11 +347,17 @@ def picture(vara,varb,varc,vard,number,resx,resy,dir_origin,filenames,rain_param
     var2res.cnLinesOn = True
     var2res.cnLineThicknessF = 20
     var2res.cnLineColor = 'black'
-    var2res.cnLineLabelBackgroundColor = -1
+    #var2res.cnLineLabelBackgroundColor = -1
     var2res.cnLineLabelFontColor = 'black'
     var2res.cnLineLabelsOn = True
-    var2res.cnLineLabelPlacementMode = "constant"
+    var2res.cnLineLabelPlacementMode = "computed" #randomized places labels wrong, constant doesnt draw high/lows
+    var2res.cnLabelMasking = True #mimic behavior of constant line label placement mode
+    var2res.cnLineLabelBackgroundColor="transparent"
+    var2res.cnLineLabelInterval  = 1 #Label on every line
+    var2res.cnConstFLabelConstantSpacingF = 1
     var2res.cnInfoLabelOn = False
+    var2res.cnLineLabelFont = "times-bold"
+    var2res.cnLineLabelFontHeightF = 0.008
     # var2res.cnConstFEnableFill = False
     # var2res.cnConstFLabelOn = False
     # var2res.cnSmoothingOn = True
@@ -354,9 +381,10 @@ def picture(vara,varb,varc,vard,number,resx,resy,dir_origin,filenames,rain_param
     var2res.cnLowLabelString = "T"
     var2res.cnHighLabelFontColor = 'white'
     var2res.cnLowLabelFontColor = 'white'
+    #ar2res.cnHighLowLabelOverlapMode =
     # var2res.cnLowLabelFontHeightF = 0.012 #larger L labels
     # var2res.cnHighLabelFontHeightF = 0.020 #larger H labels
-    var2res.cnLowLabelBackgroundColor = -1
+    var2res.cnLowLabelBackgroundColor = "Transparent"
     var2res.cnHighLabelBackgroundColor = -1
 
     var2res.sfXArray = lon2 # processing of longitudes arrays
@@ -439,6 +467,11 @@ def picture(vara,varb,varc,vard,number,resx,resy,dir_origin,filenames,rain_param
     var3res.sfXArray = lon3 # processing of longitudes arrays
     var3res.sfYArray = lat3 # processing of latitudes arrays
 
+
+
+    txres                    = Ngl.Resources()
+    txres.txFont = "weather1"
+    txres.txFontHeightF = 0.03
     #---- Integration of Resources of BaseMap and Variables
     pmres                    = Ngl.Resources() #pmres = True
     pmres.gsMarkerIndex      = 1 #marker index
@@ -454,6 +487,7 @@ def picture(vara,varb,varc,vard,number,resx,resy,dir_origin,filenames,rain_param
     plot2    = Ngl.contour(wks, pmsl, var2res) #gsn_csm_contour command
     if number>0:
         plot3    = Ngl.contour(wks, rain_instant, var3res) #gsn_csm_contour command
+    #plot4 = Ngl.contour(wks, pmsl, var4res)  # gsn_csm_contour command
     
 
 
@@ -466,7 +500,7 @@ def picture(vara,varb,varc,vard,number,resx,resy,dir_origin,filenames,rain_param
     if number>0:
         Ngl.overlay(map, plot3)
     Ngl.overlay(map, plot2)
-    #Ngl.overlay(map, plot4)
+
 
     #
     #Ngl.wmsetp("ezf",1)
@@ -476,7 +510,23 @@ def picture(vara,varb,varc,vard,number,resx,resy,dir_origin,filenames,rain_param
 
 
     #---- Annotations and Markers
-
+    if number==0:
+        for i in range(len(wwsym)):
+            if wwcolour[i] == "green":
+                txres.txFontColor = "green"
+            elif wwcolour[i] == "yellow":
+                txres.txFontColor = "yellow"
+                txres.txFontHeightF = 0.02
+            elif wwcolour[i] == "magenta":
+                txres.txFontColor = "magenta"
+            elif wwcolour[i] == "red":
+                txres.txFontColor = "red"
+            else:
+                txres.txFontColor = "white"
+            try:
+                txt = Ngl.add_text(wks, plot2, wwsym[i], lon5[i], lat5[i],txres)
+            except TypeError:
+                print(i)
     hour, weekday, datetime_object = cleaner.dates_for_subtitles(vara, number,filenames)
     left_string_2   = 'Satellite: ' + f1.variables['VAR_0_6_199_P0_L1_GLL0'].attributes['long_name']# +' & '+ f2.variables['GP_P0_L100_GLL0'].attributes['long_name'] #model output info
     left_string   = 'ICON-Lauf: ' + 'Init: ' + str(datetime_object) #model output info
@@ -488,6 +538,7 @@ def picture(vara,varb,varc,vard,number,resx,resy,dir_origin,filenames,rain_param
     # ---- Drawing Conclusion
 
     # Ngl.maximize_plot(wks, map)
+
     Ngl.draw(map)
     ### Draw Stationdata
     #lata= 52
@@ -517,6 +568,7 @@ def picture(vara,varb,varc,vard,number,resx,resy,dir_origin,filenames,rain_param
     return
 
 def main():
+    global varap,varbp, varcp, vardp ,numbers, resxs ,resys ,dir_origins ,filenames, rain_parameters
     ##Parsing Variable Values
     parser = argparse.ArgumentParser()
     parser.add_argument('resx')  # 350
@@ -542,6 +594,7 @@ def main():
     timerange = np.arange(int(args.timerangestart), int(args.timerangestop),
                           int(args.timerangestepsize))  # [0,3,6,9,180]# np.arange(0,12,3)
     filenames = cleaner.filenames(timerange)
+    print(dir_origin)
     variablepaths = cleaner.varnames(varnumber, vars,
                                      varlevel,
                                      dir_origin,
@@ -551,6 +604,7 @@ def main():
     # print(variablepaths)
 
     ## Main Process
+    """""
     for i in range(0, len(timerange)):
         # print(variablepaths[0][i])
         if i == 0:
@@ -560,7 +614,38 @@ def main():
 
         picture(variablepaths[0][i], variablepaths[1][i], variablepaths[2][i], variablepaths[3][i], i, resx, resy,
                 dir_origin, filenames, rain_parameter)
+    """""
+
+    rain_parameters=[]
+    varap= variablepaths[0]
+    varbp= variablepaths[1]
+    varcp = variablepaths[2]
+    vardp= variablepaths[3]
+    numbers =[] #np.arange(0,len(timerange))
+    resxs=[resx]*len(timerange)
+    resys=[resy]*len(timerange)
+    dir_origins= [dir_origin]*len(timerange)
+    #filenamess= [filenames]*len(timerange)
+    for i in range(0, len(timerange)):
+        # print(variablepaths[0][i])
+        if i == 0:
+            rain_parameters.append(np.array([]))
+        else:
+            rain_parameters.append(variablepaths[2][i - 1])
+        numbers.append(i)
+
+    #elements= varap + varbp +varcp+ vardp + numbers+ resxs +resys +dir_origins +filenamess+ rain_parameter
+    elements = list(zip(varap,varbp, varcp, vardp ,numbers, resxs ,resys ,dir_origins ,filenames, rain_parameters))
+    print(elements)
+    print(len(elements))
+    with Pool() as pool:
+        pool.map(picture,numbers)
+        #pool.close()
+        #pool.join()
+        #pool.starmap(picture,[varap,varbp,varcp,vardp,numbers,resx,resy,dir_origin,filenames,rain_parameter])
     return
 
 if __name__ == "__main__":
+    start_time = time.time()
     main()
+    print("--- %s seconds ---" % (time.time() - start_time))

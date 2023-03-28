@@ -450,11 +450,67 @@ def metarww(metarstring):
 
     return ww
 
-def nclww(ww):
+def nclwwstring(dataframe):
     import pandas as pd
-    data = pd.read_csv('wwfont.csv')  # Dataframe with all Stations of europe
-    wwletter
-    return wwletter
+    import math
+    data = dataframe
+    #print(data.columns)
+    letterlist=[]
+    for x in data.index:
+        #print(data.loc[x].visibility)
+        ir= "1" #the precipitation data indicator?
+        ix= "1" #weather data and station type indicator?
+        h= "1" #height above ground of base of lowest cloud ?
+        vv= str(int(0.00062137*data.loc[x].visibility.squeeze()))+ str(int(( data.loc[x].visibility.squeeze()% 1)*10)) #visibility in miles and fractions
+        N= str(int(data.loc[x].cloudcover.squeeze())) #total amount of cloud cover
+        dd= str(data.loc[x].winddir.squeeze()).zfill(3)[0:2]#	direction from which wind is blowing
+        ff= str(data.loc[x].windspeed.squeeze()).zfill(2)##	wind speed in knots
+        ten='1'
+        if math.copysign(1, data.loc[x].temperature.squeeze()) == -1:
+            sn = "1"
+        else:
+            sn = "0"  # str(math.copysign(1, data[x].temperature.squeeze()))[0]
+        #sn= str(math.copysign(1,data[x].temperature.squeeze()))[0]
+        ttt=str(int(data.loc[x].temperature.squeeze())).zfill(2) + str(int(( data.loc[x].temperature.squeeze()% 1)*10))
+        fifteen= "2"
+        if math.copysign(1, data.loc[x].dewpoint.squeeze()) == -1:
+            snd= "1"
+        else:
+            snd = "0"# str(math.copysign(1, data[x].temperature.squeeze()))[0]
+        td = str(int(data.loc[x].dewpoint.squeeze())) + str(int((data.loc[x].temperature.squeeze() % 1) * 10))
+        twenty="3"
+        if len(str(int(data.loc[x].pressure.squeeze()))) >3:
+            po=str(int(data.loc[x].pressure.squeeze()))[1:4] + str(int(( data.loc[x].pressure.squeeze()% 1)*10))
+        else:
+            po = str(int(data.loc[x].pressure.squeeze())) + str(int((data.loc[x].pressure.squeeze() % 1) * 10))
+        twentyfive = "4"
+        if len(str(int(data.loc[x].sl_pressure.squeeze()))) > 3:
+            pppp = str(int(data.loc[x].sl_pressure.squeeze()))[1:4] + str(int((data.loc[x].sl_pressure.squeeze() % 1) * 10))
+        else:
+            pppp = str(int(data.loc[x].sl_pressure.squeeze())) + str(int((data.loc[x].sl_pressure.squeeze() % 1) * 10))
+
+        thirty="5"
+        a="1"
+        ppp= str(abs(int(data.loc[x].pressure3h_change.squeeze()))).zfill(2)+str(int(( data.loc[x].pressure3h_change.squeeze()% 1)*10))
+        thirtyfive="6"
+        rrr= str(abs(int(data.loc[x].rain.squeeze()))).zfill(2)+str(int(( data.loc[x].rain.squeeze()% 1)*10))
+        tr="0"
+        fourty= "7"
+        try:
+            ww=str(abs(int(data.loc[x].weather.squeeze()))).zfill(2)
+        except:
+            ww="00"
+        wone="0"
+        wtwo="0"
+        fourtyfive= "8"
+        nh=N
+        cl="0"
+        cm="0"
+        ch="0"
+        wwletter= ir+ix+h+vv+N+dd+ff+ten+sn+ttt+fifteen+snd+td+twenty+po+twentyfive+pppp+thirty+a+ppp+thirtyfive+rrr+tr+fourty+ww+wone+wtwo+fourtyfive+nh+cl+cm+ch
+        letterlist.append(wwletter)
+    df = data.assign(wwletter=letterlist)
+    return df
 def pressurereduction(p,height,t):
     import math
 
@@ -466,9 +522,28 @@ def pressurereduction(p,height,t):
 
     x= (9.81/(287.05*((t+273.15)+0.12*e+0.0065*height)))
     pmsl=p*math.exp(x)
+    if pmsl <100: pmsl=pmsl+1000
     return pmsl
 #def imdatconvert():
  #   precition_data_indicator = "a"
 
   #  imdat=
 
+def cloudcover(obs):
+    from metar import Metar
+    from statistics import mean
+    cc=[]
+    for i in obs.sky:
+    #print(i[0])
+        match i[0]:
+            case "FEW":
+                cc.append(1.5)
+            case "NCS":
+                cc.append(0)
+            case "SCT":
+                cc.append(3.5)
+            case "BKN":
+                cc.append(6)
+            case "OVC":
+                cc.append(8)
+    return int(mean(cc))
