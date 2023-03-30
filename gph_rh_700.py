@@ -302,7 +302,7 @@ def picture(vara,varb,number,resx,resy,dir_origin,filenames):
     pmres                    = Ngl.Resources() #pmres = True
     pmres.gsMarkerIndex      = 1 #marker index
     pmres.gsMarkerColor      = 'red'
-    pmres.gsMarkerSizeF      = 0.003 #marker size
+    pmres.gsMarkerSizeF      = 0.05 #marker size
     pmres.gsMarkerThicknessF = 40
     pmres.gsLineThicknessF   = 8. #lines thickness
     map     = Ngl.map(wks, mpres)
@@ -315,10 +315,11 @@ def picture(vara,varb,number,resx,resy,dir_origin,filenames):
     Ngl.add_polymarker(wks, plot2, 9.732, 52.376, pmres) #marker locations
 
     #---- Annotations and Markers
-    hour, weekday, datetime_object = cleaner.dates_for_subtitles(vara, number,filenames)
-    left_string_2   = '700 hPa: ' + f1.variables['RH_P0_L100_GLL0'].attributes['long_name'] +' & '+ f2.variables['GP_P0_L100_GLL0'].attributes['long_name'] #model output info                                          ' #center information bar
+    hour, weekday, datetime_object,delta = cleaner.dates_for_subtitles(vara, number,filenames)
+    left_string_2   = '700 hPa: Geopotential (gpdm), Relative Feuchte(%)' #model output info                                          ' #center information bar
     # right_string_2 = 'Init: ' + str(initial_time)
-    left_string = 'ICON-Lauf: ' + 'Init: ' + str(datetime_object)  # model output info
+    left_string = 'ICON-Lauf: ' + weekday.capitalize() + " " + datetime_object.strftime(
+        '%d.%m.%Y %H') + " UTC" + " (+" + delta + "h)"  # model output info
     center_string = ''  # center information bar
     # right_string_2 = 'Init: ' + str(initial_time)
     right_string = weekday.capitalize() + " " + str(hour) + " UTC"  # + vld_time #model time information

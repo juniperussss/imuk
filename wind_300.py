@@ -363,7 +363,13 @@ def picture(vara, varb, number, resx, resy, dir_origin,filenames):
     var2res.sfYArray = lat1  # processing of latitudes arrays
 
     # ---- Integration of Resources of BaseMap and Variables
-
+    #---- Integration of Resources of BaseMap and Variables
+    pmres                    = Ngl.Resources() #pmres = True
+    pmres.gsMarkerIndex      = 1 #marker index
+    pmres.gsMarkerColor      = 'red'
+    pmres.gsMarkerSizeF      = 0.05 #marker size
+    pmres.gsMarkerThicknessF = 40
+    pmres.gsLineThicknessF   = 8. #lines thickness
     map = Ngl.map(wks, mpres)
     # lnid = Ngl.add_polyline(wks, map, lon0, lat0, plres)
     plot1 = Ngl.vector(wks, u, v, var1res)  # gsn_csm_contour command
@@ -371,13 +377,13 @@ def picture(vara, varb, number, resx, resy, dir_origin,filenames):
     # Ngl.overlay(map, lnid)
     Ngl.overlay(map, plot2)
     Ngl.overlay(map, plot1)
+    Ngl.add_polymarker(wks, plot2, 9.732, 52.376, pmres) #marker locations
 
     # ---- Annotations and Markers
 
-    hour, weekday, datetime_object = cleaner.dates_for_subtitles(vara, number,filenames)
-    left_string_2 = '300 hPa: ' + f1.variables['UGRD_P0_L100_GLL0'].attributes['long_name'] + ' & ' + \
-                    f2.variables['VGRD_P0_L100_GLL0'].attributes['long_name']  # model output info
-    left_string = 'ICON-Lauf: ' + 'Init: ' + str(datetime_object)  # model output info
+    hour, weekday, datetime_object,delta = cleaner.dates_for_subtitles(vara, number,filenames)
+    left_string_2 = '300 hPa: ' +'Windgeschwindigkeit (m/s), Windfieder' # model output info
+    left_string   = 'ICON-Lauf: '  +weekday.capitalize() + " " +datetime_object.strftime('%d.%m.%Y %H')  +" UTC" +" (+"+delta+"h)"#model output info
     center_string = ''  # center information bar
     # right_string_2 = 'Init: ' + str(initial_time)
     right_string = weekday.capitalize() + " " + str(hour) + " UTC"  # + vld_time #model time information

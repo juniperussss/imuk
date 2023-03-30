@@ -186,6 +186,11 @@ def subtitles(wks, map, left_string, center_string, right_string,mpres,left_stri
 def dates_for_subtitles(vara,number,filenames):
     import os
     from datetime import datetime, timedelta
+    import locale
+    #locale.setlocale(
+     #   category=locale.LC_ALL,
+      #  locale=""
+    #)
     strObj = os.path.basename(vara)  # Get Filestring
     strObj = strObj[6:16:]  # Cut to Datestring
     datetime_object = datetime.strptime(strObj, '%Y%m%d%H')  # Convert Datestring to Datetimeobject
@@ -213,7 +218,8 @@ def dates_for_subtitles(vara,number,filenames):
     newdatetime_object = datetime_object + timedelta(hours=number * deltatime)
     weekday = newdatetime_object.strftime("%a")  # Extract Weekday from Datetimeobject
     hour = newdatetime_object.strftime("%H")
-    return hour,weekday,datetime_object
+    delta=str(number * deltatime).zfill(2)
+    return hour,weekday,datetime_object,delta
 
 def crop_image(number,levelname,wkres,resx,resy,filenames):
     from PIL import Image
@@ -366,6 +372,81 @@ def legend(number,levelname,stepsize,width,heigth,colormap,levels,filenames,step
     #os.remove(levelname +  filenames[number] + ".png")
 
 
+def legendgl(number, levelname, stepsize, width, heigth, filenames, stepstart, unit, inputpath, resx):
+    from PIL import Image, ImageDraw as D, ImageFont
+    import numpy as np
+    colormap=np.array([[0,0,0,0],[0.5,0.64,0.65,0.4],[0.32,0.73,0.87,0.5],[0.33,0.34,0.93,0.6],[0.07,0.06,0.74,0.8],[0.6,0,0.6,1],[0.6,0.01,0.07,1],[1,0,0,1]])
+    levels=list(["0.1-0.5","0.5-2","2-4","4-6","6-12","12-24",">24"])
+    im = Image.open(levelname + filenames[number] + ".png", mode='r')
+    ## Drawing the outer rectangle
+    left = 0
+    top = 0
+    xmin = 0.03 * width
+    xmax = 0.07 * width
+    ymin = 0.74 * heigth
+    ymax = 0.6 * heigth
+    yminblue=1.01*0.61*heigth
+    ymaxblue=0.601*heigth
+    xminblue=0.75*0.033* width
+    xmaxblue=1.75*0.068*width
+    shape = [(0.75 * xmin, 1.01 * ymin), (1.75 * xmax, ymax)]  #
+    shaper = [( xminblue,  yminblue), (xmaxblue, ymaxblue)]
+    draw = D.Draw(im)
+    fontsize = int((resx / 1920) * 45)
+    #draw.rounded_rectangle(shape, radius=150,fill="blue")
+    draw.rectangle(shape,fill="white",outline="black",width=7)
+    draw.rectangle(shaper,fill="blue")
+    myFont = ImageFont.truetype(inputpath + '/ressources/fonts/liberation/LiberationSerif-Regular.ttf', fontsize)
+    #draw.text((1.45 * xmax, 0.99 * ymax), unit, fill=(0, 0, 0), font=myFont)
+    draw.text((xmaxblue- 1/2*abs(xminblue-xmaxblue), ymaxblue-1/2*abs(yminblue-ymaxblue)), "mm", fill=(0, 0, 0), font=myFont)
+    # Calculating inner rectangle
+    ymax=0.62*heigth
+    ylast = ymin
+    ysteps = 7#int(max(levels) / stepsize)  # +1 #How many Levels are needed
+    ydelta = (ymin - ymax) / ysteps
+    gesammtrange = ( ymin - ymax)
+    #maxval = max(levels)
+    ci = 0
+    outlinewidth = int((resx / 1920) * 3)
+    ##Drawing inner rectangles
+    while ci < len(levels):
+        """
+  
+        if ci == 0:
+            deltav = levels[ci]
+        else:
+            deltav = levels[ci] - levels[ci - 1]
+              """
+        # Calculating percentage
+        anteil = 1/7
+        ylow = ylast
+        yhigh = ylow - anteil * gesammtrange
+        shape = [(xmin, yhigh), (xmax, ylow)]
+        fill = tuple(np.array(colormap[ci] * 256).astype(int))
+        draw = D.Draw(im)
+        draw.rectangle(shape, fill=fill, outline="black", width=outlinewidth)
+        if str(colormap[ci]) == "[0. 0. 0. 0.]":
+            #print("yeah")
+            xmintrans = xmin
+            xmaxtrans = xmax
+            ylowtrans = ylow
+            yhightrans = yhigh
+       # if ci < len(levels) and levels[ci] % 1 < 0.5:
+            # draw= D.Draw(im)
+            # draw.rectangle(shape, fill=fill, outline="black", width=3)
+        draw.text((1.05 * xmax, yhigh+(1/2* abs(ylow-yhigh))), str(levels[ci]), fill=(0, 0, 0), font=myFont)
+        ylast = yhigh
+        ci += 1
+
+    #### Adding Fake Transparency ######
+    imtrans = Image.open(inputpath + '/ressources/img/trans3.png', mode='r')
+    xtransdelta = int(xmaxtrans - xmintrans)
+    ytransdelta = int(abs(yhightrans - ylowtrans))
+    resized = imtrans.resize((xtransdelta - outlinewidth, ytransdelta - 2 * outlinewidth))
+    im.paste(resized, (int(xmintrans + outlinewidth), int(yhightrans + outlinewidth)))
+
+    im.save(levelname + filenames[number] + ".png", format='png')
+    # os.remove(levelname +  filenames[number] + ".png")
 def metarww(metarstring):
     metarstring=metarstring.split(", ")[0]
     match metarstring:
@@ -462,22 +543,28 @@ def nclwwstring(dataframe):
         ix= "1" #weather data and station type indicator?
         h= "1" #height above ground of base of lowest cloud ?
         vv= str(int(0.00062137*data.loc[x].visibility.squeeze()))+ str(int(( data.loc[x].visibility.squeeze()% 1)*10)) #visibility in miles and fractions
-        N= str(int(data.loc[x].cloudcover.squeeze())) #total amount of cloud cover
-        dd= str(data.loc[x].winddir.squeeze()).zfill(3)[0:2]#	direction from which wind is blowing
-        ff= str(data.loc[x].windspeed.squeeze()).zfill(2)##	wind speed in knots
+        try:
+            N= str(int(data.loc[x].cloudcover.squeeze())) #total amount of cloud cover
+        except ValueError:
+            N="0"
+        try:
+            dd= str(int(data.loc[x].winddir.squeeze())).zfill(3)[0:2]#	direction from which wind is blowing
+        except:
+            dd="36"
+        ff= str(int(data.loc[x].windspeed.squeeze())).zfill(2)##	wind speed in knots
         ten='1'
         if math.copysign(1, data.loc[x].temperature.squeeze()) == -1:
             sn = "1"
         else:
             sn = "0"  # str(math.copysign(1, data[x].temperature.squeeze()))[0]
         #sn= str(math.copysign(1,data[x].temperature.squeeze()))[0]
-        ttt=str(int(data.loc[x].temperature.squeeze())).zfill(2) + str(int(( data.loc[x].temperature.squeeze()% 1)*10))
+        ttt=str(abs(int(data.loc[x].temperature.squeeze()))).zfill(2) + str(int(( data.loc[x].temperature.squeeze()% 1)*10))
         fifteen= "2"
         if math.copysign(1, data.loc[x].dewpoint.squeeze()) == -1:
             snd= "1"
         else:
             snd = "0"# str(math.copysign(1, data[x].temperature.squeeze()))[0]
-        td = str(int(data.loc[x].dewpoint.squeeze())) + str(int((data.loc[x].temperature.squeeze() % 1) * 10))
+        td = str(abs(int(data.loc[x].dewpoint.squeeze()))) + str(int((data.loc[x].temperature.squeeze() % 1) * 10))
         twenty="3"
         if len(str(int(data.loc[x].pressure.squeeze()))) >3:
             po=str(int(data.loc[x].pressure.squeeze()))[1:4] + str(int(( data.loc[x].pressure.squeeze()% 1)*10))

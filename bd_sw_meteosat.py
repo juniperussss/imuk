@@ -526,10 +526,10 @@ def picture(number):
             try:
                 txt = Ngl.add_text(wks, plot2, wwsym[i], lon5[i], lat5[i],txres)
             except TypeError:
-                print(i)
-    hour, weekday, datetime_object = cleaner.dates_for_subtitles(vara, number,filenames)
-    left_string_2   = 'Satellite: ' + f1.variables['VAR_0_6_199_P0_L1_GLL0'].attributes['long_name']# +' & '+ f2.variables['GP_P0_L100_GLL0'].attributes['long_name'] #model output info
-    left_string   = 'ICON-Lauf: ' + 'Init: ' + str(datetime_object) #model output info
+                pass
+    hour, weekday, datetime_object,delta = cleaner.dates_for_subtitles(vara, number,filenames)
+    left_string_2   = 'Bodendruck, sign. Wetter(gemeldet)'# +' & '+ f2.variables['GP_P0_L100_GLL0'].attributes['long_name'] #model output info
+    left_string   = 'ICON-Lauf: '  +weekday.capitalize() + " " +datetime_object.strftime('%d.%m.%Y %H')  +" UTC" +" (+"+delta+"h)"#model output info
     center_string = ''  # center information bar
     # right_string_2 = 'Init: ' + str(initial_time)
     right_string = weekday.capitalize() + " " + str(hour) + " UTC"  # + vld_time #model time information
@@ -561,7 +561,7 @@ def picture(number):
     if number>0:
         levellist=list(var3res.cnLevels)
         #levellist.pop()
-        cleaner.legend(number, 'boden_', 11, wkres.wkWidth, wkres.wkHeight, cmap_colors, levellist, filenames, 0, "mm",dir_origin,resx)
+        cleaner.legendgl(number, 'boden_', 11, wkres.wkWidth, wkres.wkHeight, filenames, 0, "mm",dir_origin,resx)
     cleaner.crop_image(number, 'boden_', wkres,resx,resy,filenames)
 
     print('\EU has finished at: ', datetime.utcnow().strftime('%Y-%m-%d  %H:%M:%S '), u'\u2714' )

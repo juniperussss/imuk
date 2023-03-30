@@ -22,7 +22,7 @@ Using opendata from the dwd and NOAA to visualize and display synoptic Data
 ## Todos
 
 
-- json based buffrfiles
+- optimize weathersymbols on ground level. Especially fog and dust
 
 
 
@@ -85,7 +85,8 @@ Using opendata from the dwd and NOAA to visualize and display synoptic Data
 -   850hpa
 
 ### Bugs
-
+- changing the locale to German changes the Size of the yellow border in the subtitle
+-  Degree Symbol ° is not support in subtitle
 ### COMPLETED
 - optimize performance
 
