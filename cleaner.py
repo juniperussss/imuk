@@ -388,7 +388,7 @@ def legendgl(number, levelname, stepsize, width, heigth, filenames, stepstart, u
     yminblue=1.01*0.61*heigth
     ymaxblue=0.601*heigth
     xminblue=0.75*0.033* width
-    xmaxblue=1.75*0.068*width
+    xmaxblue=1.75*0.069*width
     shape = [(0.75 * xmin, 1.01 * ymin), (1.75 * xmax, ymax)]  #
     shaper = [( xminblue,  yminblue), (xmaxblue, ymaxblue)]
     draw = D.Draw(im)
@@ -398,7 +398,7 @@ def legendgl(number, levelname, stepsize, width, heigth, filenames, stepstart, u
     draw.rectangle(shaper,fill="blue")
     myFont = ImageFont.truetype(inputpath + '/ressources/fonts/liberation/LiberationSerif-Regular.ttf', fontsize)
     #draw.text((1.45 * xmax, 0.99 * ymax), unit, fill=(0, 0, 0), font=myFont)
-    draw.text((xmaxblue- 1/2*abs(xminblue-xmaxblue), ymaxblue-1/2*abs(yminblue-ymaxblue)), "mm", fill=(0, 0, 0), font=myFont)
+    draw.text((xmaxblue- 1.7*(1/2*abs(xminblue-xmaxblue)), ymaxblue+2.5*(1/2*abs(yminblue-ymaxblue))), "Regen 3h", fill=(0, 0, 0), font=myFont)
     # Calculating inner rectangle
     ymax=0.62*heigth
     ylast = ymin
