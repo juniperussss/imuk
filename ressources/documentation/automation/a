@@ -1,0 +1,66 @@
+var3res                 =  Ngl.Resources()
+var3res.nglDraw         =  False #-- don't draw plot
+var3res.nglFrame        =  False
+
+var3res.cnFillOn        =  True
+var3res.cnFillMode      = 'AreaFill' #cell filling typ5
+var3res.cnLineLabelsOn = False
+# var3res.cnFillMode = not necessary
+# var3res.cnLevelFlags = 'LineAndLabel'
+var3res.cnLinesOn = False
+# var3res.cnLineThicknessF = 4.5
+# var3res.cnLineColor = 'chocolate3'
+# var3res.cnLineLabelBackgroundColor = -1
+# var3res.cnLineLabelFontColor = 'chocolate3'
+# var3res.cnLineLabelsOn = True
+# var3res.cnLineLabelFontHeightF = 0.006
+# var3res.cnInfoLabelOn = False
+# var3res.cnConstFEnableFill = False
+# var3res.cnConstFLabelOn = False
+# var3res.cnSmoothingOn = True
+# var3res.cnSmoothingDistanceF = 0.00125
+
+# var3res.cnLineLabelInterval = 1
+
+var3res.pmLabelBarDisplayMode = 'Never'
+# var3res.cnFillPalette    = 'BlAqGrYeOrRe' #-- set the0 colormap to be used or 'NCL_default'
+
+cmap_colors = Ngl.read_colormap_file("MPL_gist_gray")
+# cmap_colors = cmap_colors[2:]
+# cmap = np.delete(cmap, [1,5,11], axis=0)
+# cmap_colors = np.insert(cmap_colors, 0, [0,0,0,0], axis=0)
+cmap_colors = np.insert(cmap_colors, 0, [0,0,0,0], axis=0)
+
+# cmap_colors[1:6] + martin_colors[5:9]
+
+# cmap_martin = ("(/0,0,0/)",
+#                 "(/0,0,.2/)", "(/0,0,.4/)", "(/0,0,.6/)", "(/0,0,.8/)", "(/0,0,1/)",\
+#                 "(/0,.3,1/)", "(/0,.45,1/)", "(/0,.6,1/)", "(/0,.8,1/)", "(/0,1,1/)",\
+#                 "(/0,1,.85/)", "(/0,1,.7/)", "(/0,1,.4/)", "(/.4,1,.2/)", "(/.8,1,.4/)",\
+#                 "(/1,1,.65/)", "(/1,1,.55/)", "(/1,1,.4/)", "(/1,1,.2/)", "(/1,1,0/)",\
+#                 "(/1,.8,.2/)", "(/1,.7,0/)", "(/1,.6,0/)", "(/1,.4,.05/)", "(/1,.3,.1/)",\
+#                 "(/1,0,0/)", "(/.85,0,0/)", "(/0.7,0,0/)", "(/.55,0,0/)", "(/.4,0,0/)",\
+#                 "(/.25,0,0/)") #(R, G, B) Values
+    
+
+var3res.cnFillPalette    = cmap_colors #-- set the0 colormap to be used or 'NCL_default'
+
+var3res.cnLevelSelectionMode = "ManualLevels"
+# var3res.cnLevels             = [0.001, 0.2, 0.5, 1, 2, 5, 10, 20, 50, 100]
+var3res.cnMinLevelValF       = 0.1
+var3res.cnMaxLevelValF       = 1.01
+var3res.cnLevelSpacingF      = 0.1
+var3res.cnFillOpacityF       = 1
+var3res.cnNoDataLabelString  = 'No Variable Data'
+var3res.cnConstFLabelString  = 'No Variable Data'
+
+var3res.lbOrientation            = "horizontal" #-- horizontal labelbar
+var3res.lbTitleString            = '~F34~0~F~C' #f1.variables[list(f1.variables.items())[0][0]].units
+var3res.pmLabelBarOrthogonalPosF = -0.05
+# var3res.pmLabelBarParallelPosF   = 0.25 #-- move labelbar upward
+var3res.lbLabelFontHeightF       = 0.008 #-- labelbar labe font size
+var3res.lbBoxMinorExtentF        = 0.12 #-- decrease height of
+# var3res.lbBoxLinesOn             = True 
+var3res.lbTitleFontHeightF       = 0.008 #label title font height
+var3res.lbTitleOffsetF           = -0.40 #title distance from the label
+var3res.lbBoxEndCapStyle         = "TriangleBothEnds"

@@ -1,0 +1,7 @@
+
+
+SHELL=/bin/bash
+BASH_ENV=~/.bashrc_conda #we need a custom conda bashrc under ubuntu because it prevents non interactive shells from accessing the regular bashrc and thus the conda enviroment
+MAILTO="user"
+* */1 * * *  /bin/bash ~/imuk/automation/automation.sh /dev/null
+

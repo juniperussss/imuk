@@ -4,20 +4,22 @@ Using opendata from the dwd and NOAA to visualize and display synoptic Data
 
 ## Current Visualisation
 ### Groundlevel
-![Groundlevel](./documentation/pics/boden_000.jpg )
+![Groundlevel](ressources/documentation/pics/boden_000.jpg )
 
 ### 850 hPa
-![850](./documentation/pics/gph_temp_850_0.png )
+![850](ressources/documentation/pics/850_000.jpg )
 
 ### 700 hPa
-![700](./documentation/pics/gph_rh_700_0.png )
+![700](ressources/documentation/pics/700_000.jpg )
 
 ### 500 hPa
-![500](./documentation/pics/gph_temp_500_0.png )
+![500](ressources/documentation/pics/500_000.jpg )
 
 ### 300 hPa
-![300](./documentation/pics/300/u_v_300_0.png )
+![300](ressources/documentation/pics/300_000.jpg )
 
+### Stationmap
+![Stationmap](ressources/documentation/pics/wmstnm03.png)
 
 ## Todos
 
