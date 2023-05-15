@@ -235,7 +235,8 @@ def crop_image(number,levelname,wkres,resx,resy,filenames):
     right = resx
     bottom =resy
     #im2 = im1.crop((left, top, right, bottom))
-    im2 = im1.resize((resx, resy), resample=Image.BOX)
+    #im2 = im1.resize((resx, resy), resample=Image.BOX)
+    im2 = im1.resize((resx, resy), resample=Image.LANCZOS)
     im2.save(levelname + filenames[number] + ".jpg", format='jpeg')
     os.remove(levelname +  filenames[number] + ".png")
 
@@ -545,45 +546,75 @@ def nclwwstring(dataframe):
         ir= "1" #the precipitation data indicator?
         ix= "1" #weather data and station type indicator?
         h= "1" #height above ground of base of lowest cloud ?
-        vv= str(int(0.00062137*data.loc[x].visibility.squeeze()))+ str(int(( data.loc[x].visibility.squeeze()% 1)*10)) #visibility in miles and fractions
+        try:
+            vv= str(int(0.00062137*data.loc[x].visibility.squeeze()))+ str(int(( data.loc[x].visibility.squeeze()% 1)*10)) #visibility in miles and fractions
+        except:
+            vv="00"
         try:
             N= str(int(data.loc[x].cloudcover.squeeze())) #total amount of cloud cover
-        except ValueError:
+        except:
             N="0"
         try:
             dd= str(int(data.loc[x].winddir.squeeze())).zfill(3)[0:2]#	direction from which wind is blowing
         except:
             dd="36"
-        ff= str(int(data.loc[x].windspeed.squeeze())).zfill(2)##	wind speed in knots
+        try:
+            ff= str(int(data.loc[x].windspeed.squeeze())).zfill(2)##	wind speed in knots
+        except:
+            ff="00"
         ten='1'
-        if math.copysign(1, data.loc[x].temperature.squeeze()) == -1:
-            sn = "1"
-        else:
-            sn = "0"  # str(math.copysign(1, data[x].temperature.squeeze()))[0]
+        try:
+            if math.copysign(1, data.loc[x].temperature.squeeze()) == -1:
+                sn = "1"
+            else:
+                sn = "0"  # str(math.copysign(1, data[x].temperature.squeeze()))[0]
+        except:
+            sn="0"
         #sn= str(math.copysign(1,data[x].temperature.squeeze()))[0]
-        ttt=str(abs(int(data.loc[x].temperature.squeeze()))).zfill(2) + str(int(( data.loc[x].temperature.squeeze()% 1)*10))
+        try:
+            ttt=str(abs(int(data.loc[x].temperature.squeeze()))).zfill(2) + str(int(( data.loc[x].temperature.squeeze()% 1)*10))
+        except:
+            ttt="000"
         fifteen= "2"
-        if math.copysign(1, data.loc[x].dewpoint.squeeze()) == -1:
-            snd= "1"
-        else:
-            snd = "0"# str(math.copysign(1, data[x].temperature.squeeze()))[0]
-        td = str(abs(int(data.loc[x].dewpoint.squeeze()))) + str(int((data.loc[x].temperature.squeeze() % 1) * 10))
+        try:
+            if math.copysign(1, data.loc[x].dewpoint.squeeze()) == -1:
+                snd= "1"
+            else:
+                snd = "0"# str(math.copysign(1, data[x].temperature.squeeze()))[0]
+        except:
+            snd="0"
+        try:
+            td = str(abs(int(data.loc[x].dewpoint.squeeze()))) + str(int((data.loc[x].temperature.squeeze() % 1) * 10))
+        except:
+            td="00"
         twenty="3"
-        if len(str(int(data.loc[x].pressure.squeeze()))) >3:
-            po=str(int(data.loc[x].pressure.squeeze()))[1:4] + str(int(( data.loc[x].pressure.squeeze()% 1)*10))
-        else:
-            po = str(int(data.loc[x].pressure.squeeze())) + str(int((data.loc[x].pressure.squeeze() % 1) * 10))
+        try:
+            if len(str(int(data.loc[x].pressure.squeeze()))) >3:
+                po=str(int(data.loc[x].pressure.squeeze()))[1:4] + str(int(( data.loc[x].pressure.squeeze()% 1)*10))
+            else:
+                po = str(int(data.loc[x].pressure.squeeze())) + str(int((data.loc[x].pressure.squeeze() % 1) * 10))
+        except:
+            po="0000"
         twentyfive = "4"
-        if len(str(int(data.loc[x].sl_pressure.squeeze()))) > 3:
-            pppp = str(int(data.loc[x].sl_pressure.squeeze()))[1:4] + str(int((data.loc[x].sl_pressure.squeeze() % 1) * 10))
-        else:
-            pppp = str(int(data.loc[x].sl_pressure.squeeze())) + str(int((data.loc[x].sl_pressure.squeeze() % 1) * 10))
+        try:
+            if len(str(int(data.loc[x].sl_pressure.squeeze()))) > 3:
+                pppp = str(int(data.loc[x].sl_pressure.squeeze()))[1:4] + str(int((data.loc[x].sl_pressure.squeeze() % 1) * 10))
+            else:
+                pppp = str(int(data.loc[x].sl_pressure.squeeze())) + str(int((data.loc[x].sl_pressure.squeeze() % 1) * 10))
+        except:
+            pppp="0000"
 
         thirty="5"
         a="1"
-        ppp= str(abs(int(data.loc[x].pressure3h_change.squeeze()))).zfill(2)+str(int(( data.loc[x].pressure3h_change.squeeze()% 1)*10))
+        try:
+            ppp= str(abs(int(data.loc[x].pressure3h_change.squeeze()))).zfill(2)+str(int(( data.loc[x].pressure3h_change.squeeze()% 1)*10))
+        except:
+            ppp="000"
         thirtyfive="6"
-        rrr= str(abs(int(data.loc[x].rain.squeeze()))).zfill(2)+str(int(( data.loc[x].rain.squeeze()% 1)*10))
+        try:
+            rrr= str(abs(int(data.loc[x].rain.squeeze()))).zfill(2)+str(int(( data.loc[x].rain.squeeze()% 1)*10))
+        except:
+            rrr="000"
         tr="0"
         fourty= "7"
         try:
@@ -602,7 +633,8 @@ def nclwwstring(dataframe):
     df = data.assign(wwletter=letterlist)
     return df
 def pressurereduction(p,height,t):
-    import math
+
+    """
 
     if t <9.1 :
             e=5.6402*(-0.0916+math.exp(0.06*t))
@@ -612,6 +644,13 @@ def pressurereduction(p,height,t):
 
     x= (9.81/(287.05*((t+273.15)+0.12*e+0.0065*height)))
     pmsl=p*math.exp(x)
+     """
+    import math
+    kappa=1.402
+    M=0.02896
+    g= 9.81
+    r=8.314
+    pmsl= math.round(p*(1-((kappa -1)/kappa) *((M*g*(-1*height))/(r*t)))**(kappa/(kappa -1)),2)
     if pmsl <100: pmsl=pmsl+1000
     return pmsl
 #def imdatconvert():

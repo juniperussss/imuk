@@ -52,9 +52,9 @@ mpres.mpDataSetName = "Earth..4"  # -- set map data base version
 
 mpres.mpLimitMode = "LatLon"  # -- limiting the map via lat/lon
 mpres.mpMinLatF = 35  # min(lat1) #-- min latitude
-mpres.mpMaxLatF = 62  # max(lat1) #-- max latitude
+mpres.mpMaxLatF = 70  # max(lat1) #-- max latitude
 mpres.mpMinLonF = -20#-45  # min(lon1) #-- min longitude
-mpres.mpMaxLonF = 20#45  # max(lon1) #-- max longtitude
+mpres.mpMaxLonF = 50#045  # max(lon1) #-- max longtitude
 
 # Converting the Lambert Perspective Options
 mpres.mpProjection = "LambertConformal"  # projection type
@@ -70,9 +70,9 @@ The coordinates contains Germany:
 '''
 
 mpres.mpFillOn = True  # -- turn on fill for map areas.
-mpres.mpLandFillColor = "darkgreen"  # -- fill color land -darkslategray
-mpres.mpOceanFillColor = 'navy'  # -- fill color ocean -black
-mpres.mpInlandWaterFillColor = 'navy'  # -- fill color inland water
+mpres.mpLandFillColor = "white"  # -- fill color land -darkslategray
+mpres.mpOceanFillColor = 'grey'  # -- fill color ocean -black
+mpres.mpInlandWaterFillColor = 'grey'  # -- fill color inland water
 mpres.mpAreaMaskingOn = True
 # mpres.mpMaskAreaSpecifiers   = 'Germany'
 
@@ -118,6 +118,7 @@ Ngl.wmsetp("ezf",1)
 #Ngl.wmsetp("wbc",0.20) #	Diameter of sky cover circle at base of wind barb, expressed as a fraction of the shaft length.
 #Ngl.wmsetp("wbl",0.10) #Size of the text labels in the station model display, expressed as a fraction of the shaft length.
 Ngl.wmsetp("wbs",0.025) #Length of wind barb full tick as a fraction of its shaft length.
+#Ngl.wmsetp("wbt",0.35)
 Ngl.wmstnm(wks,lats,lons,imdat)
 #Ngl.overlay(map, plot1)
 Ngl.frame(wks)

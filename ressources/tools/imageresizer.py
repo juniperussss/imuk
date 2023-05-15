@@ -7,9 +7,9 @@ import glob
 import numpy as np
 def main(number):
     im = Image.open(files[number], mode='r')
-    im1 = im.resize((resxa, resya), resample=Image.Resampling.BOX)
+    im1 = im.resize((resxa, resya), resample=Image.Resampling.LANCZOS)
     im1.save(outputpatha +"/"+ filenames[number], format='jpeg')
-    im2 = im.resize((resxb, resyb), resample=Image.Resampling.BOX)
+    im2 = im.resize((resxb, resyb), resample=Image.Resampling.LANCZOS)
     im2.save(outputpathb +"/"+ filenames[number], format='jpeg')
     #os.remove(levelname + filenames[number] + ".png")
 

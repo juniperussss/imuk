@@ -266,6 +266,7 @@ def metarrequest(dirorigin):
 
     datare = pd.DataFrame({'station': list_of_stations, 'lat': lat,'lon':lon, 'weatherfont':weatherfont, 'weathersymbol':weathersymbol,
                        'weathercolour':weathercolour})
+    datare=nclwwstring(datare)
     metar_groundlevel = datare.to_csv(dirorigin+'/ressources/Data/metar_groundlevel.csv', index = True)
 
 def main():

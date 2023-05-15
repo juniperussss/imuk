@@ -458,9 +458,15 @@ def picture(number):
 
 
 
+    txresfill                    = Ngl.Resources()
+    txresfill.txFont = "weather1"
+    txresfill.txFontHeightF = 0.03
+
     txres                    = Ngl.Resources()
-    txres.txFont = "weather1"
+    txres.txFont = "o_weather1"
     txres.txFontHeightF = 0.03
+    txres.gsnMaximize = False
+    txres.txFontThicknessF=7.5
     #---- Integration of Resources of BaseMap and Variables
     pmres                    = Ngl.Resources() #pmres = True
     pmres.gsMarkerIndex      = 1 #marker index
@@ -506,7 +512,8 @@ def picture(number):
                 txres.txFontColor = "green"
             elif wwcolour[i] == "yellow":
                 txres.txFontColor = "yellow"
-                txres.txFontHeightF = 0.02
+                txres.txFontHeightF = 0.0085
+                txres.txFontAspectF = 1
             elif wwcolour[i] == "magenta":
                 txres.txFontColor = "magenta"
             elif wwcolour[i] == "red":
