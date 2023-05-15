@@ -269,7 +269,7 @@ def metarrequest(dirorigin):
     datare=nclwwstring(datare)
     metar_groundlevel = datare.to_csv(dirorigin+'/ressources/Data/metar_groundlevel.csv', index = True)
 
-def main():
-    metarrequest("/home/alex/PycharmProjects/imuk")
+#def main():
+ #   metarrequest("/home/alex/PycharmProjects/imuk")
 
-main()
+#main()
