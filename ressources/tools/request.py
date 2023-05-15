@@ -12,21 +12,15 @@ from datetime import datetime
 import numpy as np
 import glob
 import argparse
-from ressources.tools import imuktools
+
 import time
-from ressources.tools.observations import metarrequest
+
 from multiprocessing import Pool
 
 parser = argparse.ArgumentParser()
 
-fcst_hrs = imuktools.fcst_hrsf()
-fcst_hrs_output = []
-for output in fcst_hrs:
-    fcst_hrs_string = str(output).zfill(3)
-    fcst_hrs_output.append(fcst_hrs_string)
 
 
-print(fcst_hrs)
 cdt_date = datetime.utcnow()
 print(" has started at: ", cdt_date.strftime('%Y-%m-%d  %H:%M:%S'))
 cdt_yr = cdt_date.year
@@ -51,6 +45,15 @@ args = parser.parse_args()
 dir_origin = args.inputpath
 dir_parent = args.parentpath#'database/input/icon/'
 os.chdir(dir_parent)
+from ressources.tools import imuktools
+from ressources.tools.observations import metarrequest
+
+fcst_hrs = imuktools.fcst_hrsf()
+fcst_hrs_output = []
+for output in fcst_hrs:
+    fcst_hrs_string = str(output).zfill(3)
+    fcst_hrs_output.append(fcst_hrs_string)
+
 imuktools.cleaning_old_today_folders()
 if not os.path.exists('{}/{}/{}/{}'.format(cdt_yr, cdt_mo, cdt_day, init_time_hr)):
     try:
