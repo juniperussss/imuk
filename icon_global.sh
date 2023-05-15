@@ -1,6 +1,6 @@
 . ~/.bashrc_miniconda3
 conda activate imuk
-
+export PYTHONPATH=$PYTHONPATH:`pwd`
 start=0
 end=168
 stepsize=3

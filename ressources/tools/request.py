@@ -44,12 +44,15 @@ parser.add_argument('parentpath')  # 350
 args = parser.parse_args()
 dir_origin = args.inputpath
 dir_parent = args.parentpath#'database/input/icon/'
-os.chdir(dir_parent)
+os.chdir(dir_origin+"/ressources/tools")
+print(os.getcwd())
+#export PYTHONPATH=$PYTHONPATH:`pwd`
 from ressources.tools import imuktools
 from ressources.tools.observations import metarrequest
 
 fcst_hrs = imuktools.fcst_hrsf()
 fcst_hrs_output = []
+os.chdir(dir_parent)
 for output in fcst_hrs:
     fcst_hrs_string = str(output).zfill(3)
     fcst_hrs_output.append(fcst_hrs_string)
