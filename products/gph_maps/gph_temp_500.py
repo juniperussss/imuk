@@ -322,7 +322,7 @@ def picture(vara,varb,number,resx,resy,dir_origin,filenames):
 
 
     hour,weekday,datetime_object,delta= imuktools.dates_for_subtitles(vara, number, filenames)
-    left_string_2   = '500 hPa: Geopotential(gdm), Temperatur (Grad  C)'  #model output info
+    left_string_2   = '500 hPa: Geopotential(gdm), Temperatur (Grad  ~F34~0~F~C)'  #model output info
     left_string   = 'ICON-Lauf: '  +weekday.capitalize() + " " +datetime_object.strftime('%d.%m.%Y %H')  +" UTC" +" (+"+delta+"h)"#model output info
     center_string = '' #center information bar
     # right_string_2 = 'Init: ' + str(initial_time)
