@@ -25,7 +25,7 @@ Using opendata from the dwd and NOAA to visualize and display synoptic Data
 
 
 - optimize weathersymbols on ground level. Especially fog and dust
-
+- show prominent station according to the significant weather
 
 
 
