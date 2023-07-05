@@ -68,7 +68,8 @@ Using opendata from the dwd and NOAA to visualize and display synoptic Data
   'Do 13.07.2023'
   
 -  Degree Symbol ° is not support in subtitle
-  completed: ~F34~0~F~
+  in line   : ~F34~0~F~
+  in string : ~S~o~N~
 
 - Wrong Day in Subtitle for subsequent Days after first Forecast Day
   analysed: tools.py -> line 218
