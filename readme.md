@@ -57,8 +57,21 @@ Using opendata from the dwd and NOAA to visualize and display synoptic Data
 
 ### Bugs
 - changing the locale to German changes the Size of the yellow border in the subtitle
--  Degree Symbol ° is not support in subtitle -> ~F34~0~F~
+  >>> import datetime
+  >>> import locale
+  >>> locale.setlocale(locale.LC_TIME, 'de_DE')
+  >>> # OR
+  >>> locale.setlocale(locale.LC_TIME, 'de_DE.UTF-8')
+  'de_DE.UTF-8'
+  >>> d = datetime.datetime.now()
+  >>> d.strftime("%a %d.%m.%Y")
+  'Do 13.07.2023'
+  
+-  Degree Symbol ° is not support in subtitle
+  completed: ~F34~0~F~
+
 - Wrong Day in Subtitle for subsequent Days after first Forecast Day
+  analysed: tools.py -> line 218
 
 
 ## Dokumentation
