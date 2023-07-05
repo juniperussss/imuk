@@ -57,7 +57,7 @@ Using opendata from the dwd and NOAA to visualize and display synoptic Data
 
 ### Bugs
 - changing the locale to German changes the Size of the yellow border in the subtitle
--  Degree Symbol ° is not support in subtitle
+-  Degree Symbol ° is not support in subtitle -> ~F34~0~F~
 - Wrong Day in Subtitle for subsequent Days after first Forecast Day
 
 
