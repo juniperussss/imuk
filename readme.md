@@ -74,6 +74,7 @@ Using opendata from the dwd and NOAA to visualize and display synoptic Data
 
 - Wrong Day in Subtitle for subsequent Days after first Forecast Day
   analysed: tools.py -> line 218
+  weekday = issue word
 
 
 ## Dokumentation
