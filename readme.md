@@ -3,6 +3,10 @@
 Using opendata from the dwd and NOAA to visualize and display synoptic Data
 
 ## Current Visualisation
+
+### Satellite
+![Satellite](ressources/documentation/pics/SAT_TEST.png)
+
 ### Groundlevel
 ![Groundlevel](ressources/documentation/pics/boden_000.jpg )
 

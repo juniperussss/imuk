@@ -1,4 +1,4 @@
-. ~/.bashrc_miniconda3
+    . ~/.bashrc_miniconda3
 conda activate imuk
 export PYTHONPATH=$PYTHONPATH:/localdata/weathermaps/imuk
 start=0
