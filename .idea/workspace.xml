@@ -1,0 +1,293 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="96b7b464-877c-48e9-964f-766dfa9a1703" name="Changes" comment="HotFix for Python Path">
+      <change beforePath="$PROJECT_DIR$/products/gph_maps/bd_sw_meteosat.py" beforeDir="false" afterPath="$PROJECT_DIR$/products/gph_maps/bd_sw_meteosat.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/products/gph_maps/gph_rh_700.py" beforeDir="false" afterPath="$PROJECT_DIR$/products/gph_maps/gph_rh_700.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/products/gph_maps/gph_temp_500.py" beforeDir="false" afterPath="$PROJECT_DIR$/products/gph_maps/gph_temp_500.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/products/gph_maps/gph_temp_850.py" beforeDir="false" afterPath="$PROJECT_DIR$/products/gph_maps/gph_temp_850.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/products/gph_maps/wind_300.py" beforeDir="false" afterPath="$PROJECT_DIR$/products/gph_maps/wind_300.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/products/satelite/request_ir.py" beforeDir="false" afterPath="$PROJECT_DIR$/products/satelite/request_ir.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/products/satelite/test_2.py" beforeDir="false" afterPath="$PROJECT_DIR$/products/satelite/test_2.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ressources/Data/metar_groundlevel.csv" beforeDir="false" afterPath="$PROJECT_DIR$/ressources/Data/metar_groundlevel.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ressources/Data/metarsupp.csv" beforeDir="false" afterPath="$PROJECT_DIR$/ressources/Data/metarsupp.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ressources/documentation/pics/SAT_TEST.png" beforeDir="false" afterPath="$PROJECT_DIR$/ressources/documentation/pics/SAT_TEST.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ressources/tools/imuktools.py" beforeDir="false" afterPath="$PROJECT_DIR$/ressources/tools/imuktools.py" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Python Script" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
+  </component>
+  <component name="ProjectId" id="2PpNsbCEcidrBB5066TPGTr8N8Q" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "git-widget-placeholder": "main",
+    "last_opened_file_path": "/home/alex/PycharmProjects/imuk/ressources/documentation/pics",
+    "settings.editor.selected.configurable": "com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable"
+  }
+}]]></component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/ressources/documentation/pics" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/ressources/documentation/pics" />
+    </key>
+  </component>
+  <component name="RunManager" selected="Python.rh500">
+    <configuration name="bd_sw_meteosat" type="PythonConfigurationType" factoryName="Python" nameIsGenerated="true">
+      <module name="documents" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="$USER_HOME$/mambaforge/envs/imuk/bin/python" />
+      <option name="SDK_NAME" value="imuk" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/products/gph_maps" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/products/gph_maps/bd_sw_meteosat.py" />
+      <option name="PARAMETERS" value="1890 860 $USER_HOME$/Bilder $PROJECT_DIR$ 0 3 3" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="request" type="PythonConfigurationType" factoryName="Python" nameIsGenerated="true">
+      <module name="documents" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="$USER_HOME$/mambaforge/envs/imuk/bin/python" />
+      <option name="SDK_NAME" value="imuk" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/ressources/tools" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/ressources/tools/request.py" />
+      <option name="PARAMETERS" value="$PROJECT_DIR$ $PROJECT_DIR$/database/input/icon" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="rh500" type="PythonConfigurationType" factoryName="Python">
+      <module name="documents" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="$USER_HOME$/mambaforge/envs/imuk/bin/python" />
+      <option name="SDK_NAME" value="imuk" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/products/gph_maps" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/products/gph_maps/gph_temp_500.py" />
+      <option name="PARAMETERS" value="1890 860 $USER_HOME$/Bilder $PROJECT_DIR$ 0 3 3" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="rh700" type="PythonConfigurationType" factoryName="Python">
+      <module name="documents" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="$USER_HOME$/mambaforge/envs/imuk/bin/python" />
+      <option name="SDK_NAME" value="imuk" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/products/gph_maps" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/products/gph_maps/gph_rh_700.py" />
+      <option name="PARAMETERS" value="1890 860 $USER_HOME$/Bilder $PROJECT_DIR$ 0 3 3" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="rh850" type="PythonConfigurationType" factoryName="Python">
+      <module name="documents" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="$USER_HOME$/mambaforge/envs/imuk/bin/python" />
+      <option name="SDK_NAME" value="imuk" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/products/gph_maps" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/products/gph_maps/gph_temp_850.py" />
+      <option name="PARAMETERS" value="1890 860 $USER_HOME$/Bilder $PROJECT_DIR$ 0 3 3" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="wind" type="PythonConfigurationType" factoryName="Python">
+      <module name="documents" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="$USER_HOME$/mambaforge/envs/imuk/bin/python" />
+      <option name="SDK_NAME" value="imuk" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/products/gph_maps" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/products/gph_maps/wind_300.py" />
+      <option name="PARAMETERS" value="1890 860 $USER_HOME$/Bilder $PROJECT_DIR$ 0 48 12" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <list>
+      <item itemvalue="Python.bd_sw_meteosat" />
+      <item itemvalue="Python.request" />
+      <item itemvalue="Python.rh500" />
+      <item itemvalue="Python.rh700" />
+      <item itemvalue="Python.rh850" />
+      <item itemvalue="Python.wind" />
+    </list>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="96b7b464-877c-48e9-964f-766dfa9a1703" name="Changes" comment="" />
+      <created>1684150271076</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1684150271076</updated>
+    </task>
+    <task id="LOCAL-00001" summary="Improve Fonts and Image Quality using different sampling method">
+      <created>1684163775906</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1684163775906</updated>
+    </task>
+    <task id="LOCAL-00002" summary="Improve Fonts and Image Quality using different sampling method">
+      <created>1684167034270</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1684167034270</updated>
+    </task>
+    <task id="LOCAL-00003" summary="Improve Fonts and Image Quality using different sampling method">
+      <created>1684168379318</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1684168379318</updated>
+    </task>
+    <task id="LOCAL-00004" summary="Improve Fonts and Image Quality using different sampling method">
+      <created>1684169046900</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1684169046900</updated>
+    </task>
+    <task id="LOCAL-00005" summary="Improve Fonts and Image Quality using different sampling method">
+      <created>1684169945493</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1684169945493</updated>
+    </task>
+    <task id="LOCAL-00006" summary="Improve Fonts and Image Quality using different sampling method">
+      <created>1684170296803</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1684170296803</updated>
+    </task>
+    <task id="LOCAL-00007" summary="HotFix for Python Path">
+      <created>1687518080402</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1687518080402</updated>
+    </task>
+    <task id="LOCAL-00008" summary="HotFix for Python Path">
+      <created>1687771392735</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1687771392735</updated>
+    </task>
+    <task id="LOCAL-00009" summary="HotFix for Python Path">
+      <created>1687773130172</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1687773130172</updated>
+    </task>
+    <option name="localTasksCounter" value="10" />
+    <servers />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Improve Fonts and Image Quality using different sampling method" />
+    <MESSAGE value="HotFix for Python Path" />
+    <option name="LAST_COMMIT_MESSAGE" value="HotFix for Python Path" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/products/gph_maps/bd_sw_meteosat.py</url>
+          <line>460</line>
+          <option name="timeStamp" value="1" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
+  </component>
+</project>

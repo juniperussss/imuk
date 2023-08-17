@@ -106,6 +106,7 @@ def cleaning_old_folders():
 def subtitles(wks, map, left_string, center_string, right_string,mpres,left_string_2):
         import Nio,Ngl
         import numpy as np
+
         ltres = Ngl.Resources()
         ctres = Ngl.Resources()
         rtres = Ngl.Resources()
@@ -186,6 +187,8 @@ def subtitles(wks, map, left_string, center_string, right_string,mpres,left_stri
 def dates_for_subtitles(vara,number,filenames):
     import os
     from datetime import datetime, timedelta
+    import locale
+    locale.setlocale(locale.LC_TIME, 'de_DE')
     import locale
     #locale.setlocale(
      #   category=locale.LC_ALL,
@@ -376,6 +379,7 @@ def legend(number,levelname,stepsize,width,heigth,colormap,levels,filenames,step
 def legendgl(number, levelname, stepsize, width, heigth, filenames, stepstart, unit, inputpath, resx):
     from PIL import Image, ImageDraw as D, ImageFont
     import numpy as np
+
     colormap=np.array([[0,0,0,0],[0.5,0.64,0.65,0.4],[0.32,0.73,0.87,0.5],[0.33,0.34,0.93,0.6],[0.07,0.06,0.74,0.8],[0.6,0,0.6,1],[0.6,0.01,0.07,1],[1,0,0,1]])
     levels=list(["0.1-0.5","0.5-2","2-4","4-6","6-12","12-24",">24"])
     im = Image.open(levelname + filenames[number] + ".png", mode='r')
