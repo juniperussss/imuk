@@ -15,6 +15,9 @@ import numpy.ma as ma
 from multiprocessing import Pool
 import time
 import ressources.tools.imuktools as imuktools
+import geopandas as gpd
+from sklearn.cluster import KMeans, DBSCAN
+from shapely.geometry import Point
 
 ###
 #def picture(vara,varb,varc,vard,number,resx,resy,dir_origin,filenames,rain_parameter):
@@ -114,8 +117,63 @@ def picture(number):
     '''see: https://www.dwd.de/DE/leistungen/opendata/help/modelle/Opendata_cdo_EN.pdf;jsessionid=F701F7DD8FE2D5E7E6AF606CB877DA9C.live11043?__blob=publicationFile&v=3'''
     #print(wwconverted)
 
-    data = pd.read_csv(dir_origin+'/ressources/Data/metar_groundlevel.csv')  # Dataframe with all Stations of europe
+    #data = pd.read_csv(dir_origin+'/ressources/Data/metar_groundlevel.csv')  # Dataframe with all Stations of europe
+    data = pd.read_csv(dir_origin+'/ressources/Data/metar_groundlevel.csv')
+
+    def cluster (data):
+        df=data
+       # geometry = [Point(lon, lat) for lon, lat in zip(df['lon'], df['lat'])]
+        #gdf = gpd.GeoDataFrame(df, geometry=geometry)
+        def get_weather_priority(weather_symbol,station):
+            #print("alla",weather_symbol)
+            thunderletters = ["{","|","2","#","%","&"]
+            stationlist = ["EDDV"]
+
+            if weather_symbol in thunderletters :
+                priority = 4
+            elif weather_symbol is None:
+                priority = 0
+            elif station in stationlist:
+                priority = 10
+            else:
+                priority = 1
+
+
+            return priority
+
+        num_clusters = 80
+        #df['priority'] = df.apply(lambda row: get_weather_priority(row['weathersymbol'], row['station']), axis=1)
+        dff = df[df['weathersymbol'].notnull() & (df['weathersymbol'] != '')]
+
+        dff['priority'] = dff.apply(lambda row: get_weather_priority(row['weathersymbol'], row['station']), axis=1)
+
+        dffs = dff[['lat', 'lon', 'priority']]
+        #data = df[['lat', 'lon', 'priority']]
+
+
+        #kmeans = KMeans(n_clusters=num_clusters)
+       # dbscan = DBSCAN(eps=0.5, min_samples=15)
+
+        # Die Cluster-Labels berechnen
+        kmeans = KMeans(n_clusters=num_clusters)
+        dff['cluster_label'] = kmeans.fit_predict(dffs)
+        data = dff.groupby('cluster_label').apply(lambda group: group.loc[group['priority'].idxmax()])
+        return data
+
+    data = cluster(data)
+
+    # Funktion zur Auswahl des bevorzugten Weathersymbols in jedem Cluster
+  #  def choose_preferred_weather_symbol(group):
+    #    preferred_row = group.loc[group['weathersymbol'].apply(get_weather_priority).idxmax()]
+    #    return preferred_row
+
+   # preferred_symbols = gdf.groupby('cluster_label').apply(choose_preferred_weather_symbol)
+    #data = gpd.GeoDataFrame(preferred_symbols,
+           #                                  geometry=gpd.points_from_xy(preferred_symbols.lon, preferred_symbols.lat))
+#
     #print(data.keys())
+
+
     lon5= data['lon'].tolist()
     lat5= data['lat'].tolist()
     wwsym= data['weathersymbol'].tolist()
