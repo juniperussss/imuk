@@ -61,6 +61,7 @@ Using opendata from the dwd and NOAA to visualize and display synoptic Data
 -   850hpa
 
 ### Bugs
+### Solved
 - changing the locale to German changes the Size of the yellow border in the subtitle
   >>> import datetime
   >>> import locale
@@ -76,9 +77,7 @@ Using opendata from the dwd and NOAA to visualize and display synoptic Data
   in line   : ~F34~0~F~
   in string : ~S~o~N~
 
-- Wrong Day in Subtitle for subsequent Days after first Forecast Day
-  analysed: tools.py -> line 218
-  weekday = issue word
+
 
 
 ## Dokumentation
