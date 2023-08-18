@@ -188,7 +188,7 @@ def dates_for_subtitles(vara,number,filenames):
     import os
     from datetime import datetime, timedelta
     import locale
-    locale.setlocale(locale.LC_TIME, 'de_DE')
+    locale.setlocale(locale.LC_TIME, 'de_DE.uft8')
     import locale
     #locale.setlocale(
      #   category=locale.LC_ALL,

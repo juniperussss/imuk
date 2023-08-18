@@ -4,9 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="96b7b464-877c-48e9-964f-766dfa9a1703" name="Changes" comment="HotFix for Python Path">
+    <list default="true" id="96b7b464-877c-48e9-964f-766dfa9a1703" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/products/gph_maps/bd_sw_meteosat.py" beforeDir="false" afterPath="$PROJECT_DIR$/products/gph_maps/bd_sw_meteosat.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ressources/tools/imuktools.py" beforeDir="false" afterPath="$PROJECT_DIR$/ressources/tools/imuktools.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
