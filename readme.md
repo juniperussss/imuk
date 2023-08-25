@@ -33,7 +33,14 @@ Using opendata from the dwd and NOAA to visualize and display synoptic Data
 - show prominent station according to the significant weather
 
 
+## Might be Useful
 
+
+how to generate stationplots through metpy and cartopy
+https://www.youtube.com/watch?v=3sRi4eSg52U
+
+an extra plot for exaple
+https://unidata.github.io/MetPy/latest/examples/plots/Station_Plot.html
 
 
 #### Generate Stationlists
