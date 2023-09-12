@@ -5,8 +5,30 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="96b7b464-877c-48e9-964f-766dfa9a1703" name="Changes" comment="HotFix for Locale">
+      <change afterPath="$PROJECT_DIR$/products/satelite/satelites.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/products/satelite/satelitetests/lower_saxony_1#.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/products/satelite/satelitetests/lower_saxony_2.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/products/satelite/satelitetests/lower_saxony_4.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/products/satelite/satelitetests/test.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/products/stationmaps/stationmap_metpy.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/products/stationmaps/stationmap_metpy.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ressources/documentation/pics/europe.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ressources/documentation/pics/hannover.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ressources/documentation/pics/lower_saxony.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ressources/documentation/pics/stationmap_metpy.png" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/products/satelite/SAT_TEST.png" beforeDir="false" afterPath="$PROJECT_DIR$/products/satelite/satelitetests/SAT_TEST.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/products/satelite/cut.tiff" beforeDir="false" afterPath="$PROJECT_DIR$/products/satelite/cut.tiff" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/products/satelite/ir_im.py" beforeDir="false" afterPath="$PROJECT_DIR$/products/satelite/satelitetests/ir_im.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/products/satelite/ircalc.py" beforeDir="false" afterPath="$PROJECT_DIR$/ressources/old folders/ircalc.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/products/satelite/request_ir.py" beforeDir="false" afterPath="$PROJECT_DIR$/products/satelite/satelitetests/request_ir.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/products/satelite/test.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/products/satelite/test_2.py" beforeDir="false" afterPath="$PROJECT_DIR$/products/satelite/satelitetests/test_2.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/readme.md" beforeDir="false" afterPath="$PROJECT_DIR$/readme.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ressources/Data/metar_groundlevel.csv" beforeDir="false" afterPath="$PROJECT_DIR$/ressources/Data/metar_groundlevel.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ressources/Data/metarsupp.csv" beforeDir="false" afterPath="$PROJECT_DIR$/ressources/Data/metarsupp.csv" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ressources/tools/imuktools.py" beforeDir="false" afterPath="$PROJECT_DIR$/ressources/tools/imuktools.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ressources/tools/observations.py" beforeDir="false" afterPath="$PROJECT_DIR$/ressources/tools/observations.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -43,12 +65,15 @@
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/ressources/documentation/pics" />
+      <recent name="$PROJECT_DIR$/products/satelite" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/ressources/documentation/pics" />
+      <recent name="$PROJECT_DIR$/products/satelite/satelitetests" />
+      <recent name="$PROJECT_DIR$/ressources/old folders" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.bd_sw_meteosat">
+  <component name="RunManager">
     <configuration name="bd_sw_meteosat" type="PythonConfigurationType" factoryName="Python" nameIsGenerated="true">
       <module name="documents" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -272,6 +297,17 @@
     </task>
     <option name="localTasksCounter" value="11" />
     <servers />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Improve Fonts and Image Quality using different sampling method" />

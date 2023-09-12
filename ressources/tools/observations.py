@@ -6,7 +6,7 @@ def metarrequest(dirorigin):
     import airportsdata
     from tqdm import tqdm
 
-    from ressources.tools.imuktools import metarww, pressurereduction,cloudcover,nclwwstring
+    from ressources.tools.imuktools import metarww, pressurereduction,cloudcover,nclwwstring,calculate_sea_level_pressure
     from datetime import datetime
     from datetime import timedelta
     from meteostat import Hourly
@@ -124,13 +124,21 @@ def metarrequest(dirorigin):
                 except AttributeError :
                     visual_range.append(99999)
 
-                try:
 
-                    sl_pressure.append(pressurereduction(obs.press.value(),airports[obs.station_id]["elevation"],obs.temp.value()))
+                try:
+                    #sl_pressure.append(pressurereduction(obs.press.value(),airports[obs.station_id]["elevation"],obs.temp.value()))
+                    sl_pressure.append(
+                        calculate_sea_level_pressure(obs.press.value(), airports[obs.station_id]["elevation"], obs.temp.value()))
+
+                except AttributeError :
+                    sl_pressure.append(99999)
+
+
+                try:
                     pressure.append(obs.press.value())
                 except AttributeError :
                     pressure.append(99999)
-                    sl_pressure.append(99999)
+
 
                 try:
                     dewpoint.append(obs.dewpt.value())
@@ -148,7 +156,7 @@ def metarrequest(dirorigin):
                     winddir.append(None)
 
             except (Metar.ParserError,UnboundLocalError,AttributeError) as err:
-                #print("The following Error occurred", err)
+               # print("The following Error occurred", err)
                 pass
 
     ## Construct Dataframe
@@ -269,7 +277,6 @@ def metarrequest(dirorigin):
     datare=nclwwstring(datare)
     metar_groundlevel = datare.to_csv(dirorigin+'/ressources/Data/metar_groundlevel.csv', index = True)
 
-#def main():
- #   metarrequest("/home/alex/PycharmProjects/imuk")
-
-#main()
+def main():
+   metarrequest("/home/alex/PycharmProjects/imuk")
+main()

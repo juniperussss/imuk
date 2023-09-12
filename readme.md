@@ -4,8 +4,17 @@ Using opendata from the dwd and NOAA to visualize and display synoptic Data
 
 ## Current Visualisation
 
+### Stationmap
+![Satellite](ressources/documentation/pics/stationmap_metpy.png)
 ### Satellite
-![Satellite](ressources/documentation/pics/SAT_TEST.png)
+![Satellite](ressources/documentation/pics/europe.png)
+
+<div style="display: flex; justify-content: space-between;">
+    <img src="ressources/documentation/pics/lower_saxony.png" alt="Bild 2" width="50%">
+    <img src="ressources/documentation/pics/hannover.png" alt="Bild 3" width="50%">
+</div>
+
+
 
 ### Groundlevel
 ![Groundlevel](ressources/documentation/pics/boden_000.jpg )

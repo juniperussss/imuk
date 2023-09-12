@@ -637,26 +637,30 @@ def nclwwstring(dataframe):
     df = data.assign(wwletter=letterlist)
     return df
 def pressurereduction(p,height,t):
-
-    """
-
-    if t <9.1 :
-            e=5.6402*(-0.0916+math.exp(0.06*t))
-    else:
-            e=18.2194*(1.0463-math.exp(-0.0666*t))
-
-
-    x= (9.81/(287.05*((t+273.15)+0.12*e+0.0065*height)))
-    pmsl=p*math.exp(x)
-     """
     import math
+    import numpy as np
+    print(p, height, t)
+
     kappa=1.402
     M=0.02896
     g= 9.81
     r=8.314
-    pmsl= math.round(p*(1-((kappa -1)/kappa) *((M*g*(-1*height))/(r*t)))**(kappa/(kappa -1)),2)
+    pmsl= np.round(p*(1-((kappa -1)/kappa) *((M*g*(-1*height))/(r*t)))**(kappa/(kappa -1)),2)
+    print("hans")
+    print("pmsl",pmsl)
     if pmsl <100: pmsl=pmsl+1000
+    print("pmsl",pmsl)
     return pmsl
+
+def calculate_sea_level_pressure(P_station, H_station, T_station):
+    lapse_rate = 0.0065
+    gravity = 9.807
+    gas_constant = 287.0  # spezifische Gaskonstante für trockene Luft
+    if P_station<100 : P_station=P_station+1000
+    exponent = (gravity / (lapse_rate * gas_constant))
+    sea_level_pressure = P_station * (1 + (lapse_rate * H_station) / (T_station + lapse_rate * H_station)) ** exponent
+    if sea_level_pressure>9000: sea_level_pressure=sea_level_pressure/1000
+    return sea_level_pressure
 #def imdatconvert():
  #   precition_data_indicator = "a"
 
