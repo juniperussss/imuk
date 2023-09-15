@@ -5,30 +5,30 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="96b7b464-877c-48e9-964f-766dfa9a1703" name="Changes" comment="HotFix for Locale">
-      <change afterPath="$PROJECT_DIR$/products/satelite/satelites.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/products/satelite/satelitetests/lower_saxony_1#.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/products/satelite/satelitetests/lower_saxony_2.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/products/satelite/satelitetests/lower_saxony_4.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/products/satelite/satelitetests/test.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/products/stationmaps/stationmap_metpy.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/products/stationmaps/stationmap_metpy.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ressources/documentation/pics/europe.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ressources/documentation/pics/hannover.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ressources/documentation/pics/lower_saxony.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ressources/documentation/pics/stationmap_metpy.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/products/satelite/radar/DE1200_RV2309130955_000" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/products/satelite/radar/raa01-rw_10000-2309131030-dwd---bin.bz2" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/products/satelite/radar/raa01-rw_10000-latest-dwd---bin" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/products/satelite/radar/raa01-rw_10000-latest-dwd---bin.bz2" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/products/satelite/radar/radolan.nc" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/products/satelite/radar/radolan_plot.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/products/satelite/radar/radolan_plot2.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/products/satelite/radar/test.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ressources/documentation/pics/radolan_plot2.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ressources/documentation/pics/sat_irvis.png" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/products/satelite/SAT_TEST.png" beforeDir="false" afterPath="$PROJECT_DIR$/products/satelite/satelitetests/SAT_TEST.png" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/products/satelite/cut.tiff" beforeDir="false" afterPath="$PROJECT_DIR$/products/satelite/cut.tiff" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/products/satelite/ir_im.py" beforeDir="false" afterPath="$PROJECT_DIR$/products/satelite/satelitetests/ir_im.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/products/satelite/ircalc.py" beforeDir="false" afterPath="$PROJECT_DIR$/ressources/old folders/ircalc.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/products/satelite/request_ir.py" beforeDir="false" afterPath="$PROJECT_DIR$/products/satelite/satelitetests/request_ir.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/products/satelite/test.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/products/satelite/test_2.py" beforeDir="false" afterPath="$PROJECT_DIR$/products/satelite/satelitetests/test_2.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/products/satelite/europe/europe_2023-09-01 09:45:00.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/products/satelite/europe/europe_2023-09-01 10:00:00.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/products/satelite/europe/europe_2023-09-01 10:15:00.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/products/satelite/europe/europe_2023-09-01 10:30:00.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/products/satelite/europe/europe_2023-09-01 10:45:00.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/products/satelite/europe/europe_2023-09-01 11:00:00.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/products/satelite/europe/europe_2023-09-01 11:15:00.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/products/satelite/europe/europe_2023-09-01 11:30:00.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/products/satelite/europe/europe_2023-09-01 11:45:00.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/products/satelite/europe/europe_2023-09-01 12:00:00.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/products/satelite/satelites.py" beforeDir="false" afterPath="$PROJECT_DIR$/products/satelite/satelites.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/readme.md" beforeDir="false" afterPath="$PROJECT_DIR$/readme.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ressources/Data/metar_groundlevel.csv" beforeDir="false" afterPath="$PROJECT_DIR$/ressources/Data/metar_groundlevel.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ressources/Data/metarsupp.csv" beforeDir="false" afterPath="$PROJECT_DIR$/ressources/Data/metarsupp.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ressources/tools/imuktools.py" beforeDir="false" afterPath="$PROJECT_DIR$/ressources/tools/imuktools.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ressources/tools/observations.py" beforeDir="false" afterPath="$PROJECT_DIR$/ressources/tools/observations.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -65,12 +65,9 @@
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/ressources/documentation/pics" />
-      <recent name="$PROJECT_DIR$/products/satelite" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/ressources/documentation/pics" />
-      <recent name="$PROJECT_DIR$/products/satelite/satelitetests" />
-      <recent name="$PROJECT_DIR$/ressources/old folders" />
     </key>
   </component>
   <component name="RunManager">
@@ -298,17 +295,6 @@
     <option name="localTasksCounter" value="11" />
     <servers />
   </component>
-  <component name="Vcs.Log.Tabs.Properties">
-    <option name="TAB_STATES">
-      <map>
-        <entry key="MAIN">
-          <value>
-            <State />
-          </value>
-        </entry>
-      </map>
-    </option>
-  </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Improve Fonts and Image Quality using different sampling method" />
     <MESSAGE value="HotFix for Python Path" />
@@ -322,6 +308,11 @@
           <url>file://$PROJECT_DIR$/products/gph_maps/bd_sw_meteosat.py</url>
           <line>517</line>
           <option name="timeStamp" value="1" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/products/satelite/satelites.py</url>
+          <line>195</line>
+          <option name="timeStamp" value="2" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
