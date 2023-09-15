@@ -73,12 +73,6 @@ class satelite_image:
         ax.imshow(output_image, origin='upper', transform=ccrs.PlateCarree(), extent=extent, cmap='gray', vmin=0,
                   vmax=255)
 
-        # Berechne den dpi-Wert für die gewünschte Auflösung
-        auflösung_breite = 1920
-        auflösung_höhe = 1080
-        zoll_pro_dpi = 1 / 600  # Standardmäßig etwa 80 dpi pro Zoll
-        dpi = max(auflösung_breite / (zoll_pro_dpi * plt.rcParams['figure.figsize'][0]),
-                  auflösung_höhe / (zoll_pro_dpi * plt.rcParams['figure.figsize'][1]))
         ax.set_frame_on(False)
         plt.tight_layout()
         plt.savefig(self.name+'/'+self.name+'_'+self.time+'.png', dpi=300)
