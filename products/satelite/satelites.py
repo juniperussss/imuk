@@ -25,9 +25,11 @@ import seaborn as sns
 # turn off warnings (suppresses output from certification verification when verify=false)
 warnings.simplefilter("ignore")
 
-def image_brigtness(cloud_brightness_threshold,time,visible=False):
+def image_brigtness(cloud_brightness_threshold,time,visible=False,radar=False):
     if visible:
         local_image_path = 'baseimages/vis/' + time + '.tiff'
+    elif radar:
+        local_image_path = 'baseimages/radar/geotiff.tif'
     else:
         local_image_path = 'baseimages/ir/' + time + '.tiff'
 
@@ -95,8 +97,15 @@ class satelite_image:
         ax.imshow(output_image_vis, origin='upper', transform=ccrs.PlateCarree(), extent=extent, cmap='gray', vmin=0,
                   vmax=255)
 
+
         if self.radar:
-            ds = wrl.io.open_radolan_dataset("radar/DE1200_RV2309130955_000")
+            print("start radar")
+
+            with rasterio.open("baseimages/radar/geotiff.tif") as src:
+                output_image_radar  = src.read(3)
+            #output_image_radar =image_brigtness(cloud_brightness_threshold=5,time=self.time,radar=True)
+            ax.imshow(output_image_radar, origin='upper', transform=ccrs.PlateCarree(), extent=extent, cmap='gray', vmin=0,
+                  vmax=255)
 
         ax.set_frame_on(False)
         plt.tight_layout()
@@ -146,8 +155,8 @@ def singlemaps():
 
     times = datetime_obj.strftime('%Y-%m-%dT%H:%M:%S.%fZ')
     time  = datetime_obj.strftime('%Y-%m-%d %H:%M:%S')
-    request_sats(times,times,time,visible=True)
-    request_sats(times, times, time, visible=False)
+    #request_sats(times,times,time,visible=True)
+    #request_sats(times, times, time, visible=False)
 
     #print("starting europe")
     #europe = satelite_image( 35, 65,-45, 45,time,"europe")
@@ -155,7 +164,7 @@ def singlemaps():
     #europe.remap()
 
     print("starting germany")
-    germany = satelite_image( 47, 55,5, 15,time,"germany")
+    germany = satelite_image( 47, 55,5, 15,time,"germany",radar=True)
     germany.remap()
 
     #print("starting lower_saxony")

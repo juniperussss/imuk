@@ -63,7 +63,7 @@ plt.savefig("radolan_plot.png")
 
 ds = wrl.io.open_radolan_dataset("raa01-rw_10000-latest-dwd---bin")
 ds = wrl.io.open_radolan_dataset("DE1200_RV2309130955_000")
-#ds.RV.to_netcdf("radolan.nc")
+ds.RV.to_netcdf("radolan.nc")
 
 # print the xarray dataset
 print(ds)
