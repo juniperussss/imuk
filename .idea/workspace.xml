@@ -5,30 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="96b7b464-877c-48e9-964f-766dfa9a1703" name="Changes" comment="HotFix for Locale">
-      <change afterPath="$PROJECT_DIR$/products/satelite/radar/DE1200_RV2309130955_000" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/products/satelite/radar/raa01-rw_10000-2309131030-dwd---bin.bz2" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/products/satelite/radar/raa01-rw_10000-latest-dwd---bin" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/products/satelite/radar/raa01-rw_10000-latest-dwd---bin.bz2" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/products/satelite/radar/radolan.nc" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/products/satelite/radar/radolan_plot.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/products/satelite/radar/radolan_plot2.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/products/satelite/radar/test.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ressources/documentation/pics/radolan_plot2.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ressources/documentation/pics/sat_irvis.png" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/products/satelite/cut.tiff" beforeDir="false" afterPath="$PROJECT_DIR$/products/satelite/cut.tiff" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/products/satelite/europe/europe_2023-09-01 09:45:00.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/products/satelite/europe/europe_2023-09-01 10:00:00.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/products/satelite/europe/europe_2023-09-01 10:15:00.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/products/satelite/europe/europe_2023-09-01 10:30:00.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/products/satelite/europe/europe_2023-09-01 10:45:00.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/products/satelite/europe/europe_2023-09-01 11:00:00.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/products/satelite/europe/europe_2023-09-01 11:15:00.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/products/satelite/europe/europe_2023-09-01 11:30:00.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/products/satelite/europe/europe_2023-09-01 11:45:00.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/products/satelite/europe/europe_2023-09-01 12:00:00.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/products/satelite/satelites.py" beforeDir="false" afterPath="$PROJECT_DIR$/products/satelite/satelites.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/readme.md" beforeDir="false" afterPath="$PROJECT_DIR$/readme.md" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -53,15 +30,15 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
-    &quot;last_opened_file_path&quot;: &quot;/home/alex/PycharmProjects/imuk/ressources/documentation/pics&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "git-widget-placeholder": "main",
+    "last_opened_file_path": "/home/alex/miniforge-pypy3/bin/conda",
+    "settings.editor.selected.configurable": "com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/ressources/documentation/pics" />
@@ -79,7 +56,6 @@
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
       <option name="SDK_HOME" value="$USER_HOME$/mambaforge/envs/imuk/bin/python" />
-      <option name="SDK_NAME" value="imuk" />
       <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/products/gph_maps" />
       <option name="IS_MODULE_SDK" value="false" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
@@ -101,7 +77,6 @@
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
       <option name="SDK_HOME" value="$USER_HOME$/mambaforge/envs/imuk/bin/python" />
-      <option name="SDK_NAME" value="imuk" />
       <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/ressources/tools" />
       <option name="IS_MODULE_SDK" value="false" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
@@ -123,7 +98,6 @@
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
       <option name="SDK_HOME" value="$USER_HOME$/mambaforge/envs/imuk/bin/python" />
-      <option name="SDK_NAME" value="imuk" />
       <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/products/gph_maps" />
       <option name="IS_MODULE_SDK" value="false" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
@@ -145,7 +119,6 @@
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
       <option name="SDK_HOME" value="$USER_HOME$/mambaforge/envs/imuk/bin/python" />
-      <option name="SDK_NAME" value="imuk" />
       <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/products/gph_maps" />
       <option name="IS_MODULE_SDK" value="false" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
@@ -167,7 +140,6 @@
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
       <option name="SDK_HOME" value="$USER_HOME$/mambaforge/envs/imuk/bin/python" />
-      <option name="SDK_NAME" value="imuk" />
       <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/products/gph_maps" />
       <option name="IS_MODULE_SDK" value="false" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
@@ -189,7 +161,6 @@
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
       <option name="SDK_HOME" value="$USER_HOME$/mambaforge/envs/imuk/bin/python" />
-      <option name="SDK_NAME" value="imuk" />
       <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/products/gph_maps" />
       <option name="IS_MODULE_SDK" value="false" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
