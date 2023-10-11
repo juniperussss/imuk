@@ -11,8 +11,7 @@ Using opendata from the dwd and NOAA to visualize and display synoptic Data
 ![Satellite](ressources/documentation/pics/sat_irvis.png)
 ![Satellite](ressources/documentation/pics/europe.png)
 
-
-
+![Satellite](ressources/documentation/pics/germany.png)
 <div style="display: flex; justify-content: space-between;">
     <img src="ressources/documentation/pics/lower_saxony.png" alt="Bild 2" width="50%">
     <img src="ressources/documentation/pics/hannover.png" alt="Bild 3" width="50%">

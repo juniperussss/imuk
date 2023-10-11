@@ -160,6 +160,23 @@ class satelite_image:
         #ax.add_feature(cfeature.OCEAN)#, facecolor='navy')
         if self.name =="lower_saxony":
             ax.add_feature(cfeature.STATES)
+        elif self.name == "hannover":
+            ax.add_feature(cfeature.STATES)
+            rivers_10m = cfeature.NaturalEarthFeature('physical', 'rivers_lake_centerlines', '10m',
+                                edgecolor='face',
+                                facecolor="blue",#cfeature.COLORS['water'],
+                                zorder=0)
+            lake_10m = cfeature.NaturalEarthFeature('physical', 'lakes', '10m',
+                                edgecolor='face',
+                                facecolor="blue",#cfeature.COLORS['water'],
+                                zorder=0)
+            urban_10m = cfeature.NaturalEarthFeature('cultural', 'urban_areas', '10m',
+                    edgecolor='face',
+                    facecolor="red",#cfeature.COLORS['water'],
+                    zorder=0)
+            ax.add_feature(rivers_10m)
+            ax.add_feature(lake_10m)
+            ax.add_feature(urban_10m)
         ax.add_feature(cfeature.BORDERS)
         #if self.name !="europe":
          #   ax.add_feature(cfeature.LAKES)
@@ -194,10 +211,10 @@ class satelite_image:
 
 
         extent = (-70, 70, 24, 72) #self.bbox
-        ax.imshow(output_image_ir, origin='upper', transform=ccrs.PlateCarree(), extent=extent, cmap='gray', vmin=0,
+        ax.imshow(output_image_ir, origin='upper', transform=ccrs.PlateCarree(), extent=extent, alpha=0.6,cmap='gray', vmin=0,
                   vmax=255)
 
-        ax.imshow(output_image_vis, origin='upper', transform=ccrs.PlateCarree(), extent=extent, cmap='gray', vmin=0,
+        ax.imshow(output_image_vis, origin='upper', transform=ccrs.PlateCarree(), extent=extent, alpha=0.6,cmap='gray', vmin=0,
                   vmax=255)
 
 
@@ -278,7 +295,7 @@ class satelite_image:
 
             # Erstelle die benutzerdefinierte Colormap
             color_list = list(zip(normalized_values, colorss))
-            
+
             custom_cmap = LinearSegmentedColormap.from_list('custom_colormap', color_list)
 
             #custom_cmap = LinearSegmentedColormap.from_list('custom_colormap', colors)
@@ -345,21 +362,21 @@ def singlemaps():
 
     #europe.remap()
 
-    print("starting germany")
+    #print("starting germany")
     #germany = satelite_image( 47, 55,5, 15,time,"germany")#,bbox=(0,20,40,60), region="germany")#,radar=True)
-    germany = satelite_image( 46.3, 56,1.9, 19.1,time,"germany",radar=True)
-    germany.remap()
+    #germany = satelite_image( 46.3, 56,1.9, 19.1,time,"germany",radar=True)
+    #germany.remap()
 
-    print("starting lower_saxony")
-    lower_saxony = satelite_image( 51.2, 53.9,5.2, 13.,time,"lower_saxony",radar=True)
+    #print("starting lower_saxony")
+    #lower_saxony = satelite_image( 51.2, 53.9,5.2, 13.,time,"lower_saxony",radar=True)
 
-    lower_saxony.remap()
+    #lower_saxony.remap()
 
 
-   # print("starting hannover")
-  #  hannover = satelite_image(52.117469,52.604716,9,10.5,time,"hannover")
+    print("starting hannover")
+    hannover = satelite_image(52.117469,52.604716,9,10.5,time,"hannover",radar=True)
 
-    #hannover.remap()
+    hannover.remap()
     return
 def multimap():
     for quart in range(0,10,1):
