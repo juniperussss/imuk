@@ -6,6 +6,7 @@
   <component name="ChangeListManager">
     <list default="true" id="96b7b464-877c-48e9-964f-766dfa9a1703" name="Changes" comment="HotFix for Locale">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/products/satelite/satelites.py" beforeDir="false" afterPath="$PROJECT_DIR$/products/satelite/satelites.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -30,15 +31,15 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "git-widget-placeholder": "main",
-    "last_opened_file_path": "/home/alex/miniforge-pypy3/bin/conda",
-    "settings.editor.selected.configurable": "com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/home/alex/miniforge-pypy3/bin/conda&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/ressources/documentation/pics" />
@@ -47,7 +48,7 @@
       <recent name="$PROJECT_DIR$/ressources/documentation/pics" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.bd_sw_meteosat">
+  <component name="RunManager">
     <configuration name="bd_sw_meteosat" type="PythonConfigurationType" factoryName="Python" nameIsGenerated="true">
       <module name="documents" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -282,7 +283,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/products/satelite/satelites.py</url>
-          <line>195</line>
+          <line>196</line>
           <option name="timeStamp" value="2" />
         </line-breakpoint>
       </breakpoints>
