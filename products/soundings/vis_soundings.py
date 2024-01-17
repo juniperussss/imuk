@@ -14,7 +14,8 @@ from metpy.units import units
 import numpy as np
 from PIL import Image, ImageDraw, ImageFont
 import locale
-locale.setlocale(locale.LC_TIME, 'de_DE')
+import matplotlib.ticker as ticker
+locale.setlocale(locale.LC_TIME, 'de_DE.UTF8')
 oldcwd=os.getcwd()
 
 newcwd = oldcwd +"/products" +"/soundings"
@@ -78,12 +79,40 @@ class  sounding:
         u, v = mpcalc.wind_components(wind_speed, wind_dir)
         
         print(df.head())
-        fig = plt.figure(figsize=(12.8,7.2))
+        fig = plt.figure(figsize=(12,9))#, tight_layout=True)
         if self.wind_plot==True:
-            gs = gridspec.GridSpec(1, 8, figure=fig)  # 3/4 für den Hauptplot, 1/4 für den Nebenplot
-            ax1 = fig.add_subplot(gs[1:7])
-            ax2 = fig.add_subplot(gs[7:8])
-            skew = SkewT(fig,rotation=30,subplot=ax1, aspect="auto")
+            gs = gridspec.GridSpec(1, 8)  # 3/4 für den Hauptplot, 1/4 für den Nebenplot
+            gs.update(wspace=0.01)#, hspace=0.05) # set the spacing between axes. 
+            #ax1 = fig.add_subplot(gs[:,:7])
+            ax2 = fig.add_subplot(gs[:,6:])
+            skew = SkewT(fig,rotation=45,subplot=gs[:,:6], aspect=90)
+               #   if self.wind_plot == True:
+            # Erstellen Sie einen Subplot für den Windgeschwindigkeitsverlauf
+            wind_profile_subplot = ax2#fig.add_subplot(122)  # Ändern Sie die Zahlen je nach Bedarf
+
+            # Plot des Windgeschwindigkeitsverlaufs
+            wind_profile_subplot.semilogy(df['AE_FF'].values, df['AE_P'], 'b', linewidth=2)
+            wind_profile_subplot.set_ylim(100, 1000)
+            wind_profile_subplot.set_xlim(0, 100)  # Passen Sie die x-Limits an
+                # Vertikaler Strich bei x = 50
+            wind_profile_subplot.axvline(x=50, color='grey', linewidth=1)
+            for y_value in [200, 300, 400, 500, 600, 700, 800, 900]:
+                wind_profile_subplot.axhline(y=y_value, color='grey', linewidth=1)
+
+            # Ticks nur bei 0, 50 und 100 auf der x-Achse
+            wind_profile_subplot.set_xticks([0, 50, 100])
+            # Weitere Anpassungen für den Windprofilplot
+            wind_profile_subplot.set_xlabel(f'Windgeschwindigkeit ({wind_speed.units:~P})')
+            #wind_profile_subplot.set_ylabel(f'Pressure ({p.units:~P})')
+
+            wind_profile_subplot.set(yticklabels=[])  
+            wind_profile_subplot.set(ylabel=None)
+            wind_profile_subplot.tick_params(labelleft=False, left=False)
+            wind_profile_subplot.invert_yaxis()
+            wind_profile_subplot.get_yaxis().set_ticks([])
+            wind_profile_subplot.yaxis.set_major_locator(ticker.NullLocator())
+            wind_profile_subplot.yaxis.set_minor_locator(ticker.NullLocator())
+
         else:
             
         #add_metpy_logo(fig, 115, 100)
@@ -92,11 +121,12 @@ class  sounding:
         # Plot the data using normal plotting functions, in this case using
         # log scaling in Y, as dictated by the typical meteorological plot.
         skew.ax.set_ylim(1000, 100)
-        skew.ax.set_xlim(-40, 60)
+        #
+        skew.ax.set_xlim(-40, 45)
         skew.plot(p, T, 'r')
         skew.plot(p, Td, 'g')
         if self.precision == "high":
-            skew.plot_barbs(p_w, u, v, length=5, y_clip_radius=0)#,sizes={'height':0.2})
+            skew.plot_barbs(p_w, u, v, length=5, y_clip_radius=0,xloc=0.98)#,sizes={'height':0.2})
         else:
             skew.plot_barbs(p, u, v)
 
@@ -129,20 +159,7 @@ class  sounding:
         skew.plot_moist_adiabats()
         skew.plot_mixing_lines()
 
-        if self.wind_plot == True:
-            # Erstellen Sie einen Subplot für den Windgeschwindigkeitsverlauf
-            wind_profile_subplot = ax2#fig.add_subplot(122)  # Ändern Sie die Zahlen je nach Bedarf
-
-            # Plot des Windgeschwindigkeitsverlaufs
-            wind_profile_subplot.plot(df['AE_FF'].values, df['AE_P'], 'b', linewidth=2)
-            wind_profile_subplot.set_ylim(100, 1000)
-            wind_profile_subplot.set_xlim(0, 100)  # Passen Sie die x-Limits an
-
-            # Weitere Anpassungen für den Windprofilplot
-            wind_profile_subplot.set_xlabel(f'Windgeschwindigkeit ({wind_speed.units:~P})')
-            #wind_profile_subplot.set_ylabel(f'Pressure ({p.units:~P})')
-            wind_profile_subplot.invert_yaxis()
-
+  
 
         # Add Box under the plot
         #box_props = dict(width=10, boxstyle="round,pad=0.3", edgecolor="blue", facecolor="lightyellow")
@@ -158,13 +175,21 @@ class  sounding:
     def image_box(self):
         stationid= self.stationid
         image = Image.open("sounding_"+stationid+".png")
+        
+              # Hier können Sie die gewünschte Skalierungsfaktoren anpassen
+        new_width = int(image.width * 2)
+        new_height = int(image.height * 1.2)
+
+        # Bild skalieren
+        image = image.resize((new_width, new_height))
+        
         draw = ImageDraw.Draw(image)
         font = ImageFont.truetype("../../ressources/fonts/liberation/LiberationMono-Bold.ttf", 20)  # Hier können Sie die Schriftart und Größe anpassen
 
         # Koordinaten für den Kasten und Text festlegen
         box_x = 0
         box_y = 0.95*image.height
-        box_width = image.width
+        box_width = 1920#image.width
         box_height = 40
         text = "Hier ist eine Erklärung"
         meausurement = "Messung TEMP " 
@@ -188,9 +213,10 @@ class  sounding:
         return
 
 
-bergen=sounding(stationid="00368", date="2023-10-28 00:00:00", stationname="Bergen",windplot=True)
-bergen.request()
+bergen=sounding(stationid="00368", date="2024-01-02 00:00:00", stationname="Bergen",windplot=True)
+#bergen.request()
 bergen.image()
 bergen.image_box()
+
 
 
