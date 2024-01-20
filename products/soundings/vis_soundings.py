@@ -79,13 +79,13 @@ class  sounding:
         u, v = mpcalc.wind_components(wind_speed, wind_dir)
         
         print(df.head())
-        fig = plt.figure(figsize=(12,9))#, tight_layout=True)
+        fig = plt.figure(figsize=(19.2,10.8))#, tight_layout=True)
         if self.wind_plot==True:
             gs = gridspec.GridSpec(1, 8)  # 3/4 für den Hauptplot, 1/4 für den Nebenplot
             gs.update(wspace=0.01)#, hspace=0.05) # set the spacing between axes. 
             #ax1 = fig.add_subplot(gs[:,:7])
             ax2 = fig.add_subplot(gs[:,6:])
-            skew = SkewT(fig,rotation=45,subplot=gs[:,:6], aspect=90)
+            skew = SkewT(fig,rotation=45,subplot=gs[:,:6], aspect=65)
                #   if self.wind_plot == True:
             # Erstellen Sie einen Subplot für den Windgeschwindigkeitsverlauf
             wind_profile_subplot = ax2#fig.add_subplot(122)  # Ändern Sie die Zahlen je nach Bedarf
@@ -174,21 +174,30 @@ class  sounding:
         return
     def image_box(self):
         stationid= self.stationid
-        image = Image.open("sounding_"+stationid+".png")
-        
+ 
               # Hier können Sie die gewünschte Skalierungsfaktoren anpassen
-        new_width = int(image.width * 2)
-        new_height = int(image.height * 1.2)
+        # Größe des Bildes
+        breite = 1920
+        höhe = 1080
 
+        # Weißes Bild erstellen
+        image = Image.new("RGB", (breite, höhe), "white")
+        bild = Image.open("sounding_"+stationid+".png")
         # Bild skalieren
-        image = image.resize((new_width, new_height))
+        # Das andere Bild auf das weiße Bild zeichnen
+                # Gewünschte Größe für das andere Bild
+        skaler = 1.14
+        # Das andere Bild skalieren
+        bild = bild.resize((int( bild.width * skaler), int( bild.height * skaler)))
+        image.paste(bild, (-100,-120))
+
         
         draw = ImageDraw.Draw(image)
         font = ImageFont.truetype("../../ressources/fonts/liberation/LiberationMono-Bold.ttf", 20)  # Hier können Sie die Schriftart und Größe anpassen
 
         # Koordinaten für den Kasten und Text festlegen
         box_x = 0
-        box_y = 0.95*image.height
+        box_y = image.height - 40#0.95*image.height
         box_width = 1920#image.width
         box_height = 40
         text = "Hier ist eine Erklärung"
@@ -205,7 +214,7 @@ class  sounding:
 
         # Text im Kasten zeichnen
         draw.text((box_x + 10, box_y + 10), meausurement + stationname+ stationidi, fill="black", font=font)
-        draw.text(((0.8- (0.0029*len(time)))*(box_x + box_width), box_y + 10), time, fill="black", font=font)
+        draw.text(((0.9- (0.0029*len(time)))*(box_x + box_width), box_y + 10), time, fill="black", font=font)
         # Bild mit Kasten speichern
         image.save("sounding_"+stationid+"_box.png")
 
@@ -214,7 +223,7 @@ class  sounding:
 
 
 bergen=sounding(stationid="00368", date="2024-01-02 00:00:00", stationname="Bergen",windplot=True)
-#bergen.request()
+bergen.request()
 bergen.image()
 bergen.image_box()
 
