@@ -110,8 +110,26 @@ class  sounding:
             wind_profile_subplot.tick_params(labelleft=False, left=False)
             wind_profile_subplot.invert_yaxis()
             wind_profile_subplot.get_yaxis().set_ticks([])
-            wind_profile_subplot.yaxis.set_major_locator(ticker.NullLocator())
-            wind_profile_subplot.yaxis.set_minor_locator(ticker.NullLocator())
+            #wind_profile_subplot.set_xticks([60])
+
+            # Customize y-axis ticks at specific pressure levels (e.g., 200, 400, 600)
+            y_ticks = [200, 400, 600, 800, 1000]  # Add or modify values as needed
+            wind_profile_subplot.set_yticks(y_ticks)
+            #ax3 = wind_profile_subplot.twinx()
+            #ax3.set_yticks([200, 400, 600, 800])  # Von dir gewünschte Werte
+            #ax3.set_yticklabels(['Custom Value 1', 'Custom Value 2', 'Custom Value 3', 'Custom Value 4'])  # Von dir gewünschte Beschriftungen
+            #ax3.set_ylim(100, 1000)  # Passen Sie die Grenzen der zusätzlichen y-Achse an
+            #ax3.spines.left.set_position(('data', 80))  # Passen Sie die Grenzen der zusätzlichen y-Achse an
+            #ax3.spines.right.set_color('none')
+
+            #ax3.yaxis.tick_left() # Ticks auf der linken Seite der zusätzlichen y-Achse anzeigen
+            #wind_profile_subplot.yaxis.set_major_locator(ticker.NullLocator())
+            #wind_profile_subplot.yaxis.set_minor_locator(ticker.NullLocator())
+            #wind_profile_subplot.spines.left.set_position(('data', 80))
+            #wind_profile_subplot.spines.right.set_color('none')
+            #wind_profile_subplot.spines.left.set_color('black')
+            #wind_profile_subplot.yaxis.set_ticks_position('left')
+
 
         else:
             
@@ -172,6 +190,7 @@ class  sounding:
         plt.savefig("sounding_"+stationid+".png")
         #plt.show()
         return
+
     def image_box(self):
         stationid= self.stationid
  
@@ -205,7 +224,7 @@ class  sounding:
         stationname = self.stationname
         stationidi = "("+self.stationid+")"
         time = pd.to_datetime(self.date, format='%Y-%m-%d %H:%M:%S')
-        time = time.strftime('%H UTC, %A %d.%m %Y')
+        time = time.strftime('%H UTC, %A %d.%m.%Y')
         print(len(time))
 
 
