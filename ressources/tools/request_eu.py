@@ -92,7 +92,7 @@ number=np.arange(0,len(variables))
 #print(variables[0][0])
 #same variable issue for temperature and geopotential height !
 #print(variables["t"][1])
-url_base = 'https://opendata.dwd.de/weather/nwp/icon/grib/'
+url_base = 'https://opendata.dwd.de/weather/nwp/icon-eu/grib/'
 
 from cdo import Cdo
 

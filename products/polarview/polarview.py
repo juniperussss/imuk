@@ -5,6 +5,7 @@
 #---- calling for the necessary libraries
 import os
 import  Ngl
+import Nio
 import numpy as np
 import warnings
 from datetime import datetime
@@ -118,10 +119,10 @@ def picture(vara,varb,number,resx,resy,dir_origin,filenames):
     mpres.mpDataSetName                 = "Earth..4"  # -- set map data base version
 
     mpres.mpLimitMode = "LatLon" #-- limiting the map via lat/lon
-    mpres.mpMinLatF = 0 #min(lat1) #-- min latitude
-    mpres.mpMaxLatF = 70 #max(lat1) #-- max latitude
-    mpres.mpMinLonF = -45  #min(lon1) #-- min longitude
-    mpres.mpMaxLonF = 45 #max(lon1) #-- max longtitude
+    mpres.mpMinLatF = 30 #min(lat1) #-- min latitude
+    mpres.mpMaxLatF = 45 #max(lat1) #-- max latitude
+    mpres.mpMinLonF = -180  #min(lon1) #-- min longitude
+    mpres.mpMaxLonF = 180 #max(lon1) #-- max longtitude
 
     # Converting the Lambert Perspective Options
     mpres.mpProjection         = "LambertConformal" #projection type

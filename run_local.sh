@@ -1,20 +1,22 @@
 #    . ~/.bashrc_miniconda3
+
+#conda init
 conda activate imuk
 
 start=0
-end=168
+end=3 #168
 stepsize=3
 
-path_origin=/Users/alex/Code/imuk                           # Change this
+path_origin=/home/alex/CODE/imuk #/Users/alex/Code/imuk                           # Change this
 
-python_path=/Users/alex/miniforge3/envs/imuk/bin/python     # and this
-path_output=/Users/alex/Code/imuk/localtest                 # and this
+python_path=/home/alex/miniforge3/envs/imuk/bin/python #/Users/alex/miniforge3/envs/imuk/bin/python     # and this
+path_output="${path_origin}/localtest"                 
 export PYTHONPATH=$PYTHONPATH:${path_origin}
-path_input=/localdata/weathermaps/imuk
+#path_input=/localdata/weathermaps/imuk
 
 
-path_output_klein=/localdata/weathermaps/webside/klein
-path_output_4panel=/localdata/weathermaps/webside/4panel
+#path_output_klein=/localdata/weathermaps/webside/klein
+#path_output_4panel=/localdata/weathermaps/webside/4panel
 xdim_1=945
 ydim_1=480
 
