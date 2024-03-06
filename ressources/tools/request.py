@@ -84,9 +84,9 @@ class p(object):
 
 global variables
 
-vars=["t","t","t","clct_mod","u","v","relhum","fi","fi","fi","ww","pmsl","tot_prec"]
-levels=['pressure-level','pressure-level','pressure-level','single-level','pressure-level','pressure-level','pressure-level','pressure-level','pressure-level','pressure-level','single-level','single-level','single-level']
-gph=['_500',"_700","_850","","_300","_300","_700","_500","_700","_850","","",""]
+vars=["t","t","t","clct_mod","u","v","relhum","fi","fi","fi","ww","pmsl","tot_prec","u_10m","v_10m","vmax_10m","t_2m","cape_con","snow_con"]
+levels=['pressure-level','pressure-level','pressure-level','single-level','pressure-level','pressure-level','pressure-level','pressure-level','pressure-level','pressure-level','single-level','single-level','single-level','single-level','single-level','single-level','single-level','single-level' ,'single-level']
+gph=['_500',"_700","_850","","_300","_300","_700","_500","_700","_850","","","","","","","","",""]
 variables= list(zip(vars,levels, gph))
 number=np.arange(0,len(variables))
 #print(variables[0][0])
