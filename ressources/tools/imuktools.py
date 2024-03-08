@@ -659,7 +659,10 @@ def calculate_sea_level_pressure(P_station, H_station, T_station):
     gas_constant = 287.0  # spezifische Gaskonstante für trockene Luft
     if P_station<100 : P_station=P_station+1000
     exponent = (gravity / (lapse_rate * gas_constant))
-    sea_level_pressure = P_station * (1 + (lapse_rate * H_station) / (T_station + lapse_rate * H_station)) ** exponent
+    try:
+        sea_level_pressure = P_station * (1 + (lapse_rate * H_station) / (T_station + lapse_rate * H_station)) ** exponent
+    except ZeroDivisionError:
+        sea_level_pressure = 1000
     if np.real(sea_level_pressure)>9000: sea_level_pressure=sea_level_pressure/1000
     return sea_level_pressure
 #def imdatconvert():
