@@ -7,9 +7,9 @@ start=0
 end=3 #168
 stepsize=3
 
-#path_origin=/Users/alex/Code/imuk                           # Change this
+#path_origin=/Users/alex/Code/imuk                      
 #python_path=/Users/alex/miniforge3/envs/imuk/bin/python   
-path_origin=/mnt/nvmente/CODE/imuk #/Users/alex/Code/imuk    
+path_origin=/mnt/nvmente/CODE/imuk #/Users/alex/Code/imuk   # Change this 
 python_path=/home/alex/miniforge3/envs/imuk/bin/python      # and this
  
 
