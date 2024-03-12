@@ -224,24 +224,34 @@ def dates_for_subtitles(vara,number,filenames):
     delta=str(number * deltatime).zfill(2)
     return hour,weekday,datetime_object,delta
 
-def crop_image(number,levelname,wkres,resx,resy,filenames):
+def crop_image(number,levelname,wkres,resx,resy,filenames,square=False):
     from PIL import Image
     import os
     im = Image.open(levelname +  filenames[number] + ".png", mode='r')
-    left = wkres.wkWidth /55#70
-    top = wkres.wkWidth/4 #4 #960
-    right = wkres.wkWidth - wkres.wkWidth/43#90
-    bottom = wkres.wkWidth - wkres.wkWidth/5#780
+    if square :
+        lh=50
+        th=8.9
+        rh=40
+        bh=80
+    else:
+        lh=55
+        th=4
+        rh=43
+        bh=5
+    left = wkres.wkWidth /lh
+    top = wkres.wkWidth/th
+    right = wkres.wkWidth - wkres.wkWidth/rh
+    bottom = wkres.wkWidth - wkres.wkWidth/bh
     im1 = im.crop((left, top, right, bottom))
     left = 0
     top = 0
     right = resx
     bottom =resy
-    #im2 = im1.crop((left, top, right, bottom))
-    #im2 = im1.resize((resx, resy), resample=Image.BOX)
     im2 = im1.resize((resx, resy), resample=Image.LANCZOS)
     im2.save(levelname + filenames[number] + ".jpg", format='jpeg')
     os.remove(levelname +  filenames[number] + ".png")
+
+
 
 def crop_image_aspected(number,levelname,wkres,xres,yres):
     from PIL import Image
@@ -311,7 +321,7 @@ def legendBACK(number,levelname,stepsize,width,heigth,colormap,levels,filenames,
     #os.remove(levelname +  filenames[number] + ".png")
 
 
-def legend(number,levelname,stepsize,width,heigth,colormap,levels,filenames,stepstart, unit,inputpath,resx):
+def legend(number,levelname,stepsize,width,heigth,colormap,levels,filenames,stepstart, unit,inputpath,resx,trans=True):
     from PIL import Image, ImageDraw as D, ImageFont
     import numpy as np
     im = Image.open(levelname + filenames[number] + ".png", mode='r')
@@ -366,11 +376,12 @@ def legend(number,levelname,stepsize,width,heigth,colormap,levels,filenames,step
         ci +=1
     
     #### Adding Fake Transparency ######
-    imtrans = Image.open(inputpath+'/ressources/img/trans3.png', mode='r')
-    xtransdelta= int(xmaxtrans-xmintrans)
-    ytransdelta= int(abs(yhightrans-ylowtrans))
-    resized = imtrans.resize((xtransdelta-outlinewidth,ytransdelta-2*outlinewidth))
-    im.paste(resized, (int(xmintrans+outlinewidth),int(yhightrans+outlinewidth)))
+    if trans:
+        imtrans = Image.open(inputpath+'/ressources/img/trans3.png', mode='r')
+        xtransdelta= int(xmaxtrans-xmintrans)
+        ytransdelta= int(abs(yhightrans-ylowtrans))
+        resized = imtrans.resize((xtransdelta-outlinewidth,ytransdelta-2*outlinewidth))
+        im.paste(resized, (int(xmintrans+outlinewidth),int(yhightrans+outlinewidth)))
 
     im.save(levelname + filenames[number] + ".png", format='png')
     #os.remove(levelname +  filenames[number] + ".png")
