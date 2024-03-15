@@ -53,6 +53,12 @@ Using opendata from the dwd and NOAA to visualize and display synoptic Data
 #### 2 M Temp
 ![Stationmap](ressources/documentation/pics/modellweather/modell_weather_000.jpg)
 
+
+### Meteogramm
+![Stationmap](ressources/documentation/pics/meteogramm/meteogramm.png)
+
+
+
 ## Todos
 ### High Priority
 #### Requesting
@@ -124,6 +130,9 @@ Here are different parameters used to display the groundlevel documented.
 
 ## Might be Useful
 
+plot obs: 
+
+https://unidata.github.io/MetPy/latest/tutorials/declarative_tutorial.html#sphx-glr-tutorials-declarative-tutorial-py
 
 how to generate stationplots through metpy and cartopy
 https://www.youtube.com/watch?v=3sRi4eSg52U
