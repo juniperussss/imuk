@@ -50,7 +50,7 @@ print(os.getcwd())
 from ressources.tools import imuktools
 from ressources.tools.observations import metarrequest
 
-fcst_hrs = imuktools.fcst_hrsf()
+fcst_hrs = imuktools.fcst_hrsf(model='icon')
 fcst_hrs_output = []
 os.chdir(dir_parent)
 for output in fcst_hrs:
@@ -89,6 +89,9 @@ levels=['pressure-level','pressure-level','pressure-level','single-level','press
 gph=['_500',"_700","_850","","_300","_300","_700","_500","_700","_850","","","","","","","","",""]
 variables= list(zip(vars,levels, gph))
 number=np.arange(0,len(variables))
+
+
+
 #print(variables[0][0])
 #same variable issue for temperature and geopotential height !
 #print(variables["t"][1])
@@ -112,6 +115,8 @@ def varrequest(number):
     os.chdir(dir_Nest + f'/{var}'+f'/{variables[number][2][1:]}')
 
     for hour in fcst_hrs:
+        if hour == 0 and var == "vmax_10m":  # vmax_10m is not available for 0 hour
+            continue
         url_data = url_base +'{}/{}/icon_global_icosahedral_{}_{}{}_{}{}_{}.grib2.bz2'.format(
             init_time_hr, var, variables[number][1], cdt_yrmoday, init_time_hr, str(hour).zfill(3), variables[number][2], str(var).upper())
         #print(url_data)
