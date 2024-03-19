@@ -264,15 +264,10 @@ def crop_image_aspected(number,levelname,wkres,xres,yres):
     im1.save(levelname + str(number) + ".jpg", format='jpg')
 
 
-def fcst_hrsf():
+def fcst_hrsf(model="icon"):
     import numpy as np
-    # fcst_hr_1 = np.arange(0, 78, 1)
-    # fcst_hr_2 = np.arange(78, 181, 3)
-    # fcst_hrs = np.concatenate((fcst_hr_1, fcst_hr_2))
-    
-    fcst_hrs = np.arange(0, 181, 3)
-    #fcst_hrs = np.arange(0, 5, 1)
-    #fcst_hrs= [0,12,36]
+    f_range = 121 if "eu" in model else 181
+    fcst_hrs = np.arange(0, f_range, 3)
     
     return fcst_hrs
 def filenames(timerange):
