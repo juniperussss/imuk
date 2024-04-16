@@ -8,11 +8,14 @@ Created on Thu Nov  4 17:31:52 2021
 
 import os
 from datetime import datetime
-#from tqdm import tqdm
+from tqdm import tqdm
 import numpy as np
 import glob
 import argparse
 
+from cdo import Cdo
+
+from cdo import *
 import time
 
 from multiprocessing import Pool
@@ -97,17 +100,20 @@ number=np.arange(0,len(variables))
 #print(variables["t"][1])
 url_base = 'https://opendata.dwd.de/weather/nwp/icon/grib/'
 
-from cdo import Cdo
 
-cdo = Cdo()
-cdo.debug = True
+
 
 grids= dir_origin +'/database/ICON_GLOBAL2EUAU_025_EASY/target_grid_EUAU_025.txt'
 weights= dir_origin +'/database/ICON_GLOBAL2EUAU_025_EASY/weights_icogl2world_025_EUAU.nc'
 
+#try:
+ #   cdo = Cdo()
+#except:
 
+cdo=Cdo("/home/alex/miniforge3/envs/imuk/bin/cdo")
+cdo.debug = True
 def varrequest(number):
-    #print(f'/_{variables[number][1]}'+variables[number][2][1:])
+    print(f'/_{variables[number][1]}'+variables[number][2][1:])
     var= variables[number][0]
 
     os.makedirs(dir_Nest + f'/{var}'+f'/{variables[number][2][1:]}')
