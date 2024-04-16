@@ -43,7 +43,7 @@ from ressources.tools import imuktools
 
 # from ressources.tools.observations import metarrequest
 
-fcst_hrs = imuktools.fcst_hrsf(model='icon-eu')
+fcst_hrs = imuktools.fcst_hrsf(model='icon-d2')
 fcst_hrs_output = []
 os.chdir(dir_parent)
 for output in fcst_hrs:
@@ -82,12 +82,14 @@ class p(object):
 global variables
 
 vars = ["t", "t", "t", "clct_mod", "u", "v", "relhum", "fi", "fi", "fi", "ww", "pmsl", "tot_prec", "u_10m", "v_10m",
-        "vmax_10m", "t_2m", "cape_con", "snow_con"]
+        "vmax_10m", "t_2m", "cape_ml", "snow_con"]
 levels = ['pressure-level', 'pressure-level', 'pressure-level', 'single-level', 'pressure-level', 'pressure-level',
           'pressure-level', 'pressure-level', 'pressure-level', 'pressure-level', 'single-level', 'single-level',
           'single-level', 'single-level', 'single-level', 'single-level', 'single-level', 'single-level',
           'single-level']
 gph = ['_500', "_700", "_850", "", "_300", "_300", "_700", "_500", "_700", "_850", "", "", "", "", "", "", "", "", ""]
+
+levels_label= ["500","700","850","2d","300","300","700","500","700","850","2d","2d","2d","2d","2d","2d","2d","2d","2d" ]
 variables = list(zip(vars, levels, gph))
 number=np.arange(0,len(variables))
 
@@ -106,18 +108,18 @@ def varrequest(number):
     os.chdir(dir_Nest + f'/{var}' + f'/{variables[number][2][1:]}')
 
     for hour in fcst_hrs:
-        url_data = url_base + '{}/{}/icon-de_germany_regular-lat-lon_{}_{}{}_{}{}_{}.grib2.bz2'.format(
+        url_data = url_base + '{}/{}/icon-d2_germany_regular-lat-lon_{}_{}{}_{}_{}_{}.grib2.bz2'.format(
             init_time_hr, var, variables[number][1], cdt_yrmoday, init_time_hr, str(hour).zfill(3),
-            variables[number][2], str(var).upper())
+            levels_label[number], str(var))
         # print(url_data)
         data_request = requests.get(url_data, stream=True)
         if data_request.status_code == 200:
             print(url_data)
             print('{}'.format(var), u'\u2714')
 
-        with open('icon-d2_germany_regular-lat-lon_{}_{}{}_{}{}_{}.grib2.bz2'.format(
-                variables[number][1], cdt_yrmoday, init_time_hr, str(hour).zfill(3), variables[number][2],
-                str(var).upper()), 'wb') as f:
+        with open('icon-d2_germany_regular-lat-lon_{}_{}{}_{}_{}_{}.grib2.bz2'.format(
+                variables[number][1], cdt_yrmoday, init_time_hr, str(hour).zfill(3) ,levels_label[number],
+                str(var)), 'wb') as f:
             f.write(data_request.content)
 
         zip_command = 'bzip2 -d *.bz2'

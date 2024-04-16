@@ -25,13 +25,21 @@ import xarray as xr
 #import gdal
 from matplotlib.colors import LinearSegmentedColormap
 from scipy import ndimage
+import os
+import wradlib as wrl
+import matplotlib.pyplot as plt
+import warnings
+import time
+
+import numpy as np
+import xarray as xr
 
 
 # turn off warnings (suppresses output from certification verification when verify=false)
 warnings.simplefilter("ignore")
 
 oldcwd=os.getcwd()
-
+#PYPROJ_GLOBAL_CONTEXT=ON
 newcwd = oldcwd +"/products" +"/satelite"
 os.chdir(newcwd)
 def image_brigtness(cloud_brightness_threshold,time,visible=False,radar=False): #,region
@@ -126,7 +134,7 @@ def radarrconvert():
     return 
 
 class satelite_image:
-    def __init__(self, target_lat_start,target_lat_end, target_lon_start, target_lon_end,time,name,radar=False): #region,bbox,
+    def __init__(self, target_lat_start,target_lat_end, target_lon_start, target_lon_end,time,name,export_path,radar=False): #region,bbox,
         self.lat_start = target_lat_start
         self.lat_end = target_lat_end
         self.lon_start = target_lon_start
@@ -134,6 +142,7 @@ class satelite_image:
         self.time = time
         self.name = name
         self.radar=radar
+        self.export_path = export_path
         #self.bbox =bbox
         #self.region = region
     def remap(self):
@@ -145,17 +154,14 @@ class satelite_image:
         #ax.LAKES()
         ax.add_feature(cfeature.COASTLINE)
         #ax.add_feature(cfeature.LAND)#, facecolor='darkgreen')
-        land_110m = cfeature.NaturalEarthFeature('physical', 'land', '110m',
+        land_110m = cfeature.NaturalEarthFeature('physical', 'land', '10m',
                                         edgecolor='face',
                                         facecolor="darkgreen",#cfeature.COLORS['land'],
                                         zorder=0)
         ax.add_feature(land_110m)
 
 
-        ocean_110m = cfeature.NaturalEarthFeature('physical', 'ocean', '110m',
-                                        edgecolor='face',
-                                        facecolor="navy",#cfeature.COLORS['water'],
-                                        zorder=0)
+        ocean_110m = cfeature.NaturalEarthFeature('physical', 'ocean', '110m',   edgecolor='face',  facecolor="navy",               zorder=0)
         ax.add_feature(ocean_110m)
         #ax.add_feature(cfeature.OCEAN)#, facecolor='navy')
         if self.name =="lower_saxony":
@@ -211,16 +217,14 @@ class satelite_image:
 
 
         extent = (-70, 70, 24, 72) #self.bbox
-        ax.imshow(output_image_ir, origin='upper', transform=ccrs.PlateCarree(), extent=extent, alpha=0.6,cmap='gray', vmin=0,
-                  vmax=255)
+        ax.imshow(output_image_ir, origin='upper', transform=ccrs.PlateCarree(), extent=extent, alpha=0.6,cmap='gray', vmin=0,vmax=255)
 
-        ax.imshow(output_image_vis, origin='upper', transform=ccrs.PlateCarree(), extent=extent, alpha=0.6,cmap='gray', vmin=0,
-                  vmax=255)
+        ax.imshow(output_image_vis, origin='upper', transform=ccrs.PlateCarree(), extent=extent, alpha=0.6,cmap='gray', vmin=0,vmax=255)
 
 
         if self.radar:
             print("start radar")
-
+            """
             with rasterio.open("baseimages/radar/geotiff_n.tiff") as src:
                 output_image_radar  = src.read(1)
                 extent = src.bounds  # Die Bounding Box der GeoTIFF-Datei
@@ -301,13 +305,25 @@ class satelite_image:
             #custom_cmap = LinearSegmentedColormap.from_list('custom_colormap', colors)
             ax.imshow(output_image_radar, origin='upper', transform=ccrs.PlateCarree(),extent=(left, right, bottom, top),cmap=custom_cmap)#,extent=(5.9, 13.1,48.3, 54))#,extent=(extent.left, extent.right, extent.bottom, extent.top))#, extent=extent)#, cmap='gray', vmin=0,vmax=255)
             #ax.imshow(mask_with_contours, origin='upper', transform=ccrs.PlateCarree(),extent=(left, right, bottom, top),cmap='gray', alpha=0.7)#,extent=(5.9, 13.1,48.3, 54))#,extent=(extent.left, extent.right, extent.bottom, extent.top))#, extent=extent)#, cmap='gray', vmin=0,vmax=255)
+            """
+
+            input_file = "radar/input/raa01-yw_10000-latest-dwd---bin"
+            ds = wrl.io.open_radolan_dataset(input_file)
+            # print the xarray dataset
+            print(ds)
+            #ax.plot(ds.YW,cmap="viridis", transform=ccrs.PlateCarree())
+            #ds["YW"].plot.contourf(ax=ax, transform=ccrs.PlateCarree(), levels=21)
+            #ax.contourf(ds.YW,transform=ccrs.PlateCarree(),levels=21,extent=extent,)
+            ax.contourf(ds.YW.where(ds.YW != 0, np.nan), transform=ccrs.PlateCarree(),extent=[1.435612143, 16.60186543, 45.68358331, 55.86584289],cmap="jet_r")
+
 
             print("radar finished")
         print("start saving")
         ax.set_frame_on(False)
         plt.tight_layout()
-        #plt.show()
-        plt.savefig(self.name+'/'+self.name+'_'+self.time+'.png', dpi=300)
+        #
+        # plt.show()
+        plt.savefig(self.export_path+self.name+'/'+self.name+'_'+self.time+'.png', dpi=150)
 
         return
 
@@ -349,32 +365,34 @@ def request_sats(timestart,timeend,time_file,visible=False, bbox=(-70, 24, 70, 7
     with open("baseimages/"+file_loc+"/"+time_file+'.tiff', 'wb') as f: #+region+"/"
         f.write(img.read())
     return
-def singlemaps():
+
+
+def singlemaps(export_path):
     datetime_obj = datetime(2023, 9, 1, 12, 0, 0)  # Hier setzen Sie Ihr eigenes datetime-Objekt ein
 
     times = datetime_obj.strftime('%Y-%m-%dT%H:%M:%S.%fZ')
     time  = datetime_obj.strftime('%Y-%m-%d %H:%M:%S')
-    #request_sats(times,times,time,visible=True,region="germany")#,bbox=(0,40,20,60),sizemulti=1)
-    #request_sats(times, times, time, visible=False,region="germany")#,bbox=(0,40,20,60),sizemulti=1)
+    #request_sats(times,times,time,visible=True,region="germany",sizemulti=2)
+    #request_sats(times, times, time, visible=False,region="germany",sizemulti=2)
 
-    #print("starting europe")
-    #europe = satelite_image( 35, 65,-45, 45,time,"europe",radar=True)
+    print("starting europe")
+    europe = satelite_image( 35, 65,-45, 45,time,"europe",export_path=export_path,radar=True)
 
-    #europe.remap()
+    europe.remap()
 
-    #print("starting germany")
-    #germany = satelite_image( 47, 55,5, 15,time,"germany")#,bbox=(0,20,40,60), region="germany")#,radar=True)
-    #germany = satelite_image( 46.3, 56,1.9, 19.1,time,"germany",radar=True)
-    #germany.remap()
+    print("starting germany")
+    #germany = satelite_image( 47, 55,5, 15,time,"germany",export_path=export_path)#,bbox=(0,20,40,60), region="germany")#,radar=True)
+    germany = satelite_image( 46.3, 56,1.9, 19.1,time,"germany",export_path=export_path,radar=True)
+    germany.remap()
 
-    #print("starting lower_saxony")
-    #lower_saxony = satelite_image( 51.2, 53.9,5.2, 13.,time,"lower_saxony",radar=True)
+    print("starting lower_saxony")
+    lower_saxony = satelite_image( 51.2, 53.9,5.2, 13.,time,"lower_saxony",export_path=export_path,radar=True)
 
-    #lower_saxony.remap()
+    lower_saxony.remap()
 
 
     print("starting hannover")
-    hannover = satelite_image(52.117469,52.604716,9,10.5,time,"hannover",radar=True)
+    hannover = satelite_image(52.117469,52.604716,9,10.5,time,"hannover",export_path=export_path,radar=True)
 
     hannover.remap()
     return
@@ -402,9 +420,21 @@ def multimap():
         #hannover.remap()
     return
 
+
+
+
+
+def singlemaps_pool(export_path):
+    with Pool() as pool:
+        pool.map(varrequest, number)
+
+    return
+
 #multimap()
 #radarrconvert()
 #radarrconvertrio()
 #request_sats("2023-09-01T12:00:00.000Z","2023-09-01T12:00:00.000Z","2023-09-01 12:00:00",visible=True)
-singlemaps()
+start_time = time.time()
+singlemaps(export_path= "/mnt/nvmente/CODE/imuk/database/output/satelite/")
+print("--- %s seconds ---" % (time.time() - start_time))
 

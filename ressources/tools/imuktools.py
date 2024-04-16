@@ -266,7 +266,13 @@ def crop_image_aspected(number,levelname,wkres,xres,yres):
 
 def fcst_hrsf(model="icon"):
     import numpy as np
-    f_range = 121 if "eu" in model else 181
+    if "eu" in model:
+        f_range = 121
+    elif "d2"in model:
+        f_range = 51 
+    else:
+        f_range =  181
+
     fcst_hrs = np.arange(0, f_range, 3)
     
     return fcst_hrs

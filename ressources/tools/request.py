@@ -13,9 +13,10 @@ import numpy as np
 import glob
 import argparse
 
-from cdo import Cdo
-
 from cdo import *
+
+#print(cdo.__version__())
+cdo = Cdo()
 import time
 
 from multiprocessing import Pool
@@ -74,7 +75,9 @@ os.path.join( '{}/{}/{}/{}'.format(cdt_yr, cdt_mo, cdt_day, init_time_hr))
 os.chdir( '{}/{}/{}/{}'.format(cdt_yr, cdt_mo, cdt_day, init_time_hr))
 dir_Nest = os.path.join(os.getcwd())
 print('entered into', dir_Nest)
+
 metarrequest(dir_origin)
+
 import requests
 class p(object):
     def __init__(self, name):
@@ -110,7 +113,8 @@ weights= dir_origin +'/database/ICON_GLOBAL2EUAU_025_EASY/weights_icogl2world_02
  #   cdo = Cdo()
 #except:
 
-cdo=Cdo("/home/alex/miniforge3/envs/imuk/bin/cdo")
+#cdo=Cdo("/home/alex/miniforge3/envs/imuk/bin/cdo")
+#cdo=Cdo()
 cdo.debug = True
 def varrequest(number):
     print(f'/_{variables[number][1]}'+variables[number][2][1:])
@@ -169,5 +173,6 @@ if __name__ == "__main__":
     start_time = time.time()
     with Pool() as pool:
         pool.map(varrequest, number)
+    #varrequest(0)
     imuktools.cleaning_old_folders()
     print("--- %s seconds ---" % (time.time() - start_time))
