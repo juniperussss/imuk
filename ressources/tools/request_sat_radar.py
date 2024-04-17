@@ -29,6 +29,7 @@ import matplotlib.pyplot as plt
 import warnings
 import time
 
+
 import numpy as np
 import xarray as xr
 warnings.simplefilter("ignore")
@@ -81,16 +82,27 @@ def reqeuest_satelite(timestart,timeend,time_file,visible=False, bbox=(-70, 24, 
 
 def reqeuest_radar(timer,filename="latest"):
     url_base = "https://opendata.dwd.de/weather/radar/radolan/yw/"
-    url_data = url_base +'raa01-yw_10000-{}-dwd---bin.bz2  '.format(
+    url_data = url_base +'raa01-yw_10000-{}-dwd---bin.bz2'.format(
         timer)
+    print(url_data)
+    #url_data = "https://opendata.dwd.de/weather/radar/radolan/yw/raa01-yw_10000-latest-dwd---bin.bz2"
     #print(url_data)
     data_request = requests.get(url_data, stream=True)
-    if data_request.status_code == 200:
-        print(url_data)
-        print('{}'.format(var), u'\u2714')
+    #p#rint(data_request.content)
+   # if data_request.status_code == 200:
+     #   print(url_data)
 
-    with open(oldcwd+'/database/input/radar/radar_'+filename, 'wb') as f:
+
+    with open(oldcwd+'/database/input/radar/radar_'+filename+".bz2", 'wb') as f:
         f.write(data_request.content)
+
+    try:
+        os.remove(oldcwd+'/database/input/radar/radar_'+filename)
+    except FileNotFoundError:
+        pass
+    zip_command = 'bzip2 -d '+ oldcwd+'/database/input/radar/radar_'+filename+'.bz2'
+    os.system(zip_command)
+    #os.remove(oldcwd+'/database/input/radar/radar_'+filename+'.bz2')
 
     return
 
@@ -106,7 +118,7 @@ def multi_request_all(latest_datetime):
     for number  in range(len(datetimes_list)):
         date = datetimes_list[number]
         filename = "latest_T-"+str(number)
-        radar_date = datetime_obj.strftime('%y%m%d%H%M"')
+        radar_date = datetime_obj.strftime('%y%m%d%H%M')
         print(date)
         times = datetime_obj.strftime('%Y-%m-%dT%H:%M:%S.%fZ')
         time  = datetime_obj.strftime('%Y-%m-%d %H:%M:%S')
@@ -148,11 +160,12 @@ def multi_request_one(latest_datetime):
     reqeuest_radar(radar_date, filename=filename)
 
 if __name__ == "__main__":
-    datetime_obj = datetime(2024, 4, 16, 19, 0, 0)
+    datetime_obj = datetime(2024, 4, 16, 20, 0, 0)
     #times = datetime_obj.strftime('%Y-%m-%dT%H:%M:%S.%fZ')
     #time  = datetime_obj.strftime('%Y-%m-%d %H:%M:%S')
     #reqeuest_satelite(times,times,time,visible=True,sizemulti=2)
     #reqeuest_satelite(times, times, time, visible=False,sizemulti=2)
     #reqeuest_radar("latest")
     multi_request_all(datetime_obj)
-    multi_request_one(datetime_obj)
+    #multi_request_one(datetime_obj)
+    #reqeuest_radar("latest", "latest_T-0")

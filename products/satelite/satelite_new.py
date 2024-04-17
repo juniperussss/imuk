@@ -29,6 +29,7 @@ import matplotlib.pyplot as plt
 import warnings
 import time
 
+from multiprocessing import Pool
 import numpy as np
 import xarray as xr
 warnings.simplefilter("ignore")
@@ -44,11 +45,11 @@ print(newcwd)
 def image_brigtness(cloud_brightness_threshold,T=0,visible=False,radar=False): #,region
 
     if visible:
-        local_image_path = 'oldcwd+"/database/input/satelite/vis/'  +"latest_T-"+str(T) + '.tiff' #+ region +'/'+ 
+        local_image_path = oldcwd+'/database/input/satelite/vis/'  +"latest_T-"+str(T) + '.tiff' #+ region +'/'+ 
     elif radar:
         local_image_path = 'baseimages/radar/geotiff_n.tiff'
     else:
-        local_image_path = 'oldcwd+"/database/input/satelite/ir/'  +"latest_T-"+str(T) +'.tiff'
+        local_image_path = oldcwd+'/database/input/satelite/ir/'  +"latest_T-"+str(T) +'.tiff'
 
     # GeoTIFF-Bild mit Rasterio öffnen
     with rasterio.open(local_image_path) as src:
@@ -69,26 +70,43 @@ def satimage(name= "europe", T=0, radar=True, exportpath="",coords=[], time=date
         lon_end = coords[3]
         fig = plt.figure(figsize=(12.8,7.2))
         ax = fig.add_subplot(1, 1, 1, projection=ccrs.LambertConformal(
-            central_longitude=10))  # ,central_latitude=52) ) #ccrs.Miller())#
+            central_longitude=10),facecolor='k')  # ,central_latitude=52) ) #ccrs.Miller())#
         pyproj.set_use_global_context()
         #ax.coastlines()
-        #ax.LAKES()
-        ax.add_feature(cfeature.COASTLINE)
-        #ax.add_feature(cfeature.LAND)#, facecolor='darkgreen')
-        land_110m = cfeature.NaturalEarthFeature('physical', 'land', '10m',
+        #ax.LAKES()np.array((152, 183, 226)) / 256
+        ax.set_facecolor("#98b7e2")
+        #ax.background_patch.set_facecolor('k')
+        #ax.add_feature(cfeature.COASTLINE)        #ax.add_feature(cfeature.LAND)#, facecolor='darkgreen')
+
+        coasts110M =cfeature.NaturalEarthFeature('cultural', 'admin_0_boundary_lines_land', '50m',
+                                        edgecolor='k',
+      
+                                        zorder=0)
+        ax.add_feature(coasts110M)
+
+        land_110m = cfeature.NaturalEarthFeature('physical', 'land', '50m',
                                         edgecolor='face',
                                         facecolor="darkgreen",#cfeature.COLORS['land'],
                                         zorder=0)
         ax.add_feature(land_110m)
 
-
-        ocean_110m = cfeature.NaturalEarthFeature('physical', 'ocean', '110m',   edgecolor='face',  facecolor="navy",               zorder=0)
+        #if name != "europe" or name != "europe_middle":
+        ocean_110m = cfeature.NaturalEarthFeature('physical', 'ocean', '50m',   edgecolor='face',  facecolor="navy",               zorder=0)
         ax.add_feature(ocean_110m)
-        #ax.add_feature(cfeature.OCEAN)#, facecolor='navy')
+
+        #ax.add_feature(cfeature.OCEAN)#, facecolor='navy')#
         if name =="lower_saxony":
-            ax.add_feature(cfeature.STATES)
+            #ax.add_feature(cfeature.STATES)
+            states110M =cfeature.NaturalEarthFeature('cultural', 'admin_1_states_provinces_lines', '50m',
+                                        edgecolor='k')
+            ax.add_feature(states110M)                            
         elif name == "hannover":
-            ax.add_feature(cfeature.STATES)
+            #ax.add_feature(cfeature.STATES)
+            states110M =cfeature.NaturalEarthFeature('cultural', 'admin_1_states_provinces', '50m',
+                                        edgecolor='k',
+      
+                                        zorder=0)
+            ax.add_feature(states110M)    
             rivers_10m = cfeature.NaturalEarthFeature('physical', 'rivers_lake_centerlines', '10m',
                                 edgecolor='face',
                                 facecolor="blue",#cfeature.COLORS['water'],
@@ -104,6 +122,9 @@ def satimage(name= "europe", T=0, radar=True, exportpath="",coords=[], time=date
             ax.add_feature(rivers_10m)
             ax.add_feature(lake_10m)
             ax.add_feature(urban_10m)
+   
+
+        
         ax.add_feature(cfeature.BORDERS)
         ax.set_extent([lon_start, lon_end, lat_start, lat_end], crs=ccrs.PlateCarree())  # Begrenzung auf Europa
         ax.annotate(f'{time.strftime('%Y-%m-%d %H:%M:%S')}', xy=(0.02, 0.04), xycoords='axes fraction',
@@ -118,9 +139,11 @@ def satimage(name= "europe", T=0, radar=True, exportpath="",coords=[], time=date
 
 
         extent = (-70, 70, 24, 72) #self.bbox
+        #ax.imshow(np.tile(np.array([[[200, 200, 255]]],           dtype=np.uint8), [2, 2, 1]),      origin='upper',      transform=ccrs.PlateCarree(),      extent=extent ,zorder =0)
         ax.imshow(output_image_ir, origin='upper', transform=ccrs.PlateCarree(), extent=extent, alpha=0.6,cmap='gray', vmin=0,vmax=255)
 
         ax.imshow(output_image_vis, origin='upper', transform=ccrs.PlateCarree(), extent=extent, alpha=0.6,cmap='gray', vmin=0,vmax=255)
+        #ax.set_facecolor("#98b7e2")
         if radar:
             print("start radar")
             input_file = oldcwd+"/database/input/radar/"+"radar_latest_T-"+str(T)
@@ -138,11 +161,49 @@ def satimage(name= "europe", T=0, radar=True, exportpath="",coords=[], time=date
         plt.tight_layout()
         #
         # plt.show()
-        plt.savefig(export_path+name+'/'+name+'_latest_T-'+str(T)+'.png', dpi=150)
+        plt.savefig(exportpath+name+'/'+name+'_latest_T-'+str(T)+'.png', dpi=150)
 
         
         return
 
 
-coords = [52.117469,52.604716,9,10.5]
-satimage(export_path= "/mnt/nvmente/CODE/imuk/database/output/satelite/",coords=coords)
+
+
+# europe
+coords = [35, 65,-45, 45] 
+#satimage(exportpath= "/mnt/nvmente/CODE/imuk/database/output/satelite/",coords=coords,name= "europe", T=0, radar=True)
+
+# middle_europe
+coords = [35, 65,-45, 45] 
+#satimage(exportpath= "/mnt/nvmente/CODE/imuk/database/output/satelite/",coords=coords,name= "europe_middle", T=0, radar=True)
+
+
+# germany
+coords = [46.3, 56,1.9, 19.1] 
+#satimage(exportpath= "/mnt/nvmente/CODE/imuk/database/output/satelite/",coords=coords,name= "germany", T=0, radar=True)
+
+
+# lower_saxony
+coords = [51.2, 53.9,5.2, 13.] 
+#satimage(exportpath= "/mnt/nvmente/CODE/imuk/database/output/satelite/",coords=coords,name= "lower_saxony", T=0, radar=True)
+
+# Hannover
+coords = [52.117469,52.604716,9,10.5] 
+#satimage(exportpath= "/mnt/nvmente/CODE/imuk/database/output/satelite/",coords=coords,name= "hannover", T=0, radar=True)
+
+
+
+numbers = [0,1,2,3,4]
+
+def pool_maps(number):
+    allcords = [[35, 65,-45, 45] ,[35, 65,-45, 45] ,[46.3, 56,1.9, 19.1] ,[51.2, 53.9,5.2, 13.] ,[52.117469,52.604716,9,10.5] ]
+    allnames = ["europe","europe_middle","germany","lower_saxony","hannover"]
+    satimage(exportpath= "/mnt/nvmente/CODE/imuk/database/output/satelite/",coords=allcords[number],name= allnames[number], T=0, radar=True)
+    print( "finished "+allnames[number])
+    return
+
+
+start_time = time.time()
+with Pool() as pool:
+    pool.map(pool_maps, numbers)
+    print("--- %s seconds ---" % (time.time() - start_time))
