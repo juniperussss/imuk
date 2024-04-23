@@ -82,14 +82,14 @@ class p(object):
 global variables
 
 vars = ["t", "t", "t", "clct_mod", "u", "v", "relhum", "fi", "fi", "fi", "ww", "pmsl", "tot_prec", "u_10m", "v_10m",
-        "vmax_10m", "t_2m", "cape_ml", "snow_con"]
+        "vmax_10m", "t_2m", "cape_ml", "snow_con","u","u","u","u","v","v","v","v", "td_2m"]
 levels = ['pressure-level', 'pressure-level', 'pressure-level', 'single-level', 'pressure-level', 'pressure-level',
           'pressure-level', 'pressure-level', 'pressure-level', 'pressure-level', 'single-level', 'single-level',
           'single-level', 'single-level', 'single-level', 'single-level', 'single-level', 'single-level',
-          'single-level']
-gph = ['_500', "_700", "_850", "", "_300", "_300", "_700", "_500", "_700", "_850", "", "", "", "", "", "", "", "", ""]
+          'single-level','pressure-level','pressure-level','pressure-level','pressure-level','pressure-level','pressure-level','pressure-level','pressure-level','single-level']
+gph = ['_500', "_700", "_850", "", "_300", "_300", "_700", "_500", "_700", "_850", "", "", "", "", "", "", "", "", "","_500","_700","_850","_950","_500","_700","_850","_950",""]
 
-levels_label= ["500","700","850","2d","300","300","700","500","700","850","2d","2d","2d","2d","2d","2d","2d","2d","2d" ]
+levels_label= ["500","700","850","2d","300","300","700","500","700","850","2d","2d","2d","2d","2d","2d","2d","2d","2d","500","700","850","950","500","700","850","950","2d" ]
 variables = list(zip(vars, levels, gph))
 number=np.arange(0,len(variables))
 

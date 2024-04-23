@@ -71,7 +71,38 @@ def reqeuest_satelite(timestart,timeend,time_file,visible=False, bbox=(-70, 24, 
     }
 
     wms = WebMapService(service_url, auth=Authentication(verify=False))
-    img = wms.getmap(**payload)
+    #img = wms.getmap(**payload)
+
+    max_attempts = 5
+
+    # Starte einen Versuchscounter
+    attempt = 0
+
+    # Schleife zum Wiederholen der Anfrage
+    while attempt < max_attempts:
+        try:
+            # Führe die Datenanfrage aus
+            img = wms.getmap(**payload)
+            
+            # Überprüfe, ob die Anfrage erfolgreich war (Statuscode 200)
+            attempt = max_attempts
+        
+        except Exception as e:
+            # Fangen andere mögliche Fehler ab, z.B. Verbindungsfehler
+            print(f"Fehler beim Abrufen der Daten: {e}")
+            attempt += 1
+            print(f"Warte 5 Sekunden vor dem nächsten Versuch...")
+            time.sleep(5)  # Warte 5 Sekunden, bevor der nächste Versuch gestartet wird
+
+
+
+
+
+
+
+
+
+
     Image(img.read())
     with open(oldcwd+"/database/input/satelite/"+file_loc+"/"+filename+'.tiff', 'wb') as f:
         f.write(img.read())
@@ -81,12 +112,14 @@ def reqeuest_satelite(timestart,timeend,time_file,visible=False, bbox=(-70, 24, 
 
 
 def reqeuest_radar(timer,filename="latest"):
-    url_base = "https://opendata.dwd.de/weather/radar/radolan/yw/"
-    url_data = url_base +'raa01-yw_10000-{}-dwd---bin.bz2'.format(
-        timer)
+    #url_base = "https://opendata.dwd.de/weather/radar/radolan/yw/"
+    #url_data = url_base +'raa01-yw_10000-{}-dwd---bin.bz2'.format(timer)
+    url_base = "https://opendata.dwd.de/weather/radar/radolan/ry/"
+    url_data = url_base +'raa01-ry_10000-{}-dwd---bin.bz2'.format(timer)
     print(url_data)
     #url_data = "https://opendata.dwd.de/weather/radar/radolan/yw/raa01-yw_10000-latest-dwd---bin.bz2"
     #print(url_data)
+    
     data_request = requests.get(url_data, stream=True)
     #p#rint(data_request.content)
    # if data_request.status_code == 200:
@@ -110,7 +143,7 @@ def reqeuest_radar(timer,filename="latest"):
 def multi_request_all(latest_datetime):
 
     print(latest_datetime)
-    datetimes_list = [latest_datetime - timedelta(minutes=5 * i) for i in range(1, 13)]
+    datetimes_list = [latest_datetime - timedelta(minutes=15 * i) for i in range(0, 96)] # Last 24 hours in 15 min increments 
 
     # Ausgabe der Liste
     print(datetimes_list)
@@ -118,10 +151,10 @@ def multi_request_all(latest_datetime):
     for number  in range(len(datetimes_list)):
         date = datetimes_list[number]
         filename = "latest_T-"+str(number)
-        radar_date = datetime_obj.strftime('%y%m%d%H%M')
+        radar_date = date.strftime('%y%m%d%H%M')
         print(date)
-        times = datetime_obj.strftime('%Y-%m-%dT%H:%M:%S.%fZ')
-        time  = datetime_obj.strftime('%Y-%m-%d %H:%M:%S')
+        times = date.strftime('%Y-%m-%dT%H:%M:%S.%fZ')
+        time  = date.strftime('%Y-%m-%d %H:%M:%S')
         reqeuest_satelite(times,times,time,visible=True,sizemulti=2, filename=filename)
         reqeuest_satelite(times, times, time, visible=False,sizemulti=2,filename=filename)
         reqeuest_radar(radar_date, filename=filename)
@@ -160,7 +193,7 @@ def multi_request_one(latest_datetime):
     reqeuest_radar(radar_date, filename=filename)
 
 if __name__ == "__main__":
-    datetime_obj = datetime(2024, 4, 16, 20, 0, 0)
+    datetime_obj = datetime(2024, 4, 22, 12, 0, 0)
     #times = datetime_obj.strftime('%Y-%m-%dT%H:%M:%S.%fZ')
     #time  = datetime_obj.strftime('%Y-%m-%d %H:%M:%S')
     #reqeuest_satelite(times,times,time,visible=True,sizemulti=2)

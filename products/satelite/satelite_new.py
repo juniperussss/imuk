@@ -28,12 +28,12 @@ import wradlib as wrl
 import matplotlib.pyplot as plt
 import warnings
 import time
-
+from mpl_toolkits.axes_grid1 import make_axes_locatable
 from multiprocessing import Pool
 import numpy as np
 import xarray as xr
 warnings.simplefilter("ignore")
-
+from matplotlib.colors import LinearSegmentedColormap
 oldcwd=os.getcwd()
 #PYPROJ_GLOBAL_CONTEXT=ON
 newcwd = oldcwd +"/products" +"/satelite"
@@ -41,6 +41,12 @@ os.chdir(newcwd)
 
 print(oldcwd)
 print(newcwd)
+
+params = {"ytick.color" : "w",
+          "xtick.color" : "w",
+          "axes.labelcolor" : "w",
+          "axes.edgecolor" : "w"}
+plt.rcParams.update(params)
 
 def image_brigtness(cloud_brightness_threshold,T=0,visible=False,radar=False): #,region
 
@@ -62,6 +68,10 @@ def image_brigtness(cloud_brightness_threshold,T=0,visible=False,radar=False): #
     return output
 
 
+
+
+
+
 def satimage(name= "europe", T=0, radar=True, exportpath="",coords=[], time=datetime.now()):
         
         lat_start = coords[0]
@@ -74,7 +84,7 @@ def satimage(name= "europe", T=0, radar=True, exportpath="",coords=[], time=date
         pyproj.set_use_global_context()
         #ax.coastlines()
         #ax.LAKES()np.array((152, 183, 226)) / 256
-        ax.set_facecolor("#98b7e2")
+        #ax.set_facecolor("#98b7e2")
         #ax.background_patch.set_facecolor('k')
         #ax.add_feature(cfeature.COASTLINE)        #ax.add_feature(cfeature.LAND)#, facecolor='darkgreen')
 
@@ -97,9 +107,10 @@ def satimage(name= "europe", T=0, radar=True, exportpath="",coords=[], time=date
         #ax.add_feature(cfeature.OCEAN)#, facecolor='navy')#
         if name =="lower_saxony":
             #ax.add_feature(cfeature.STATES)
-            states110M =cfeature.NaturalEarthFeature('cultural', 'admin_1_states_provinces_lines', '50m',
+            states110M =cfeature.NaturalEarthFeature('cultural', 'admin_1_states_provinces_lakes', '10m',
                                         edgecolor='k')
-            ax.add_feature(states110M)                            
+            #ax.add_feature(states110M)
+            ax.add_feature(cfeature.STATES)                            
         elif name == "hannover":
             #ax.add_feature(cfeature.STATES)
             states110M =cfeature.NaturalEarthFeature('cultural', 'admin_1_states_provinces', '50m',
@@ -119,15 +130,15 @@ def satimage(name= "europe", T=0, radar=True, exportpath="",coords=[], time=date
                     edgecolor='face',
                     facecolor="red",#cfeature.COLORS['water'],
                     zorder=0)
-            ax.add_feature(rivers_10m)
-            ax.add_feature(lake_10m)
+            #ax.add_feature(rivers_10m)
+            #ax.add_feature(lake_10m)
             ax.add_feature(urban_10m)
    
 
         
         ax.add_feature(cfeature.BORDERS)
         ax.set_extent([lon_start, lon_end, lat_start, lat_end], crs=ccrs.PlateCarree())  # Begrenzung auf Europa
-        ax.annotate(f'{time.strftime('%Y-%m-%d %H:%M:%S')}', xy=(0.02, 0.04), xycoords='axes fraction',
+        ax.annotate(f'{(time- timedelta(minutes=(T*15))).strftime('%Y-%m-%d %H:%M')}', xy=(0.02, 0.04), xycoords='axes fraction',
                     bbox=dict(facecolor='white', alpha=0.8, boxstyle='round',edgecolor="black"),fontsize=14)
         additional_info = "EUMETSAT SEVIRI IR10.8μm + VIS0.6μm"
         ax.annotate(additional_info, xy=(0.98, 0.04), xycoords='axes fraction', ha='right',
@@ -140,28 +151,41 @@ def satimage(name= "europe", T=0, radar=True, exportpath="",coords=[], time=date
 
         extent = (-70, 70, 24, 72) #self.bbox
         #ax.imshow(np.tile(np.array([[[200, 200, 255]]],           dtype=np.uint8), [2, 2, 1]),      origin='upper',      transform=ccrs.PlateCarree(),      extent=extent ,zorder =0)
-        ax.imshow(output_image_ir, origin='upper', transform=ccrs.PlateCarree(), extent=extent, alpha=0.6,cmap='gray', vmin=0,vmax=255)
+        ax.imshow(output_image_ir, origin='upper', transform=ccrs.PlateCarree(), extent=extent, alpha=0.8,cmap='gray', vmin=0,vmax=255)
 
-        ax.imshow(output_image_vis, origin='upper', transform=ccrs.PlateCarree(), extent=extent, alpha=0.6,cmap='gray', vmin=0,vmax=255)
+        ax.imshow(output_image_vis, origin='upper', transform=ccrs.PlateCarree(), extent=extent, alpha=0.8,cmap='gray', vmin=0,vmax=255)
         #ax.set_facecolor("#98b7e2")
         if radar:
             print("start radar")
             input_file = oldcwd+"/database/input/radar/"+"radar_latest_T-"+str(T)
             ds = wrl.io.open_radolan_dataset(input_file)
-            print(ds)
+            #print(ds.YW.to_dataframe()["YW"].describe())
             #ax.plot(ds.YW,cmap="viridis", transform=ccrs.PlateCarree())
             #ds["YW"].plot.contourf(ax=ax, transform=ccrs.PlateCarree(), levels=21)
             #ax.contourf(ds.YW,transform=ccrs.PlateCarree(),levels=21,extent=extent,)
-            ax.contourf(ds.YW.where(ds.YW != 0, np.nan), transform=ccrs.PlateCarree(),extent=[1.435612143, 16.60186543, 45.68358331, 55.86584289],cmap="jet_r")
 
+            levels= sorted(np.array([63.44,12.53,2.91,0.68,0.16,0.04,0.01]))
 
+            colors = ["#3cdcdc", '#29a8b4', '#2987b4', '#173496', '#101173', '#640b6f', '#8a0417']
+            colors = [(color, 0.25) if i == 0 else (color, 0.5) if i == 1 else (color, 0.75) if i == 2 else color for i, color in enumerate(colors)]
+            # Skaliere die Niveaus auf den Bereich von 0 bis 1
+            norm_levels = [(level - min(levels)) / (max(levels) - min(levels)) for level in levels]
+
+            # Erstelle die Colormap
+            cmap_colors = list(zip(norm_levels, colors))
+            custom_cmap = LinearSegmentedColormap.from_list('custom_colormap', cmap_colors)
+
+            radarplot= ax.contourf(ds.RY.where(ds.RY != 0, np.nan), transform=ccrs.PlateCarree(),extent=[1.435612143, 16.60186543, 45.68358331, 55.86584289],cmap=custom_cmap, levels =levels)
+            cax = ax.inset_axes([0.03, 0.1, 0.05, 0.2])
+            cbar = fig.colorbar(radarplot, cax=cax, orientation='vertical')#, label='Radarreflektivität')
+            cbar.ax.text(0.9, 1.1, 'Radarreflektivität', fontsize=10, ha='center', va='center', transform=cbar.ax.transAxes,color='white')  # Ändere 'Radarreflektivität' zu deinem gewünschten Label
             print("radar finished")
         print("start saving")
         ax.set_frame_on(False)
         plt.tight_layout()
         #
         # plt.show()
-        plt.savefig(exportpath+name+'/'+name+'_latest_T-'+str(T)+'.png', dpi=150)
+        plt.savefig(exportpath+name+'/'+name+'_latest_T-'+str(T)+'.png', dpi=150)#,bbox_inches='tight', pad_inches=0) wenn die Bildgröße so groß sein soll wie die Bilder
 
         
         return
@@ -174,7 +198,7 @@ coords = [35, 65,-45, 45]
 #satimage(exportpath= "/mnt/nvmente/CODE/imuk/database/output/satelite/",coords=coords,name= "europe", T=0, radar=True)
 
 # middle_europe
-coords = [35, 65,-45, 45] 
+coords = [40, 55, -5, 20]  # Vergrößerte Ansicht von Mitteleuropa mit Deutschland
 #satimage(exportpath= "/mnt/nvmente/CODE/imuk/database/output/satelite/",coords=coords,name= "europe_middle", T=0, radar=True)
 
 
@@ -193,17 +217,34 @@ coords = [52.117469,52.604716,9,10.5]
 
 
 
-numbers = [0,1,2,3,4]
 
-def pool_maps(number):
-    allcords = [[35, 65,-45, 45] ,[35, 65,-45, 45] ,[46.3, 56,1.9, 19.1] ,[51.2, 53.9,5.2, 13.] ,[52.117469,52.604716,9,10.5] ]
+def pool_maps(args):
+    number, T,start_time = args
+    allcords = [[35, 65,-45, 45] ,[45, 58, -5, 25] ,[46.3, 56,1.9, 19.1] ,[51.2, 53.9,5, 13.2] ,[52.117469,52.604716,9,10.5] ]
     allnames = ["europe","europe_middle","germany","lower_saxony","hannover"]
-    satimage(exportpath= "/mnt/nvmente/CODE/imuk/database/output/satelite/",coords=allcords[number],name= allnames[number], T=0, radar=True)
+    satimage(exportpath= "/mnt/nvmente/CODE/imuk/database/output/satelite/",coords=allcords[number],name= allnames[number], T=T, radar=True,time=start_time)
     print( "finished "+allnames[number])
     return
 
 
-start_time = time.time()
-with Pool() as pool:
-    pool.map(pool_maps, numbers)
-    print("--- %s seconds ---" % (time.time() - start_time))
+
+
+
+def satelites_all(T=0,start_time=datetime.now()):
+
+    #numbers = [0,1,2,3,4]
+    numbers = [(0, T,start_time), (1, T,start_time), (2, T,start_time), (3, T,start_time), (4, T,start_time)]  # List of tuples with number and T
+    starting_time = time.time()
+    with Pool() as pool:
+        pool.map(pool_maps, numbers)
+        print("--- %s seconds ---" % (time.time() - starting_time))
+    return
+
+
+
+
+satelites_all(T=0, start_time = datetime(2024, 4, 22, 12, 0, 0))
+
+
+#for t in range(0,12,1):
+ #   satelites_all(T=t, start_time = datetime(2024, 4, 22, 12, 0, 0))

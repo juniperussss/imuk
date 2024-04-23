@@ -62,15 +62,14 @@ Using opendata from the dwd and NOAA to visualize and display synoptic Data
 ## Todos
 ### High Priority
 #### Requesting
-- Requesting Script doesnt end 
-- Requesting for Cosmo
+-implement error catching for reqeuesting sats and radars
 
 #### modellweather
 - Implement Temperature values on plot
 - Initialize cape Snow plot
 
 #### Radar and Sat
-- Complete implentation of Radar data into sattelite Plots
+- middle europe view
 
 ### Medium Priority
 
