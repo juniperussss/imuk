@@ -44,14 +44,14 @@ def archiving():
 
 
 
-def varnames(varnumber,varnames,varlevel,projectfolder,filenames):
+def varnames(varnumber,varnames,varlevel,projectfolder,filenames,model="icon"):
     from datetime import datetime
     import os
     import glob
     import numpy as np
     #from cleaner import filenames
     today = datetime.now()
-    filepath = projectfolder + "/database/input/icon/" + str(today.year) + "/" + str(today.month) + "/" + str(today.day)
+    filepath = projectfolder + "/database/input/"+model+"/" + str(today.year) + "/" + str(today.month) + "/" + str(today.day)
     initialtimefolder = glob.glob(filepath + "/*")[0]
     print("inial:",initialtimefolder)
     varalist=[]
@@ -184,7 +184,7 @@ def subtitles(wks, map, left_string, center_string, right_string,mpres,left_stri
 
         return
 
-def dates_for_subtitles(vara,number,filenames):
+def dates_for_subtitles(vara,number,filenames, model="icon"):
     import os
     from datetime import datetime, timedelta
     import locale
@@ -195,7 +195,14 @@ def dates_for_subtitles(vara,number,filenames):
       #  locale=""
     #)
     strObj = os.path.basename(vara)  # Get Filestring
-    strObj = strObj[6:16:]  # Cut to Datestring
+    if model == "icon":
+        strObj = strObj[6:16:]  # Cut to Datestring
+    elif model == "icon-eu":
+        strObj = strObj[44:54:]  # Cut to Datestring
+    elif model == "icon-d2":
+        strObj = strObj[45:55:]  # Cut to Datestring
+    else:
+        strObj = strObj[6:16:]  # Cut to Datestring
     datetime_object = datetime.strptime(strObj, '%Y%m%d%H')  # Convert Datestring to Datetimeobject
     # Check which timedelta needs to be used
     if number >0:
@@ -469,84 +476,71 @@ def legendgl(number, levelname, stepsize, width, heigth, filenames, stepstart, u
     # os.remove(levelname +  filenames[number] + ".png")
 def metarww(metarstring):
     metarstring=metarstring.split(", ")[0]
-    match metarstring:
-        ##fog and mist
-        case "patches of fog":
-            ww = 41
-        case "shallow fog":
-            ww = 42
-        case "partial fog":
-            ww=44
-        case "fog":
-            ww=45
-        case "freezing fog":
-            ww=49
-        case "mist":
-            ww=10
-
-        #Drizzle
-        case "light drizzle":
-            ww= 51
-        case "drizzle":
-            ww= 53
-        case " heavy drizzle":
-            ww = 53
-        case "light drizle and rain":
-            ww=58
-
-        #rain
-        case "light rain"  :
-            ww=61
-        case "light freezing rain"  :
-            ww=66
-
-        case "light rain and drizzle":
-            ww=58
-        case "light rain and snow":
-            ww=68
-        case "rain":
-            ww=63
-        case "rain and snow":
-            ww=63
-
-        #Snow
-        case "light snow" :
-            ww=71
-        case "snow" :
-            ww=75
-        case "heavy snow"  :
-            ww=75
-        case "light snow grains":
-            ww = 77
-        case "light ice pellets"  :
-            ww=79
-
-        #Showers
-        case "light rain showers":
-            ww=80
-        case "rain showers":
-            ww=81
-        case "light snow showers":
-            ww=85
-        case "nearby showers":
-            ww=16
-
-        #Thunderstorm
-        case "light thunderstorm with rain":
-            ww=95
-        case "thunderstorm":
-            ww=95
-        case "thunderstorm with rain":
-            ww=95
-        case "light thunderstorm with snow":
-            ww=95
-        case "nearby thunderstorm":
-            ww=17
-        #unknown
-        case "unknown precipitation":
-            ww=0
-        case "_":
-            ww=0
+    # Metarstring analysieren
+    if metarstring == "patches of fog":
+        ww = 41
+    elif metarstring == "shallow fog":
+        ww = 42
+    elif metarstring == "partial fog":
+        ww = 44
+    elif metarstring == "fog":
+        ww = 45
+    elif metarstring == "freezing fog":
+        ww = 49
+    elif metarstring == "mist":
+        ww = 10
+    elif metarstring == "light drizzle":
+        ww = 51
+    elif metarstring == "drizzle":
+        ww = 53
+    elif metarstring == "heavy drizzle":
+        ww = 53
+    elif metarstring == "light drizle and rain":
+        ww = 58
+    elif metarstring == "light rain":
+        ww = 61
+    elif metarstring == "light freezing rain":
+        ww = 66
+    elif metarstring == "light rain and drizzle":
+        ww = 58
+    elif metarstring == "light rain and snow":
+        ww = 68
+    elif metarstring == "rain":
+        ww = 63
+    elif metarstring == "rain and snow":
+        ww = 63
+    elif metarstring == "light snow":
+        ww = 71
+    elif metarstring == "snow":
+        ww = 75
+    elif metarstring == "heavy snow":
+        ww = 75
+    elif metarstring == "light snow grains":
+        ww = 77
+    elif metarstring == "light ice pellets":
+        ww = 79
+    elif metarstring == "light rain showers":
+        ww = 80
+    elif metarstring == "rain showers":
+        ww = 81
+    elif metarstring == "light snow showers":
+        ww = 85
+    elif metarstring == "nearby showers":
+        ww = 16
+    elif metarstring == "light thunderstorm with rain":
+        ww = 95
+    elif metarstring == "thunderstorm":
+        ww = 95
+    elif metarstring == "thunderstorm with rain":
+        ww = 95
+    elif metarstring == "light thunderstorm with snow":
+        ww = 95
+    elif metarstring == "nearby thunderstorm":
+        ww = 17
+    elif metarstring == "unknown precipitation":
+        ww = 0
+    elif metarstring == "_":
+        ww = 0
 
 
     return ww
@@ -688,15 +682,14 @@ def cloudcover(obs):
     cc=[]
     for i in obs.sky:
     #print(i[0])
-        match i[0]:
-            case "FEW":
-                cc.append(1.5)
-            case "NCS":
-                cc.append(0)
-            case "SCT":
-                cc.append(3.5)
-            case "BKN":
-                cc.append(6)
-            case "OVC":
-                cc.append(8)
+        if item[0] == "FEW":
+            cc.append(1.5)
+        elif item[0] == "NCS":
+            cc.append(0)
+        elif item[0] == "SCT":
+            cc.append(3.5)
+        elif item[0] == "BKN":
+            cc.append(6)
+        elif item[0] == "OVC":
+            cc.append(8)
     return int(mean(cc))

@@ -10,7 +10,7 @@ import argparse
 
 
 ###
-def picture(vara, varb, number, resx, resy, dir_origin,filenames):
+def picture(vara, varb, number, resx, resy, dir_origin,filenames, model):
     warnings.filterwarnings("ignore")
     current_date = datetime.utcnow()
     print("EU has started at: ", current_date.strftime('%Y-%m-%d  %H:%M:%S'))
@@ -83,7 +83,7 @@ def picture(vara, varb, number, resx, resy, dir_origin,filenames):
     wkres.wkWidth = 3 * resx  # 0.081*3840#299#0.081*3840  # -- width of workstation
     wkres.wkHeight = 3 * resx  # 0.081*3840#224#0.081*3840#2560  # -- height of workstation
     wks_type = "png"  # -- output type of workstation
-    wks = Ngl.open_wks(wks_type, '300_' + filenames[number], wkres)  # -- open workstation
+    wks = Ngl.open_wks(wks_type, 'modell_wind_' + model+filenames[number], wkres)  # -- open workstation
 
     # ---- Resources
 
@@ -206,13 +206,33 @@ def picture(vara, varb, number, resx, resy, dir_origin,filenames):
 
     var2res.pmLabelBarDisplayMode = 'Never'
 
+    # Liste von Farben
+    colors = [
+        [0, 0, 0],                  # Schwarz
+        [45, 170, 0],               # Grün
+        [144, 223, 0],              # Hellgrün
+        [229, 220, 0],              # Gelb
+        [230, 172, 38],             # Orange
+        [220, 124, 33],             # Dunkelorange
+        [213, 79, 26],              # Rotorange
+        [210, 32, 30],              # Rot
+        [194, 17, 60]               # Dunkelrot
+    ]
 
-    cmap_colors = np.array([[0, 0, 0, 0], [0.2, 1, 0, 1], [0.13, 0.9, 1, 1], [0.99, 0, 0.99, 1], [0.99, 0, 0, 1], [0.99, 0.99, 0, 1]])
+    # Transparenz für jede Farbe
+    alphas = [0, 1, 1, 1, 1, 1, 1, 1, 1]
+
+    # Kombination von Farben und Transparenz
+    cmap_colors = np.column_stack((np.array(colors) / 255, alphas))
+
+
+    print(cmap_colors)
+    #cmap_colors = np.array([np.array([0, 0, 0, 0]), [np.array([45, 170, 0])/255, 1], [np.array([144, 223, 0])/255, 1], [np.array([229, 220, 0])/255, 1], [np.array([230, 172, 38])/255, 1],[np.array([220, 124, 33])/255, 1],[np.array([213, 79, 26])/255, 1],[np.array([210, 32, 30])/255, 1], [np.array([194, 17, 60])/255, 1]])
 
     var2res.cnFillPalette = cmap_colors  # -- set the0 colormap to be used or 'NCL_default'
 
     var2res.cnLevelSelectionMode = "ExplicitLevels"
-    var2res.cnLevels = [6, 11, 14,17,33]
+    var2res.cnLevels = [6, 11, 14,17, 21, 25,29 ,33]
     var2res.cnFillOpacityF = 0.99
     var2res.cnNoDataLabelString = 'No Variable Data'
     var2res.cnConstFLabelString = 'No Variable Data'
@@ -245,7 +265,7 @@ def picture(vara, varb, number, resx, resy, dir_origin,filenames):
     Ngl.add_polymarker(wks, plot2, 9.732, 52.376, pmres) #marker locations
 
 
-    hour, weekday, datetime_object,delta = imuktools.dates_for_subtitles(vara, number, filenames)
+    hour, weekday, datetime_object,delta = imuktools.dates_for_subtitles(vara, number, filenames, model =model)
     left_string_2 = '300 hPa: ' +'Windgeschwindigkeit (m/s), Windfieder' # model output info
     left_string   = 'ICON-Lauf: '+  datetime_object.strftime('%a %d.%m.%Y %H')  +" UTC" +" (+"+delta+"h)"#model output info
     center_string = ''  # center information bar
@@ -310,9 +330,9 @@ def picture(vara, varb, number, resx, resy, dir_origin,filenames):
     Ngl.frame(wks)
     Ngl.destroy(wks)#
 
-    imuktools.legend(number, '300_', 10, wkres.wkWidth, wkres.wkHeight, cmap_colors, list(var2res.cnLevels), filenames, 0, "m/s", dir_origin, resx)
+    imuktools.legend(number, 'modell_wind_' + model, 10, wkres.wkWidth, wkres.wkHeight, cmap_colors, list(var2res.cnLevels), filenames, 0, "m/s", dir_origin, resx)
     # ---- Crop Graphics
-    imuktools.crop_image(number, '300_', wkres, resx, resy, filenames, square=True)
+    imuktools.crop_image(number, 'modell_wind_' + model, wkres, resx, resy, filenames, square=True)
     # imuktools.crop_image_aspected(number,'u_v_300_',wkres,resx,resy)
 
     print('\EU has finished at: ', datetime.utcnow().strftime('%Y-%m-%d  %H:%M:%S '), u'\u2714')
@@ -329,12 +349,14 @@ def main():
     parser.add_argument('timerangestart')
     parser.add_argument('timerangestop')
     parser.add_argument('timerangestepsize')
+    parser.add_argument('model')
     args = parser.parse_args()  # gv[480#210    #480
     resx = int(args.resx)
     resy = int(args.resy)
     dir_origin = args.inputpath
     dir_Produkt = args.outputpath
     os.chdir(dir_Produkt)
+    model = args.model
 
     varnumber = 2
     vars = ["u_10m", "v_10m"]
@@ -343,7 +365,7 @@ def main():
     filenames= imuktools.filenames(timerange)
     variablepaths = imuktools.varnames(varnumber, vars,
                                      varlevel,
-                                     dir_origin, filenames)  ##Getting every filepath in the directory like [[vara1,vara2],[varb1,varb2]]
+                                     dir_origin, filenames, model=model)  ##Getting every filepath in the directory like [[vara1,vara2],[varb1,varb2]]
 
     timestepnumber = len(variablepaths[0])
     #print(variablepaths)
@@ -351,9 +373,13 @@ def main():
     ## Main Process
     for i in range(0,len(timerange)):
         #print(variablepaths[0][i])
-        picture(variablepaths[0][i], variablepaths[1][i], i, resx, resy, dir_origin,filenames)
+        picture(variablepaths[0][i], variablepaths[1][i], i, resx, resy, dir_origin,filenames,model)
     return
 
 
 if __name__ == "__main__":
     main()
+
+
+
+  

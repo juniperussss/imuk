@@ -7,8 +7,25 @@ import numpy as np
 import datetime
 import matplotlib.gridspec as gridspec
 import metpy.calc as mpcalc
+from matplotlib.offsetbox import OffsetImage
+import matplotlib.image as mpimg
 # Lade das kombinierte Dataset aus der NetCDF-Datei
+from PIL import Image
+import io
+def get_svg_for_synop_code(synop_code):
+    # Hier solltest du den Pfad zu deinen SVG-Dateien entsprechend dem Synop-Code erstellen und das SVG als Text zurückgeben
+    # Beispiel:
+    svg_path = "ressources/symbols/ww_PresentWeather/WeatherSymbol_WMO_PresentWeather_ww_"+str(int(synop_code)).zfill(2)+".svg"
+    #with open(svg_path, 'r') as file:
+     #   svg_content = file.read()
+    return svg_path
 
+
+def svg_to_image(svg_content):
+    # SVG in ein PIL-Bild konvertieren
+    svg_io = io.BytesIO(svg_content.encode('utf-8'))
+    pil_image = Image.open(svg_io)
+    return pil_image
 
 
 def plot_meteogramm (model="icon", inputpath="", output_path=""):
@@ -28,12 +45,12 @@ def plot_meteogramm (model="icon", inputpath="", output_path=""):
     #fig, axs = plt.subplots(5, 1, figsize=(10, 15), sharex=True)
     fig = plt.figure(figsize=(12, 7))
 
-    gs0 = gridspec.GridSpec(5, 1, figure=fig)
+    gs0 = gridspec.GridSpec(6, 1, figure=fig)
 
     gs00 = gridspec.GridSpecFromSubplotSpec(6, 1, subplot_spec=gs0[0])
     gs03 = gridspec.GridSpecFromSubplotSpec(3, 1, subplot_spec=gs0[3])
 
-    ax5 = fig.add_subplot(gs0[4, :])
+    ax5 = fig.add_subplot(gs0[5, :])
 
     ## Pressure anc Rain
     ax5.plot(df.index, df['prmsl'], color='green', linestyle='--')
@@ -61,8 +78,9 @@ def plot_meteogramm (model="icon", inputpath="", output_path=""):
     ax42 = fig.add_subplot(gs03[1, :],sharex=ax5)
     ax43 = fig.add_subplot(gs03[2, :],sharex=ax5)
     ax3 = fig.add_subplot(gs0[2, :],sharex=ax5)
+    ax6 = fig.add_subplot(gs0[4, :],sharex=ax5)
 
-    for axis in [ax1,ax11,ax12,ax13,ax14,ax15,ax16,ax2,ax3,ax41,ax42,ax43,ax4]:
+    for axis in [ax1,ax11,ax12,ax13,ax14,ax15,ax16,ax2,ax3,ax41,ax42,ax43,ax4,ax6]:
         plt.setp(axis.get_xticklabels(), visible=False)
 
     ## Temperature and dewpoint
@@ -80,6 +98,24 @@ def plot_meteogramm (model="icon", inputpath="", output_path=""):
 
     ### Cloud coverage
     ax4.xaxis.grid(True)
+
+
+    ### Significant Weather
+    ax6.xaxis.grid(True)
+    print(df["WW"])
+    #ax6.scatter(df.index, df["WW"], color='black')
+
+
+
+    for index, row in df.iterrows():
+        synop_code = row["WW"]  # Annahme: Die Spalte "WW" enthält die Synop-Codes
+        svg_path = get_svg_for_synop_code(synop_code)
+        img = mpimg.imread(svg_path)
+        ax6.imshow(img, aspect='auto', extent=(index, index+1, synop_code-0.5, synop_code+0.5), zorder=3)
+
+
+    ax6.set_ylabel('Windspeed', fontsize=12)
+
 
     ## Wind Directions
     ax1.xaxis.grid(True)
@@ -102,5 +138,5 @@ def plot_meteogramm (model="icon", inputpath="", output_path=""):
 #plt.show()
 
 plot_meteogramm (model="icon", inputpath="/mnt/nvmente/CODE/imuk/database/input/meteogram/", output_path="/mnt/nvmente/CODE/imuk/database/output/meteogram/")
-plot_meteogramm (model="icon-eu", inputpath="/mnt/nvmente/CODE/imuk/database/input/meteogram/", output_path="/mnt/nvmente/CODE/imuk/database/output/meteogram/")
-plot_meteogramm (model="icon-d2", inputpath="/mnt/nvmente/CODE/imuk/database/input/meteogram/", output_path="/mnt/nvmente/CODE/imuk/database/output/meteogram/")
+#plot_meteogramm (model="icon-eu", inputpath="/mnt/nvmente/CODE/imuk/database/input/meteogram/", output_path="/mnt/nvmente/CODE/imuk/database/output/meteogram/")
+#plot_meteogramm (model="icon-d2", inputpath="/mnt/nvmente/CODE/imuk/database/input/meteogram/", output_path="/mnt/nvmente/CODE/imuk/database/output/meteogram/")

@@ -13,12 +13,13 @@ def requestmeteogram(model="icon", output_path= "products/meteogram/", time = da
     lat_han = 52.5
     lon_han = 9.75
 
-    variables = ["t2m", "prmsl", "t","tp","u10","v10","u","v","u","u","u","u","v","v","v","v","d2m","fg10"]  # Liste der Variablen, die extrahiert werden sollen
-    sub_variables = ["","", "/850","","","","/300","/300","/500","/700","/850","/950","/500","/700","/850","/950","",""]
-    folder_variables = ["t_2m", "pmsl","t","tot_prec","u_10m","v_10m","u","v","u","u","u","u","v","v","v","v","td_2m","vmax_10m"]  # Liste der Variablen, die extrahiert werden sollen
-    single_variables = ["", "_single-level","","","","","","","","","","","","","","","",""]
-    levels_variables = ["", "","_850","","","","_300","_300","_500","_700","_850","_950","_500","_700","_850","_950","",""]
-    single_variables_eu_d2 = ["_single-level", "_single-level","_pressure-level","_single-level","_single-level","_single-level","_pressure-level","_pressure-level","_pressure-level","_pressure-level","_pressure-level","_pressure-level","_pressure-level","_pressure-level","_pressure-level","_pressure-level","_single-level","_single-level"]
+    variables = ["t2m", "prmsl", "t","tp","u10","v10","u","v","u","u","u","u","v","v","v","v","d2m","fg10","WW"]  # Liste der Variablen, die extrahiert werden sollen
+    sub_variables = ["","", "/850","","","","/300","/300","/500","/700","/850","/950","/500","/700","/850","/950","","",""]
+    folder_variables = ["t_2m", "pmsl","t","tot_prec","u_10m","v_10m","u","v","u","u","u","u","v","v","v","v","td_2m","vmax_10m","ww"]  # Liste der Variablen, die extrahiert werden sollen
+    single_variables = ["", "_single-level","","","","","","","","","","","","","","","","","_single-level"]
+    levels_variables = ["", "","_850","","","","_300","_300","_500","_700","_850","_950","_500","_700","_850","_950","","",""]
+    single_variables_eu_d2 = ["_single-level", "_single-level","_pressure-level","_single-level","_single-level","_single-level","_pressure-level","_pressure-level","_pressure-level","_pressure-level"
+    ,"_pressure-level","_pressure-level","_pressure-level","_pressure-level","_pressure-level","_pressure-level","_single-level","_single-level","_single-level"]
     # Leeres Dictionary für die Werte der Variablen
     variable_values = {f"{variable}{levels_variable}": [] for variable, levels_variable in zip(variables, levels_variables)}
 
@@ -123,7 +124,7 @@ def requestmeteogram(model="icon", output_path= "products/meteogram/", time = da
     combined_ds['u10'].attrs['units'] = 'm/s'
     combined_ds['v10'].attrs['units'] = 'm/s'
 
-    print(combined_ds)
+    print(combined_ds["WW"])
     combined_ds.to_netcdf(output_path +"meteogramm_"+model+".nc")
     return
 

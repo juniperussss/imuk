@@ -34,9 +34,13 @@ ydim_3=210
 squaredimx=2751
 squaredimy=2361
 
+model1=icon
+model2=icon-eu
+model3=icon-d2
+
 echo "request global started"
 
-$python_path "${path_origin}/ressources/tools/request.py" $path_origin "${path_origin}/database/input/icon"
+#$python_path "${path_origin}/ressources/tools/request.py" $path_origin "${path_origin}/database/input/icon"
 #echo "request global completed"
 
 #echo "request eu started"
@@ -52,8 +56,15 @@ $python_path "${path_origin}/ressources/tools/request.py" $path_origin "${path_o
 
 #$python_path "${path_origin}/products/modell_weather/modell_weather.py"
 
-#$python_path "${path_origin}/products/modell_weather/modell_wind.py" $xdim_1 $xdim_1 $path_output $path_origin $start $end $stepsize
+#$python_path "${path_origin}/products/modell_weather/modell_wind.py" $xdim_1 $xdim_1 $path_output $path_origin $start $end $stepsize $model1
+#$python_path "${path_origin}/products/modell_weather/modell_wind.py" $xdim_1 $xdim_1 $path_output $path_origin $start $end $stepsize $model2
+#$python_path "${path_origin}/products/modell_weather/modell_wind.py" $xdim_1 $xdim_1 $path_output $path_origin $start $end $stepsize $model3
 
-#$python_path "${path_origin}/products/modell_weather/modell_temp_2m.py" $xdim_1 $xdim_1 $path_output $path_origin $start $end $stepsize
+
+
+#$python_path "${path_origin}/products/modell_weather/modell_temp_2m.py" $xdim_1 $xdim_1 $path_output $path_origin $start $end $stepsize $model1
+#$python_path "${path_origin}/products/modell_weather/modell_temp_2m.py" $xdim_1 $xdim_1 $path_output $path_origin $start $end $stepsize $model2
+$python_path "${path_origin}/products/modell_weather/modell_temp_2m.py" $xdim_1 $xdim_1 $path_output $path_origin $start $end $stepsize $model3
+
 
 #$python_path "${path_origin}/products/modell_weather/modell_weather.py" $xdim_1 $xdim_1 $path_output $path_origin $start $end $stepsize

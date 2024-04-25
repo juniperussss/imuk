@@ -10,7 +10,7 @@ import argparse
 
 
 ###
-def picture(vara, number, resx, resy, dir_origin,filenames):
+def picture(vara, number, resx, resy, dir_origin,filenames,model):
     warnings.filterwarnings("ignore")
     current_date = datetime.utcnow()
     print("EU has started at: ", current_date.strftime('%Y-%m-%d  %H:%M:%S'))
@@ -67,7 +67,7 @@ def picture(vara, number, resx, resy, dir_origin,filenames):
     wkres.wkWidth = 3 * resx  # 0.081*3840#299#0.081*3840  # -- width of workstation
     wkres.wkHeight = 3 * resx  # 0.081*3840#224#0.081*3840#2560  # -- height of workstation
     wks_type = "png"  # -- output type of workstation
-    wks = Ngl.open_wks(wks_type, 't2m_' + filenames[number], wkres)  # -- open workstation
+    wks = Ngl.open_wks(wks_type, 't2m_' +model+ filenames[number], wkres)  # -- open workstation
 
     # ---- Resources
 
@@ -154,14 +154,30 @@ def picture(vara, number, resx, resy, dir_origin,filenames):
     var2res.cnInfoLabelOn = False
 
     var2res.pmLabelBarDisplayMode = 'Never'
+    colors = [
+        [11, 115, 192],                  # Schwarz
+        [61, 191, 218],               # Grün
+        [36, 152, 18],              # Hellgrün
+        [154, 206, 0],              # Gelb
+        [235, 225, 107],             # Orange
+        [214, 201, 0],             # Dunkelorange
+        [209, 141, 37],              # Rotorange
+        [197, 102, 49],              # Rot
 
+    ]
 
-    cmap_colors = np.array([[0.133, 0.588, 0.788, 1], [0.247, 0.690, 0.031, 1], [0.839, 0.812, 0.251, 1], [0.808, 0.475, 0.157, 1]])
+    # Transparenz für jede Farbe
+    alphas = [1, 1, 1, 1, 1, 1, 1, 1]
+
+    # Kombination von Farben und Transparenz
+    cmap_colors = np.column_stack((np.array(colors) / 255, alphas))
+
+    #cmap_colors = np.array([[0.133, 0.588, 0.788, 1], [0.247, 0.690, 0.031, 1], [0.839, 0.812, 0.251, 1], [0.808, 0.475, 0.157, 1]])
 
     var2res.cnFillPalette = cmap_colors  # -- set the0 colormap to be used or 'NCL_default'
 
     var2res.cnLevelSelectionMode = "ExplicitLevels"
-    var2res.cnLevels = [0, 10, 20,30]
+    var2res.cnLevels = [-10, 0, 5 ,10, 15,20,25,30]
     var2res.cnFillOpacityF = 0.99
     var2res.cnNoDataLabelString = 'No Variable Data'
     var2res.cnConstFLabelString = 'No Variable Data'
@@ -198,15 +214,15 @@ def picture(vara, number, resx, resy, dir_origin,filenames):
     #t2= ["{:.2f}".format(value) for value in t2.flatten()]  # Formatierung der Temperaturwerte
     print(len(lat1),len(t2))
     print(lon1)
-    for i in range(len(t2)):
-        for j in range(len(t2[i])):
-            txt = Ngl.add_text(wks, plot2, str(t2[i][j]), lon1[j], lat1[i])#,text_res)
+    #for i in range(len(t2)):
+       # for j in range(len(t2[i])):
+          #  txt = Ngl.add_text(wks, plot2, str(t2[i][j]), lon1[j], lat1[i])#,text_res)
 
     #Ngl.add_text(wks, plot2, t2, lon1, lat1, text_res)
 
-    hour, weekday, datetime_object,delta = imuktools.dates_for_subtitles(vara, number, filenames)
-    left_string_2 = '300 hPa: ' +'Windgeschwindigkeit (m/s), Windfieder' # model output info
-    left_string   = 'ICON-Lauf: '+  datetime_object.strftime('%a %d.%m.%Y %H')  +" UTC" +" (+"+delta+"h)"#model output info
+    hour, weekday, datetime_object,delta = imuktools.dates_for_subtitles(vara, number, filenames,model=model)
+    left_string_2 = 'Temperatur 2m (C): ' # model output info
+    left_string   = model +'-Lauf: '+  datetime_object.strftime('%a %d.%m.%Y %H')  +" UTC" +" (+"+delta+"h)"#model output info
     center_string = ''  # center information bar
     right_string = weekday.capitalize() + " " + str(hour) + " UTC"  # + vld_time #model time information
     imuktools.subtitles(wks, map, left_string, center_string, right_string, mpres, left_string_2)  # assigning to main map
@@ -269,9 +285,9 @@ def picture(vara, number, resx, resy, dir_origin,filenames):
     Ngl.frame(wks)
     Ngl.destroy(wks)#
 
-    imuktools.legend(number, 't2m_', 10, wkres.wkWidth, wkres.wkHeight, cmap_colors, list(var2res.cnLevels), filenames, 0, "m/s", dir_origin, resx, trans=False)
+    imuktools.legend(number, 't2m_'+model, 10, wkres.wkWidth, wkres.wkHeight, cmap_colors, list(var2res.cnLevels), filenames, 0, "m/s", dir_origin, resx, trans=False)
     # ---- Crop Graphics
-    imuktools.crop_image(number, 't2m_', wkres, resx, resy, filenames, square=True)
+    imuktools.crop_image(number, 't2m_'+model, wkres, resx, resy, filenames, square=True)
     # imuktools.crop_image_aspected(number,'u_v_300_',wkres,resx,resy)
 
     print('\EU has finished at: ', datetime.utcnow().strftime('%Y-%m-%d  %H:%M:%S '), u'\u2714')
@@ -288,12 +304,14 @@ def main():
     parser.add_argument('timerangestart')
     parser.add_argument('timerangestop')
     parser.add_argument('timerangestepsize')
+    parser.add_argument('model')
     args = parser.parse_args()  # gv[480#210    #480
     resx = int(args.resx)
     resy = int(args.resy)
     dir_origin = args.inputpath
     dir_Produkt = args.outputpath
     os.chdir(dir_Produkt)
+    model = args.model
 
     varnumber = 1
     vars = ["t_2m"]
@@ -302,14 +320,14 @@ def main():
     filenames= imuktools.filenames(timerange)
     variablepaths = imuktools.varnames(varnumber, vars,
                                      varlevel,
-                                     dir_origin, filenames)  ##Getting every filepath in the directory like [[vara1,vara2],[varb1,varb2]]
+                                     dir_origin, filenames, model=model)  ##Getting every filepath in the directory like [[vara1,vara2],[varb1,varb2]]
 
     timestepnumber = len(variablepaths[0])
 
 
     ## Main Process
     for i in range(0,len(timerange)):
-        picture(variablepaths[0][i], i, resx, resy, dir_origin,filenames)
+        picture(variablepaths[0][i], i, resx, resy, dir_origin,filenames,model)
     return
 
 
