@@ -7,7 +7,8 @@ import metpy.calc as mpcalc
 from metpy.units import units
 import ressources.tools.imuktools as imuktools
 import argparse
-
+import pandas as pd
+import xarray as xr
 
 ###
 def picture(vara, number, resx, resy, dir_origin,filenames,model):
@@ -211,12 +212,31 @@ def picture(vara, number, resx, resy, dir_origin,filenames,model):
         # Temperaturwerte an jedem Gitterpunkt anzeigen
     text_res = Ngl.Resources()
     text_res.txFontHeightF = 0.015  # Schriftgröße anpassen
+    text_res.txFontColor ="black"
     #t2= ["{:.2f}".format(value) for value in t2.flatten()]  # Formatierung der Temperaturwerte
-    print(len(lat1),len(t2))
-    print(lon1)
-    #for i in range(len(t2)):
-       # for j in range(len(t2[i])):
-          #  txt = Ngl.add_text(wks, plot2, str(t2[i][j]), lon1[j], lat1[i])#,text_res)
+    #print(len(lat1),len(lon1))
+    #print(lon1)
+    scale_tudes = 60#80
+    lon_new = np.linspace(-75, 75, num=scale_tudes)
+    lat_new = np.linspace(5, 80, num=scale_tudes)
+ 
+    df = pd.DataFrame(t2)
+    xr_data = xr.Dataset(
+        {"data": (("latitude", "longitude"), df.values)},
+        coords={"latitude": lat1, "longitude": lon1}
+    )
+    xr_data= xr_data.reindex(latitude=lat_new, longitude=lon_new, method='nearest')
+    t2_filterd = xr_data.to_dataframe()
+
+    #@nb.njit(parallel=True)
+    #def add_text_parallel(wks, plot2, t2_data, lat_new, lon_new, text_res):
+      #  for i in nb.prange(len(lat_new)):
+      #      for j in range(len(lon_new)):
+     #           txt = Ngl.add_text(wks, plot2, str(int(t2_data[i, j])), lon_new[j], lat_new[i], text_res)
+    #add_text_parallel(wks, plot2, t2_filterd.values, lat_new, lon_new, text_res)
+    for i in lat_new :
+        for j in lon_new:
+          txt = Ngl.add_text(wks, plot2, str(int(t2_filterd["data"][i][j])), j, i,text_res)
 
     #Ngl.add_text(wks, plot2, t2, lon1, lat1, text_res)
 
@@ -285,7 +305,7 @@ def picture(vara, number, resx, resy, dir_origin,filenames,model):
     Ngl.frame(wks)
     Ngl.destroy(wks)#
 
-    imuktools.legend(number, 't2m_'+model, 10, wkres.wkWidth, wkres.wkHeight, cmap_colors, list(var2res.cnLevels), filenames, 0, "m/s", dir_origin, resx, trans=False)
+    imuktools.quadlegend(number, 't2m_'+model, 10, wkres.wkWidth, wkres.wkHeight, cmap_colors, list(var2res.cnLevels), filenames, 0, "°C", dir_origin, resx, trans=False, title="Temperatur",low=-10)
     # ---- Crop Graphics
     imuktools.crop_image(number, 't2m_'+model, wkres, resx, resy, filenames, square=True)
     # imuktools.crop_image_aspected(number,'u_v_300_',wkres,resx,resy)

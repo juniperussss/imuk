@@ -7,9 +7,9 @@ start=0
 end=3 #168
 stepsize=3
 
-#path_origin=/home/alex/code/imuk                      
+path_origin=/home/alex/code/imuk                      
 #python_path=/Users/alex/miniforge3/envs/imuk/bin/python   
-path_origin=/mnt/nvmente/CODE/imuk #/Users/alex/Code/imuk   # Change this 
+#path_origin=/mnt/nvmente/CODE/imuk #/Users/alex/Code/imuk   # Change this 
 python_path=/home/alex/miniforge3/envs/imuk/bin/python      # and this
  
 
@@ -56,6 +56,8 @@ echo "request global started"
 
 #$python_path "${path_origin}/products/modell_weather/modell_weather.py"
 
+#
+#
 #$python_path "${path_origin}/products/modell_weather/modell_wind.py" $xdim_1 $xdim_1 $path_output $path_origin $start $end $stepsize $model1
 #$python_path "${path_origin}/products/modell_weather/modell_wind.py" $xdim_1 $xdim_1 $path_output $path_origin $start $end $stepsize $model2
 #$python_path "${path_origin}/products/modell_weather/modell_wind.py" $xdim_1 $xdim_1 $path_output $path_origin $start $end $stepsize $model3
@@ -64,7 +66,7 @@ echo "request global started"
 
 #$python_path "${path_origin}/products/modell_weather/modell_temp_2m.py" $xdim_1 $xdim_1 $path_output $path_origin $start $end $stepsize $model1
 #$python_path "${path_origin}/products/modell_weather/modell_temp_2m.py" $xdim_1 $xdim_1 $path_output $path_origin $start $end $stepsize $model2
-$python_path "${path_origin}/products/modell_weather/modell_temp_2m.py" $xdim_1 $xdim_1 $path_output $path_origin $start $end $stepsize $model3
+#$python_path "${path_origin}/products/modell_weather/modell_temp_2m.py" $xdim_1 $xdim_1 $path_output $path_origin $start $end $stepsize $model3
 
 
-#$python_path "${path_origin}/products/modell_weather/modell_weather.py" $xdim_1 $xdim_1 $path_output $path_origin $start $end $stepsize
+$python_path "${path_origin}/products/modell_weather/modell_weather.py" $xdim_1 $xdim_1 $path_output $path_origin $start $end $stepsize $model1

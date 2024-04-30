@@ -21,15 +21,7 @@ from shapely.geometry import Point
 
 ###
 #def picture(vara,varb,varc,vard,number,resx,resy,dir_origin,filenames,rain_parameter):
-def picture(number):
-    vara=varap[number]
-    varb = varbp[number]
-    varc = varcp[number]
-    vard = vardp[number]
-    resx = resxs[number]
-    resy= resys[number]
-    dir_origin= dir_origins[number]
-    rain_parameter=rain_parameters[number]
+def picture(vara,varb,varc,vard,number,resx,resy,dir_origin,filenames,rain_parameter,model):
 
 
 
@@ -456,7 +448,10 @@ def picture(number):
     if number>0:
         levellist=list(var3res.cnLevels)
         #levellist.pop()
-        imuktools.legendgl(number, 'modell_weather_', 11, wkres.wkWidth, wkres.wkHeight, filenames, 0, "mm", dir_origin, resx)
+        #imuktools.legendgl(number, 'modell_weather_', 11, wkres.wkWidth, wkres.wkHeight, filenames, 0, "mm", dir_origin, resx)
+    resx= 945
+    imuktools.quadlegend(number, 'modell_weather_', 10, wkres.wkWidth, wkres.wkHeight, cmap_colors, list(var3res.cnLevels), filenames, 0, "°C", dir_origin, resx, trans=False, title="Rain",low=-10)
+
     imuktools.crop_image(number, 'modell_weather_', wkres, resx, resy, filenames,square=True)
 
     print('\EU has finished at: ', datetime.utcnow().strftime('%Y-%m-%d  %H:%M:%S '), u'\u2714' )
@@ -473,11 +468,13 @@ def main():
     parser.add_argument('timerangestart')
     parser.add_argument('timerangestop')
     parser.add_argument('timerangestepsize')
+    parser.add_argument('model')
     args = parser.parse_args()  # gv[480#210    #480
     resx = int(args.resx)
     resy = int(args.resy)
     dir_origin = args.inputpath
     dir_Produkt = args.outputpath
+    model = args.model
     os.chdir(dir_Produkt)
 
     varnumber = 4
@@ -490,7 +487,7 @@ def main():
     variablepaths = imuktools.varnames(varnumber, vars,
                                      varlevel,
                                      dir_origin,
-                                     filenames)  ##Getting every filepath in the directory like [[vara1,vara2],[varb1,varb2]]
+                                     filenames,model=model)  ##Getting every filepath in the directory like [[vara1,vara2],[varb1,varb2]]
 
     timestepnumber = len(variablepaths[0])
 
@@ -516,12 +513,10 @@ def main():
     elements = list(zip(varap,varbp, varcp, vardp ,numbers, resxs ,resys ,dir_origins ,filenames, rain_parameters))
     print(elements)
     print(len(elements))
-    with Pool() as pool:
-        pool.map(picture,numbers)
-        #pool.close()
-        #pool.join()
-        #pool.starmap(picture,[varap,varbp,varcp,vardp,numbers,resx,resy,dir_origin,filenames,rain_parameter])
+    for i in range(0,len(timerange)):
+        picture(variablepaths[0][i], i, resx, resy, dir_origin,filenames,model)
     return
+
 
 if __name__ == "__main__":
     start_time = time.time()

@@ -188,8 +188,15 @@ def dates_for_subtitles(vara,number,filenames, model="icon"):
     import os
     from datetime import datetime, timedelta
     import locale
-    locale.setlocale(locale.LC_TIME, 'de_DE.UTF8')
-    import locale
+    try:
+        locale.setlocale(locale.LC_TIME, 'de_DE.UTF8')
+    except:
+        try:
+            locale.setlocale(locale.LC_TIME, 'de_DE')
+        except: 
+            print("local could not been setr")
+            pass
+
     #locale.setlocale(
      #   category=locale.LC_ALL,
       #  locale=""
@@ -474,6 +481,83 @@ def legendgl(number, levelname, stepsize, width, heigth, filenames, stepstart, u
 
     im.save(levelname + filenames[number] + ".png", format='png')
     # os.remove(levelname +  filenames[number] + ".png")
+
+
+def quadlegend(number,levelname,stepsize,width,heigth,colormap,levels,filenames,stepstart, unit,inputpath,resx,trans=True, title="hans", low = 0):
+    from PIL import Image, ImageDraw as D, ImageFont
+    import numpy as np
+
+    im = Image.open(levelname + filenames[number] + ".png", mode='r')
+    ## Drawing the outer rectangle
+    left = 0
+    top = 0
+    xmin = 0.03*width
+    xmax = 0.08*width
+    ymin = 0.9075*heigth
+    ymax = 0.67*heigth
+    shape= [(0.75*xmin,1.01*ymin),(1.75*xmax,0.9*ymax)]#
+    shaper=[(100,100),(250,250)]
+    draw = D.Draw(im)
+    fontsize= int( (resx/1920) *100)
+    draw.rectangle(shape, fill="white",outline="black")
+
+    myFont=ImageFont.truetype(inputpath+'/ressources/fonts/liberation/LiberationSerif-Regular.ttf', fontsize)
+    title_font = ImageFont.truetype(inputpath+'/ressources/fonts/liberation/LiberationSerif-Bold.ttf', int(fontsize*1.2))
+    # Calculating inner rectangle
+    ylast= ymin
+    ysteps= int(max(levels)/stepsize) #+1 #How many Levels are needed
+    ydelta = (ymin-ymax)/ysteps
+    gesammtrange= ymin-ymax
+    maxval= max(levels)
+    ci=0
+    outlinewidth=int( (resx/1920) *3)
+    # Drawing Title
+    title_shape = [(0.8*xmin,0.95*ymax),(1.74*xmax,0.9*ymax)]
+    draw = D.Draw(im)
+    draw.rectangle(title_shape, fill=(0,0,255), outline="black", width=outlinewidth)
+    draw.text((xmin, 0.91*ymax), title, fill = (255, 255, 255),font=title_font)
+
+    draw.text((0.8 * xmax, 0.96*ymax), "("+unit+")", fill=(0, 0, 0), font=myFont)
+
+
+    ##Drawing inner rectangles
+
+    while ci< len(levels):
+        if ci== 0:
+            deltav= abs(levels[ci])
+        else:
+            deltav= levels[ci] - abs(levels[ci-1])
+    # Calculating percentage
+        anteil = 1/len(levels)#deltav/maxval
+        ylow= ylast
+        yhigh=ylow-anteil*gesammtrange
+        shape=[(xmin,yhigh),(xmax,ylow)]
+        fill = tuple(np.array(colormap[ci]*256).astype(int))
+        draw = D.Draw(im)
+        draw.rectangle(shape, fill=fill, outline="black", width=outlinewidth)
+        if str(colormap[ci]) == "[0. 0. 0. 0.]":
+            print("yeah")
+            xmintrans= xmin
+            xmaxtrans= xmax
+            ylowtrans = ylow
+            yhightrans =yhigh
+        if ci < len(levels) and levels[ci]%1< 0.5:
+
+            draw.text((1.05*xmax, 0.99*yhigh), str(levels[ci]), fill = (0, 0, 0),font=myFont)
+        ylast=yhigh
+        ci +=1
+    
+    #### Adding Fake Transparency ######
+    if trans:
+        imtrans = Image.open(inputpath+'/ressources/img/trans3.png', mode='r')
+        xtransdelta= int(xmaxtrans-xmintrans)
+        ytransdelta= int(abs(yhightrans-ylowtrans))
+        resized = imtrans.resize((xtransdelta-outlinewidth,ytransdelta-2*outlinewidth))
+        im.paste(resized, (int(xmintrans+outlinewidth),int(yhightrans+outlinewidth)))
+
+    im.save(levelname + filenames[number] + ".png", format='png')
+    return
+
 def metarww(metarstring):
     metarstring=metarstring.split(", ")[0]
     # Metarstring analysieren

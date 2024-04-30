@@ -162,13 +162,13 @@ def picture(vara, varb, number, resx, resy, dir_origin,filenames, model):
 
 
     var1res.vcRefMagnitudeF = 1.  # make vectors larger
-    var1res.vcRefLengthF = 0.015  # ref vec length
+    var1res.vcRefLengthF = 0.018  # ref vec length
     var1res.vcGlyphStyle = "WindBarb"  # select wind barbs
-    var1res.vcMinDistanceF = 0.033  # 0.048  # thin out windbarbs
+    var1res.vcMinDistanceF = 0.023  # 0.048  # thin out windbarbs
     var1res.vcMonoWindBarbColor = True  # Turns multiple Windbarb colors on and off
     var1res.vcLevelColors = Ngl.read_colormap_file("ncl_default")
     var1res.vcGlyphOpacityF = 1
-    var1res.vcWindBarbLineThicknessF = (resx / 1920) * 10
+    var1res.vcWindBarbLineThicknessF = (resx / 1920) * 12
     var1res.vcWindBarbColor = "Black"
     var1res.vcWindBarbScaleFactorF = 1
     var1res.vcRefAnnoOn = False
@@ -266,7 +266,7 @@ def picture(vara, varb, number, resx, resy, dir_origin,filenames, model):
 
 
     hour, weekday, datetime_object,delta = imuktools.dates_for_subtitles(vara, number, filenames, model =model)
-    left_string_2 = '300 hPa: ' +'Windgeschwindigkeit (m/s), Windfieder' # model output info
+    left_string_2 = '10 m  Wind (Fieder)' +' Boen, nach der Beaufortskala' # model output info
     left_string   = 'ICON-Lauf: '+  datetime_object.strftime('%a %d.%m.%Y %H')  +" UTC" +" (+"+delta+"h)"#model output info
     center_string = ''  # center information bar
     right_string = weekday.capitalize() + " " + str(hour) + " UTC"  # + vld_time #model time information
@@ -330,7 +330,7 @@ def picture(vara, varb, number, resx, resy, dir_origin,filenames, model):
     Ngl.frame(wks)
     Ngl.destroy(wks)#
 
-    imuktools.legend(number, 'modell_wind_' + model, 10, wkres.wkWidth, wkres.wkHeight, cmap_colors, list(var2res.cnLevels), filenames, 0, "m/s", dir_origin, resx)
+    imuktools.quadlegend(number, 'modell_wind_' + model, 10, wkres.wkWidth, wkres.wkHeight, cmap_colors, list(var2res.cnLevels), filenames, 0, "m/s", dir_origin, resx,title="Windboen")
     # ---- Crop Graphics
     imuktools.crop_image(number, 'modell_wind_' + model, wkres, resx, resy, filenames, square=True)
     # imuktools.crop_image_aspected(number,'u_v_300_',wkres,resx,resy)
