@@ -228,12 +228,6 @@ def picture(vara, number, resx, resy, dir_origin,filenames,model):
     xr_data= xr_data.reindex(latitude=lat_new, longitude=lon_new, method='nearest')
     t2_filterd = xr_data.to_dataframe()
 
-    #@nb.njit(parallel=True)
-    #def add_text_parallel(wks, plot2, t2_data, lat_new, lon_new, text_res):
-      #  for i in nb.prange(len(lat_new)):
-      #      for j in range(len(lon_new)):
-     #           txt = Ngl.add_text(wks, plot2, str(int(t2_data[i, j])), lon_new[j], lat_new[i], text_res)
-    #add_text_parallel(wks, plot2, t2_filterd.values, lat_new, lon_new, text_res)
     for i in lat_new :
         for j in lon_new:
           txt = Ngl.add_text(wks, plot2, str(int(t2_filterd["data"][i][j])), j, i,text_res)

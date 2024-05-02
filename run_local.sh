@@ -40,8 +40,8 @@ model3=icon-d2
 
 echo "request global started"
 
-#$python_path "${path_origin}/ressources/tools/request.py" $path_origin "${path_origin}/database/input/icon"
-#echo "request global completed"
+$python_path "${path_origin}/ressources/tools/request.py" $path_origin "${path_origin}/database/input/icon"
+echo "request global completed"
 
 #echo "request eu started"
 
@@ -69,4 +69,5 @@ echo "request global started"
 #$python_path "${path_origin}/products/modell_weather/modell_temp_2m.py" $xdim_1 $xdim_1 $path_output $path_origin $start $end $stepsize $model3
 
 
+#
 $python_path "${path_origin}/products/modell_weather/modell_weather.py" $xdim_1 $xdim_1 $path_output $path_origin $start $end $stepsize $model1

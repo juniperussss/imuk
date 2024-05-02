@@ -22,9 +22,6 @@ from shapely.geometry import Point
 ###
 #def picture(vara,varb,varc,vard,number,resx,resy,dir_origin,filenames,rain_parameter):
 def picture(vara,varb,varc,vard,number,resx,resy,dir_origin,filenames,rain_parameter,model):
-
-
-
     warnings.filterwarnings("ignore")
     current_date = datetime.utcnow()
     print("EU has started at: ", current_date.strftime('%Y-%m-%d  %H:%M:%S'))
@@ -32,8 +29,6 @@ def picture(vara,varb,varc,vard,number,resx,resy,dir_origin,filenames,rain_param
     current_mo = current_date.month
     current_day = current_date.day
     yrmoday = current_date.strftime('%d/%m/%Y')
-
-
 
     #---- open files and read variables
 
@@ -82,6 +77,14 @@ def picture(vara,varb,varc,vard,number,resx,resy,dir_origin,filenames,rain_param
     else:
       rain_instant = rain 
 
+    dir         = os.path.join(dir_origin) #path of model output
+    fn4         = vard# dir + '/database/input/icon/2022/8/2/00/tot_prec/outfile_merged_2022080200_000_004_TOT_PREC.grib2' #path name of model output
+    f4          = Nio.open_file(os.path.join(vard))#dir, fn3)) #model output definition
+
+    
+    lon4 = ma.round(f4.variables['lon_0'][:] - 360,2)
+    lat4= ma.round(f4.variables['lat_0'][:],2)
+    ww = f4.variables['PRMSL_P0_L101_GLL0'][:,:]
 
 
     data = pd.read_csv(dir_origin+'/ressources/Data/metar_groundlevel.csv')
@@ -400,10 +403,7 @@ def picture(vara,varb,varc,vard,number,resx,resy,dir_origin,filenames,rain_param
     if number>0:
         plot3    = Ngl.contour(wks, rain_instant, var3res) #gsn_csm_contour command
     #plot4 = Ngl.contour(wks, pmsl, var4res)  # gsn_csm_contour command
-    
 
-
-    #Ngl.wmsetp("wbs",10)
 
     #Ngl.add_polymarker(wks, plot2, 9.732, 52.376, pmres) #marker locations
     Ngl.overlay(map, plot1)
@@ -412,26 +412,28 @@ def picture(vara,varb,varc,vard,number,resx,resy,dir_origin,filenames,rain_param
     Ngl.overlay(map, plot2)
     Ngl.add_polymarker(wks, plot2, 9.732, 52.376, pmres) #marker locations
 
+    text_res = Ngl.Resources()
+    text_res.txFontHeightF = 0.015  # Schriftgröße anpassen
+    text_res.txFontColor ="black"
 
-    #---- Annotations and Markers
-    #if number==0:
-     #   for i in range(len(wwsym)):
-      #      if wwcolour[i] == "green":
-       #         txres.txFontColor = "green"
-        #    elif wwcolour[i] == "yellow":
-         #       txres.txFontColor = "yellow"
-          #      txres.txFontHeightF = 0.0085
-           #     txres.txFontAspectF = 1
-          #  elif wwcolour[i] == "magenta":
-          #      txres.txFontColor = "magenta"
-          #  elif wwcolour[i] == "red":
-          #      txres.txFontColor = "red"
-          #  else:
-          #      txres.txFontColor = "white"
-           # try:
-          #      txt = Ngl.add_text(wks, plot2, wwsym[i], lon5[i], lat5[i],txres)
-           # except TypeError:
-            #    pass
+    scale_tudes = 60#80
+    lon_new = np.linspace(-75, 75, num=scale_tudes)
+    lat_new = np.linspace(5, 80, num=scale_tudes)
+ 
+    df = pd.DataFrame(ww)
+    xr_data = xr.Dataset(
+        {"data": (("latitude", "longitude"), df.values)},
+        coords={"latitude": lat4, "longitude": lon4}
+    )
+    xr_data= xr_data.reindex(latitude=lat_new, longitude=lon_new, method='nearest')
+    t2_filterd = xr_data.to_dataframe()
+
+    for i in lat_new :
+        for j in lon_new:
+          txt = Ngl.add_text(wks, plot2, str(int(t2_filterd["data"][i][j])), j, i,text_res)
+
+
+
     hour, weekday, datetime_object,delta = imuktools.dates_for_subtitles(vara, number, filenames)
     left_string_2   = 'Bodendruck, sign. Wetter(gemeldet)'# +' & '+ f2.variables['GP_P0_L100_GLL0'].attributes['long_name'] #model output info
     left_string   = 'ICON-Lauf: '+  datetime_object.strftime('%a %d.%m.%Y %H')  +" UTC" +" (+"+delta+"h)"#model output info
@@ -497,6 +499,7 @@ def main():
     varbp= variablepaths[1]
     varcp = variablepaths[2]
     vardp= variablepaths[3]
+    print(variablepaths[3])
     numbers =[] #np.arange(0,len(timerange))
     resxs=[resx]*len(timerange)
     resys=[resy]*len(timerange)
@@ -514,7 +517,7 @@ def main():
     print(elements)
     print(len(elements))
     for i in range(0,len(timerange)):
-        picture(variablepaths[0][i], i, resx, resy, dir_origin,filenames,model)
+        picture(variablepaths[0][i],variablepaths[1][i],variablepaths[2][i],variablepaths[3][i], i, resx, resy, dir_origin,filenames,rain_parameters[i],model)
     return
 
 
