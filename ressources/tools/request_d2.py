@@ -100,33 +100,35 @@ number=np.arange(0,len(variables))
 url_base = 'https://opendata.dwd.de/weather/nwp/icon-d2/grib/'
 
 def varrequest(number):
-    # print(f'/_{variables[number][1]}'+variables[number][2][1:])
-    var = variables[number][0]
+    try:
+        # print(f'/_{variables[number][1]}'+variables[number][2][1:])
+        var = variables[number][0]
 
-    os.makedirs(dir_Nest + f'/{var}' + f'/{variables[number][2][1:]}')
-    os.path.join(dir_Nest + f'/{var}' + f'/{variables[number][2][1:]}')
-    os.chdir(dir_Nest + f'/{var}' + f'/{variables[number][2][1:]}')
+        os.makedirs(dir_Nest + f'/{var}' + f'/{variables[number][2][1:]}')
+        os.path.join(dir_Nest + f'/{var}' + f'/{variables[number][2][1:]}')
+        os.chdir(dir_Nest + f'/{var}' + f'/{variables[number][2][1:]}')
 
-    for hour in fcst_hrs:
-        url_data = url_base + '{}/{}/icon-d2_germany_regular-lat-lon_{}_{}{}_{}_{}_{}.grib2.bz2'.format(
-            init_time_hr, var, variables[number][1], cdt_yrmoday, init_time_hr, str(hour).zfill(3),
-            levels_label[number], str(var))
-        # print(url_data)
-        data_request = requests.get(url_data, stream=True)
-        if data_request.status_code == 200:
-            print(url_data)
-            print('{}'.format(var), u'\u2714')
+        for hour in fcst_hrs:
+            url_data = url_base + '{}/{}/icon-d2_germany_regular-lat-lon_{}_{}{}_{}_{}_{}.grib2.bz2'.format(
+                init_time_hr, var, variables[number][1], cdt_yrmoday, init_time_hr, str(hour).zfill(3),
+                levels_label[number], str(var))
+            # print(url_data)
+            data_request = requests.get(url_data, stream=True)
+            if data_request.status_code == 200:
+                print(url_data)
+                print('{}'.format(var), u'\u2714')
 
-        with open('icon-d2_germany_regular-lat-lon_{}_{}{}_{}_{}_{}.grib2.bz2'.format(
-                variables[number][1], cdt_yrmoday, init_time_hr, str(hour).zfill(3) ,levels_label[number],
-                str(var)), 'wb') as f:
-            f.write(data_request.content)
+            with open('icon-d2_germany_regular-lat-lon_{}_{}{}_{}_{}_{}.grib2.bz2'.format(
+                    variables[number][1], cdt_yrmoday, init_time_hr, str(hour).zfill(3) ,levels_label[number],
+                    str(var)), 'wb') as f:
+                f.write(data_request.content)
 
-        zip_command = 'bzip2 -d *.bz2'
-        os.system(zip_command)
-    os.chdir(dir_origin)
-    print(os.path.abspath(os.getcwd()) + " has completed at: ", cdt_date.strftime('%Y-%m-%d  %H:%M:%S'))
-
+            zip_command = 'bzip2 -d *.bz2'
+            os.system(zip_command)
+        os.chdir(dir_origin)
+        print(os.path.abspath(os.getcwd()) + " has completed at: ", cdt_date.strftime('%Y-%m-%d  %H:%M:%S'))
+    except Exception as err:
+        print(err)
 
 # imuktools.archiving()
 

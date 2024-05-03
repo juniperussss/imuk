@@ -120,55 +120,56 @@ weights= dir_origin +'/database/ICON_GLOBAL2EUAU_025_EASY/weights_icogl2world_02
 
 #cdo=Cdo("/home/alex/miniforge3/envs/imuk/bin/cdo")
 #cdo=Cdo()
-cdo.debug = True
+cdo.debug = False
 def varrequest(number):
-    print(f'/_{variables[number][1]}'+variables[number][2][1:])
-    var= variables[number][0]
+    try: 
+        print(f'/_{variables[number][1]}'+variables[number][2][1:])
+        var= variables[number][0]
 
-    os.makedirs(dir_Nest + f'/{var}'+f'/{variables[number][2][1:]}')
-    os.path.join(dir_Nest + f'/{var}'+f'/{variables[number][2][1:]}')
-    os.chdir(dir_Nest + f'/{var}'+f'/{variables[number][2][1:]}')
+        os.makedirs(dir_Nest + f'/{var}'+f'/{variables[number][2][1:]}')
+        os.path.join(dir_Nest + f'/{var}'+f'/{variables[number][2][1:]}')
+        os.chdir(dir_Nest + f'/{var}'+f'/{variables[number][2][1:]}')
 
-    for hour in fcst_hrs:
-        if hour == 0 and var == "vmax_10m":  # vmax_10m is not available for 0 hour
-            continue
-        url_data = url_base +'{}/{}/icon_global_icosahedral_{}_{}{}_{}{}_{}.grib2.bz2'.format(
-            init_time_hr, var, variables[number][1], cdt_yrmoday, init_time_hr, str(hour).zfill(3), variables[number][2], str(var).upper())
-        #print(url_data)
-        data_request = requests.get(url_data, stream=True)
-        if data_request.status_code == 200:
-            print(url_data)
-            print('{}'.format(var), u'\u2714')
+        for hour in fcst_hrs:
+            if hour == 0 and var == "vmax_10m":  # vmax_10m is not available for 0 hour
+                continue
+            url_data = url_base +'{}/{}/icon_global_icosahedral_{}_{}{}_{}{}_{}.grib2.bz2'.format(
+                init_time_hr, var, variables[number][1], cdt_yrmoday, init_time_hr, str(hour).zfill(3), variables[number][2], str(var).upper())
+            #print(url_data)
+            data_request = requests.get(url_data, stream=True)
+            if data_request.status_code == 200:
+                print(url_data)
+                print('{}'.format(var), u'\u2714')
 
-        with open('icon_global_icosahedral_{}_{}{}_{}{}_{}.grib2.bz2'.format(
-                variables[number][1], cdt_yrmoday, init_time_hr, str(hour).zfill(3), variables[number][2], str(var).upper()), 'wb') as f:
-            f.write(data_request.content)
+            with open('icon_global_icosahedral_{}_{}{}_{}{}_{}.grib2.bz2'.format(
+                    variables[number][1], cdt_yrmoday, init_time_hr, str(hour).zfill(3), variables[number][2], str(var).upper()), 'wb') as f:
+                f.write(data_request.content)
 
-        zip_command = 'bzip2 -d *.bz2'
-        os.system(zip_command)
+            zip_command = 'bzip2 -d *.bz2'
+            os.system(zip_command)
 
-        ifile = dir_Nest + '/{}/{}/icon_global_icosahedral_{}_{}{}_{}{}_{}.grib2'.format(
-            var, variables[number][2][1:], variables[number][1], cdt_yrmoday, init_time_hr, str(hour).zfill(3), variables[number][2], str(var).upper())
-        print(ifile)
+            ifile = dir_Nest + '/{}/{}/icon_global_icosahedral_{}_{}{}_{}{}_{}.grib2'.format(
+                var, variables[number][2][1:], variables[number][1], cdt_yrmoday, init_time_hr, str(hour).zfill(3), variables[number][2], str(var).upper())
+            print(ifile)
 
-        # cdo.sellonlatbox('-75,75,5,80', input=ifile, output='haha.grib2') #not necessary for this step
-        cdo.remap(grids, weights, input=ifile, output='ofile_{}_{}_{}_{}'.format(
-            ifile.split('_')[-4:][0], ifile.split('_')[-4:][1],
-            ifile.split('_')[-4:][2], ifile.split('_')[-4:][3]),
-            options='-f grb2')
+            # cdo.sellonlatbox('-75,75,5,80', input=ifile, output='haha.grib2') #not necessary for this step
+            cdo.remap(grids, weights, input=ifile, output='ofile_{}_{}_{}_{}'.format(
+                ifile.split('_')[-4:][0], ifile.split('_')[-4:][1],
+                ifile.split('_')[-4:][2], ifile.split('_')[-4:][3]),
+                options='-f grb2')
 
-        #pbar.update()
-
-
-    for ifile in glob.glob('*icosahedral*', recursive=True):
-        print("Removing ", ifile)
-        os.remove(ifile)
+            #pbar.update()
 
 
-    os.chdir(dir_origin)
-    print(os.path.abspath(os.getcwd()) +" has completed at: ", cdt_date.strftime('%Y-%m-%d  %H:%M:%S'))
+        for ifile in glob.glob('*icosahedral*', recursive=True):
+            print("Removing ", ifile)
+            os.remove(ifile)
 
 
+        os.chdir(dir_origin)
+        print(os.path.abspath(os.getcwd()) +" has completed at: ", cdt_date.strftime('%Y-%m-%d  %H:%M:%S'))
+    except Exception as err:
+        print(err)
 
 #imuktools.archiving()
 

@@ -40,7 +40,7 @@ model3=icon-d2
 
 echo "request global started"
 
-$python_path "${path_origin}/ressources/tools/request.py" $path_origin "${path_origin}/database/input/icon"
+#$python_path "${path_origin}/ressources/tools/request.py" $path_origin "${path_origin}/database/input/icon"
 echo "request global completed"
 
 #echo "request eu started"
