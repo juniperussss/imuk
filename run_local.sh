@@ -3,8 +3,8 @@
 #conda init
 conda activate imuk
 
-start=0
-end=3 #168
+start=3
+ende=6 #168
 stepsize=3
 
 path_origin=/home/alex/code/imuk                      
@@ -24,6 +24,7 @@ export PYTHONPATH=$PYTHONPATH:${path_origin}
 xdim_1=945
 ydim_1=480
 
+
 xdim_2=700
 ydim_2=420
 
@@ -37,6 +38,8 @@ squaredimy=2361
 model1=icon
 model2=icon-eu
 model3=icon-d2
+
+mode=summer
 
 echo "request global started"
 
@@ -70,4 +73,9 @@ echo "request global completed"
 
 
 #
-$python_path "${path_origin}/products/modell_weather/modell_weather.py" $xdim_1 $xdim_1 $path_output $path_origin $start $end $stepsize $model1
+#$python_path "${path_origin}/products/modell_weather/modell_weather.py" $xdim_1 $xdim_1 $path_output $path_origin $start $end $stepsize $model1
+#$python_path "${path_origin}/products/modell_weather/modell_weather.py" $xdim_1 $xdim_1 $path_output $path_origin $start $end $stepsize $model2
+#$python_path "${path_origin}/products/modell_weather/modell_weather.py" $xdim_1 $xdim_1 $path_output $path_origin $start $end $stepsize $model3
+
+
+$python_path "${path_origin}/products/modell_weather/modell_cape_snow.py" $xdim_1 $xdim_1 $path_output $path_origin $start $ende $stepsize $model1 $mode

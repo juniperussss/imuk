@@ -18,7 +18,7 @@ import ressources.tools.imuktools as imuktools
 import geopandas as gpd
 from sklearn.cluster import KMeans, DBSCAN
 from shapely.geometry import Point
-
+import xarray as xr
 ###
 #def picture(vara,varb,varc,vard,number,resx,resy,dir_origin,filenames,rain_parameter):
 def picture(vara,varb,varc,vard,number,resx,resy,dir_origin,filenames,rain_parameter,model):
@@ -84,9 +84,10 @@ def picture(vara,varb,varc,vard,number,resx,resy,dir_origin,filenames,rain_param
     
     lon4 = ma.round(f4.variables['lon_0'][:] - 360,2)
     lat4= ma.round(f4.variables['lat_0'][:],2)
-    ww = f4.variables['PRMSL_P0_L101_GLL0'][:,:]
+    #print(f4.variables)
+    ww = f4.variables['WIWW_P0_L1_GLL0'][:,:]
 
-
+    print(dir_origin)
     data = pd.read_csv(dir_origin+'/ressources/Data/metar_groundlevel.csv')
 
     def cluster (data):
@@ -160,10 +161,10 @@ def picture(vara,varb,varc,vard,number,resx,resy,dir_origin,filenames,rain_param
     wkres           =  Ngl.Resources()                  #-- generate an resources object for workstation
     wkres.wkBackgroundColor = 'white'
     wkres.wkForegroundColor = 'white'
-    wkres.wkWidth   = 1.5*resx # 3840                             #-- width of workstation
-    wkres.wkHeight  = 1.5*resx #3840#2560                             #-- height of workstation
+    wkres.wkWidth   = 3*resx # 3840                             #-- width of workstation
+    wkres.wkHeight  = 3*resx #3840#2560                             #-- height of workstation
     wks_type        = "png"    #-- output type of workstation
-    wks = Ngl.open_wks(wks_type, 'modell_weather_' + filenames[number], wkres)#-- open workstation
+    wks = Ngl.open_wks(wks_type, 'modell_weather_'+model+"_" + filenames[number], wkres)#-- open workstation
 
     #---- Resources
 
@@ -295,7 +296,7 @@ def picture(vara,varb,varc,vard,number,resx,resy,dir_origin,filenames,rain_param
     # var2res.cnFillMode = not necessary
     var2res.cnLevelFlags = 'LineAndLabel'
     var2res.cnLinesOn = True
-    var2res.cnLineThicknessF = 20
+    var2res.cnLineThicknessF = 11.5
     var2res.cnLineColor = 'black'
     #var2res.cnLineLabelBackgroundColor = -1
     var2res.cnLineLabelFontColor = 'black'
@@ -355,7 +356,7 @@ def picture(vara,varb,varc,vard,number,resx,resy,dir_origin,filenames,rain_param
     var3res.cnFillPalette    = cmap_colors #-- set the0 colormap to be used or 'NCL_default'
 
     var3res.cnLevelSelectionMode = "ExplicitLevels"
-    var3res.cnLevels             =[0.5,2,4,6,12,24]# [ 1.5, 4, 6, 12, 24, 10**6]
+    var3res.cnLevels             =[1,2,3,4,6,12,24]# [ 1.5, 4, 6, 12, 24, 10**6]
     #var3res.cnMinLevelValF       = 0.1
     #var3res.cnMaxLevelValF       = 1.01
     #var3res.cnLevelSpacingF      = 0.1
@@ -412,11 +413,9 @@ def picture(vara,varb,varc,vard,number,resx,resy,dir_origin,filenames,rain_param
     Ngl.overlay(map, plot2)
     Ngl.add_polymarker(wks, plot2, 9.732, 52.376, pmres) #marker locations
 
-    text_res = Ngl.Resources()
-    text_res.txFontHeightF = 0.015  # Schriftgröße anpassen
-    text_res.txFontColor ="black"
 
-    scale_tudes = 60#80
+
+    scale_tudes =80#80
     lon_new = np.linspace(-75, 75, num=scale_tudes)
     lat_new = np.linspace(5, 80, num=scale_tudes)
  
@@ -426,16 +425,34 @@ def picture(vara,varb,varc,vard,number,resx,resy,dir_origin,filenames,rain_param
         coords={"latitude": lat4, "longitude": lon4}
     )
     xr_data= xr_data.reindex(latitude=lat_new, longitude=lon_new, method='nearest')
-    t2_filterd = xr_data.to_dataframe()
+    wws = xr_data.to_dataframe()
 
+
+    symbols = pd.read_csv(dir_origin +"/ressources/Data/wwfont.csv")
+    symbols = symbols.fillna(9999)
+    #print(symbols.iloc[0])
     for i in lat_new :
         for j in lon_new:
-          txt = Ngl.add_text(wks, plot2, str(int(t2_filterd["data"][i][j])), j, i,text_res)
+          
+            ww_number =   int(wws["data"][i][j])
+            ww_symbol = symbols.iloc[ww_number]["letter"]
+            ww_font = symbols.iloc[ww_number]["font"]
+            ww_colour = symbols.iloc[ww_number]["colour"]
+            if ww_symbol!= 9999:
+                text_res = Ngl.Resources()
+                #text_res.txFontHeightF = 0.015  # Schriftgröße anpassen
+                text_res.txFont = "o_weather1"
+                text_res.txFontHeightF = 0.03
+                text_res.gsnMaximize = False
+                text_res.txFontThicknessF=7.5
+                text_res.txFontColor =ww_colour
+                #print("symbols ", ww_symbol)
+                txt = Ngl.add_text(wks, plot2,ww_symbol , j, i,text_res)
 
 
 
-    hour, weekday, datetime_object,delta = imuktools.dates_for_subtitles(vara, number, filenames)
-    left_string_2   = 'Bodendruck, sign. Wetter(gemeldet)'# +' & '+ f2.variables['GP_P0_L100_GLL0'].attributes['long_name'] #model output info
+    hour, weekday, datetime_object,delta = imuktools.dates_for_subtitles(vara, number, filenames,model)
+    left_string_2   = 'Bodendruck, sign. Wetter(Modell), Bewoelkung, akkumulierter Niederschlag'# +' & '+ f2.variables['GP_P0_L100_GLL0'].attributes['long_name'] #model output info
     left_string   = 'ICON-Lauf: '+  datetime_object.strftime('%a %d.%m.%Y %H')  +" UTC" +" (+"+delta+"h)"#model output info
     center_string = ''  # center information bar
     # right_string_2 = 'Init: ' + str(initial_time)
@@ -452,9 +469,13 @@ def picture(vara,varb,varc,vard,number,resx,resy,dir_origin,filenames,rain_param
         #levellist.pop()
         #imuktools.legendgl(number, 'modell_weather_', 11, wkres.wkWidth, wkres.wkHeight, filenames, 0, "mm", dir_origin, resx)
     resx= 945
-    imuktools.quadlegend(number, 'modell_weather_', 10, wkres.wkWidth, wkres.wkHeight, cmap_colors, list(var3res.cnLevels), filenames, 0, "°C", dir_origin, resx, trans=False, title="Rain",low=-10)
+    imuktools.quadlegend(number, 'modell_weather_'+model+"_", 10, wkres.wkWidth, wkres.wkHeight, var3res.cnFillPalette, list(var3res.cnLevels), filenames, 0, "mm", dir_origin, resx, trans=True, title="Niederschlag",low=-10)
 
-    imuktools.crop_image(number, 'modell_weather_', wkres, resx, resy, filenames,square=True)
+    #imuktools.quadlegend(number, 't2m_'+model, 10, wkres.wkWidth, wkres.wkHeight, cmap_colors, list(var2res.cnLevels), filenames, 0, "°C", dir_origin, resx, trans=False, title="Temperatur",low=-10)
+
+
+
+    imuktools.crop_image(number, 'modell_weather_'+model+"_", wkres, resx, resy, filenames,square=True)
 
     print('\EU has finished at: ', datetime.utcnow().strftime('%Y-%m-%d  %H:%M:%S '), u'\u2714' )
     return

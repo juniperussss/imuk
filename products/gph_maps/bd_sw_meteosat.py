@@ -392,7 +392,7 @@ def picture(number):
     # var2res.cnFillMode = not necessary
     var2res.cnLevelFlags = 'LineAndLabel'
     var2res.cnLinesOn = True
-    var2res.cnLineThicknessF = 20
+    var2res.cnLineThicknessF = 11.5
     var2res.cnLineColor = 'black'
     #var2res.cnLineLabelBackgroundColor = -1
     var2res.cnLineLabelFontColor = 'black'

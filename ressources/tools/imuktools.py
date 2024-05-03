@@ -499,6 +499,7 @@ def quadlegend(number,levelname,stepsize,width,heigth,colormap,levels,filenames,
     shaper=[(100,100),(250,250)]
     draw = D.Draw(im)
     fontsize= int( (resx/1920) *100)
+    print(fontsize)
     draw.rectangle(shape, fill="white",outline="black")
 
     myFont=ImageFont.truetype(inputpath+'/ressources/fonts/liberation/LiberationSerif-Regular.ttf', fontsize)
@@ -512,7 +513,7 @@ def quadlegend(number,levelname,stepsize,width,heigth,colormap,levels,filenames,
     ci=0
     outlinewidth=int( (resx/1920) *3)
     # Drawing Title
-    title_shape = [(0.8*xmin,0.95*ymax),(1.74*xmax,0.9*ymax)]
+    title_shape = [(0.78*xmin,0.95*ymax),(1.74*xmax,0.9*ymax)]
     draw = D.Draw(im)
     draw.rectangle(title_shape, fill=(0,0,255), outline="black", width=outlinewidth)
     draw.text((xmin, 0.91*ymax), title, fill = (255, 255, 255),font=title_font)
@@ -777,3 +778,194 @@ def cloudcover(obs):
         elif item[0] == "OVC":
             cc.append(8)
     return int(mean(cc))
+
+
+
+def crop_legend(number,levelname,wkres,resx,resy,filenames,inputpath,date,model,colormap1,levels1,colormap2,levels2, square=True,mode="summer"):
+
+    from PIL import Image, ImageDraw, ImageFont
+
+    import os
+    import numpy as np
+    # Open the image
+    im = Image.open(levelname + filenames[number] + ".png", mode='r')
+    
+    # Define crop dimensions
+    if square:
+        lh = 50
+        th = 8.9
+        rh = 40
+        bh = 80
+    else:
+        # Define non-square crop dimensions if needed
+        pass
+    
+    left = wkres.wkWidth / lh
+    top = wkres.wkWidth / th
+    right = wkres.wkWidth - wkres.wkWidth / rh
+    bottom = wkres.wkWidth - wkres.wkWidth / bh
+    
+    # Crop the image
+    im1 = im.crop((left, top, right, bottom))
+    
+    # Resize the cropped image
+    im1_resized = im1.resize((int(resx-0), int(resy-80)), resample=Image.LANCZOS)
+    
+    # Create a new image (larger canvas)
+    im2 = Image.new('RGB', (resx , resy ),color='white')  # Adjust dimensions as needed
+    
+    # Paste the resized image onto the new image as a layer
+    im2.paste(im1_resized, (0, 0))  # Adjust position as needed
+
+
+        # Draw a box on im2
+    draw = ImageDraw.Draw(im2)
+    box_width = 470  # Width of the box
+    box_height = 40  # Height of the box
+    box_color = 'white'  # Color of the box
+
+    box_x = 0  # X-coordinate of the top-left corner of the box
+    box_y = resy-105  # Y-coordinate of the top-left corner of the box
+
+    font = ImageFont.truetype(inputpath+"/ressources/fonts/liberation/LiberationSerif-Regular.ttf", 20) 
+    text_color = 'blue'  # Color of the text
+    text = "CAPE (Flächen)"
+    draw.rectangle([box_x, box_y, box_x + box_width, box_y + box_height], fill=box_color,outline="black")
+    draw.text((box_x + 10, box_y + 10), text, fill=text_color, font=font)
+    print(mode)
+    if mode == "summer":
+
+        text = "Niederschlag akkumuliert (l/m^2)"
+
+    else:
+        text = "Schnee akkumuliert"
+    box_x = 480  # X-coordinate of the top-left corner of the box
+    draw.rectangle([box_x, box_y, box_x + box_width, box_y + box_height], fill=box_color,outline="black")
+    draw.text((box_x + 10, box_y + 10), text, fill=text_color, font=font)
+
+
+
+    #Text large 
+    font = ImageFont.truetype(inputpath+"/ressources/fonts/liberation/LiberationSerif-Regular.ttf", 25) 
+    text = model.upper()+ "-Lauf "+ date.strftime("%a %d.%m.%Y %H:%M") + " Uhr"
+    draw.text((0 + 10, resy -50), text, fill=text_color, font=font)
+
+    # Yellow Box
+    box_width = 270  # Width of the box
+    box_height = 80  # Height of the box
+    box_color = 'yellow'  # Color of the box
+
+    box_x = resx-270  # X-coordinate of the top-left corner of the box
+    box_y = resy-62  # Y-coordinate of the top-left corner of the box
+    # Write text inside the box
+    draw.rectangle([box_x, box_y, box_x + box_width, box_y + box_height], fill=box_color,outline="black")
+    text= date.strftime("%a %H") +" UTC"
+    text_color = 'red'  # Color of the text
+    font = ImageFont.truetype(inputpath+"/ressources/fonts/liberation/LiberationSerif-Bold.ttf", 50) 
+    draw.text((resx-260 +10, resy -50), text, fill=text_color, font=font)
+ # You may need to adjust the font and size
+
+    #Legends
+
+    #Legend1 
+    box_width = 80  # Width of the box
+    box_height = 290  # Height of the box
+    box_color = 'white'  # Color of the box
+
+    box_x = 1  # X-coordinate of the top-left corner of the box
+    box_y = resy-398  # Y-coordinate of the top-left corner of the box
+
+
+    draw.rectangle([box_x, box_y, box_x + box_width, box_y + box_height], fill=box_color,outline="black")
+    ymin = box_y+box_height-10
+    ymax = box_height+270
+    xmin = box_x +5
+    xmax = box_x + box_width-38
+    ylast= ymin
+    #ysteps= int(max(levels1)/stepsize) #+1 #How many Levels are needed
+
+    gesammtrange= ymin-ymax
+    font = ImageFont.truetype(inputpath+"/ressources/fonts/liberation/LiberationSerif-Regular.ttf", 18) 
+    ci=0
+    print(levels1)
+    while ci< len(levels1)-1:
+
+    # Calculating percentage
+        anteil = 1/len(levels1)#deltav/maxval
+        ylow= ylast
+        yhigh=ylow-anteil*gesammtrange
+        shape=[(xmin,yhigh),(xmax,ylow)]
+        fill = tuple(np.array(colormap1[ci]*256).astype(int))
+        draw.rectangle(shape, fill=fill, outline="black", width=2)
+        if str(colormap1[ci]) == "[0. 0. 0. 0.]":
+            print("yeah")
+            xmintrans= xmin
+            xmaxtrans= xmax
+            ylowtrans = ylow
+            yhightrans =yhigh
+        if ci < len(levels1) and levels1[ci]%1< 0.5:
+
+            draw.text((1.05*xmax, 0.99*yhigh), str(levels1[ci]), fill = (0, 0, 0),font=font)
+        ylast=yhigh
+        ci +=1
+        
+    imtrans = Image.open(inputpath+'/ressources/img/trans3.png', mode='r')
+        
+    xtransdelta= int(xmaxtrans-xmintrans)
+    ytransdelta= int(abs(yhightrans-ylowtrans))
+    resized = imtrans.resize((xtransdelta-1,ytransdelta-2*1))
+    im2.paste(resized, (int(xmintrans+1),int(yhightrans+1)))
+
+    draw.text((xmax-22, 0.99*ymax), "j/kg", fill = (0, 0, 0),font=font)
+    #Legend2
+    box_x = resx-box_width-385  # X-coordinate of the top-left corner of the box
+    box_y = resy-398  # Y-coordinate of the top-left corner of the box
+    draw.rectangle([box_x, box_y, box_x + box_width, box_y + box_height], fill=box_color,outline="black")
+    ymin = box_y+box_height-10
+    ymax = box_height+270
+    xmin = box_x +5
+    xmax = box_x + box_width-30
+    ylast= ymin
+    #ysteps= int(max(levels1)/stepsize) #+1 #How many Levels are needed
+
+    gesammtrange= ymin-ymax
+
+    ci=0
+    print(levels2)
+    while ci< len(levels2)-1:
+
+    # Calculating percentage
+        anteil = 1/len(levels2)#deltav/maxval
+        ylow= ylast
+        yhigh=ylow-anteil*gesammtrange
+        shape=[(xmin,yhigh),(xmax,ylow)]
+        fill = tuple(np.array(colormap2[ci]*256).astype(int))
+        draw.rectangle(shape, fill=fill, outline="black", width=2)
+        if str(colormap2[ci]) == "[0. 0. 0. 0.]":
+            print("yeah")
+            xmintrans= xmin
+            xmaxtrans= xmax
+            ylowtrans = ylow
+            yhightrans =yhigh
+        if ci < len(levels2) and levels2[ci]%1< 0.5:
+
+            draw.text((1.02*xmax, 0.99*yhigh), str(levels2[ci]), fill = (0, 0, 0),font=font)
+        ylast=yhigh
+        ci +=1
+
+    imtrans = Image.open(inputpath+'/ressources/img/trans3.png', mode='r')
+        
+    xtransdelta= int(xmaxtrans-xmintrans)
+    ytransdelta= int(abs(yhightrans-ylowtrans))
+    resized = imtrans.resize((xtransdelta-1,ytransdelta-2*1))
+    im2.paste(resized, (int(xmintrans+1),int(yhightrans+1)))
+    
+    
+    draw.text((xmax-30, 0.99*ymax), "l/m^2", fill = (0, 0, 0),font=font)
+    # Save the result
+    im2.save(levelname + filenames[number] + "_layered.jpg", format='JPEG')
+    
+    # Optionally, remove the original image
+    os.remove(levelname + filenames[number] + ".png")
+
+    return im2
