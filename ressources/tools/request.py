@@ -12,15 +12,19 @@ from tqdm import tqdm
 import numpy as np
 import glob
 import argparse
-
+#import metview as mv
 from cdo import *
+import timeout_decorator
+import concurrent.futures
 
 #print(cdo.__version__())
 cdo = Cdo()
 import time
-
+import multiprocessing
 from multiprocessing import Pool
-
+import xarray as xr
+import xesmf as xe
+import cfgrib
 parser = argparse.ArgumentParser()
 
 
@@ -76,7 +80,7 @@ os.chdir( '{}/{}/{}/{}'.format(cdt_yr, cdt_mo, cdt_day, init_time_hr))
 dir_Nest = os.path.join(os.getcwd())
 print('entered into', dir_Nest)
 
-metarrequest(dir_origin)
+#metarrequest(dir_origin)
 
 import requests
 class p(object):
@@ -90,17 +94,22 @@ class p(object):
 
 global variables
 
-vars=["t","t","t","clct_mod","u","v","relhum","fi","fi","fi","ww","pmsl","tot_prec","u_10m","v_10m","vmax_10m","t_2m","cape_con","snow_con","u","u","u","u","v","v","v","v", "td_2m"]
+vars=["t","t","t","clct_mod","u","v","relhum","fi","fi","fi","ww","pmsl","tot_prec"]
+vars2 = [ "u_10m","v_10m","vmax_10m","t_2m","cape_con","snow_con","u","u","u","u","v","v","v","v", "td_2m"]
 levels=['pressure-level','pressure-level','pressure-level','single-level','pressure-level','pressure-level','pressure-level','pressure-level','pressure-level','pressure-level','single-level',
-'single-level','single-level','single-level','single-level','single-level','single-level','single-level' ,'single-level','pressure-level','pressure-level','pressure-level','pressure-level','pressure-level','pressure-level','pressure-level','pressure-level','single-level']
-gph=['_500',"_700","_850","","_300","_300","_700","_500","_700","_850","","","","","","","","","","_500","_700","_850","_950","_500","_700","_850","_950",""]
+'single-level','single-level']
+levels2= ['single-level','single-level','single-level','single-level','single-level' ,'single-level','pressure-level','pressure-level','pressure-level','pressure-level','pressure-level','pressure-level','pressure-level','pressure-level','single-level']
 
+gph=['_500',"_700","_850","","_300","_300","_700","_500","_700","_850","","",""]
+gph2= ["","","","","","","_500","_700","_850","_950","_500","_700","_850","_950",""]
 #vars=["t","t","t","clct_mod","u","v","relhum","fi","fi","fi","ww","pmsl","tot_prec","u_10m","v_10m","vmax_10m","t_2m","cape_con","snow_con"]
 #levels=['pressure-level','pressure-level','pressure-level','single-level','pressure-level','pressure-level','pressure-level','pressure-level','pressure-level','pressure-level','single-level','single-level','single-level','single-level','single-level','single-level','single-level','single-level' ,'single-level']
 #gph=['_500',"_700","_850","","_300","_300","_700","_500","_700","_850","","","","","","","","",""]
-variables= list(zip(vars,levels, gph))
+print(vars+vars2)
+variables= list(zip(vars+ vars2,levels + levels2, gph+gph2))
+variables2 =list(zip(vars2,levels2, gph2))
 number=np.arange(0,len(variables))
-
+number2=np.arange(0,len(variables2))
 
 
 #print(variables[0][0])
@@ -122,7 +131,7 @@ weights= dir_origin +'/database/ICON_GLOBAL2EUAU_025_EASY/weights_icogl2world_02
 #cdo=Cdo()
 cdo.debug = False
 def varrequest(number):
-    try: 
+    #try: 
         print(f'/_{variables[number][1]}'+variables[number][2][1:])
         var= variables[number][0]
 
@@ -153,10 +162,77 @@ def varrequest(number):
             print(ifile)
 
             # cdo.sellonlatbox('-75,75,5,80', input=ifile, output='haha.grib2') #not necessary for this step
-            cdo.remap(grids, weights, input=ifile, output='ofile_{}_{}_{}_{}'.format(
-                ifile.split('_')[-4:][0], ifile.split('_')[-4:][1],
-                ifile.split('_')[-4:][2], ifile.split('_')[-4:][3]),
-                options='-f grb2')
+            #@timeout_decorator.timeout(300) # 300 Sekunden = 5 Minuten
+            def remap(ifile, grids, weights):
+                print("begin remapping of ", ifile)
+                cdo.remap(grids, weights, input=ifile, output='ofile_{}_{}_{}_{}'.format(
+                    ifile.split('_')[-4:][0], ifile.split('_')[-4:][1],
+                    ifile.split('_')[-4:][2], ifile.split('_')[-4:][3]),
+                    options='-f grb2')
+                return
+                
+            def remap_xarray(ifile, grids, weights):
+                # Laden des Eingabedatensatzes
+                ds = xr.open_dataset(ifile)
+                print(ds)
+                output_file_name ='ofile_{}_{}_{}_{}'.format(
+                    ifile.split('_')[-4:][0], ifile.split('_')[-4:][1],
+                    ifile.split('_')[-4:][2], ifile.split('_')[-4:][3])
+                # Laden des Gitter- und Gewichtsdatensatzes
+                with open(grids, 'r') as f:
+                    lines = f.readlines()
+                    xfirst = float(lines[3].split('=')[1].strip())
+                    xinc = float(lines[5].split('=')[1].strip())
+                    yfirst = float(lines[6].split('=')[1].strip())
+                    yinc = float(lines[7].split('=')[1].strip())
+                    xsize = int(lines[2].split('=')[1].strip())
+                    ysize = int(lines[3].split('=')[1].strip())
+                
+                # Erstellen des Zielgitters
+                ds_out = xr.Dataset({'lon': (['lon'], np.arange(xfirst, xfirst + xinc * xsize, xinc)),
+                                  'lat': (['lat'], np.arange(yfirst, yfirst + yinc * ysize, yinc))})
+                
+                regridder = xe.Regridder(ds, ds_out, 'bilinear', filename=weights)
+                
+                # Anwenden des Remappings
+                ds_remapped = regridder(ds)
+                
+                # Speichern des remappten Datensatzes im GRIB-Format
+                ds_remapped.to_netcdf(output_file_name +".nc", format='NETCDF3_CLASSIC')
+                
+                # Konvertieren der NetCDF-Datei in GRIB
+                with cfgrib.open_dataset(output_file_name +".nc", 'r') as ds_grib:
+                    ds_grib.to_grib(output_file_name +".grib2")
+                return
+            
+            #def remap_metview(ifile, grids, weights):
+                #ds = xr.open_dataset(ifile,engine="cfgrib")
+             #   t = mv.read(ifile)
+
+              #  output_file_name ='ofile_{}_{}_{}_{}'.format(
+                #    ifile.split('_')[-4:][0], ifile.split('_')[-4:][1],
+               #     ifile.split('_')[-4:][2], ifile.split('_')[-4:][3])
+                # Laden des Gitter- und Gewichtsdatensatzes
+                #with open(grids, 'r') as f:
+                 #   lines = f.readlines()
+                  #  xfirst = float(lines[3].split('=')[1].strip())
+                   # xinc = float(lines[5].split('=')[1].strip())
+                    #yfirst = float(lines[6].split('=')[1].strip())
+                   # yinc = float(lines[7].split('=')[1].strip())
+                  #  xsize = int(lines[2].split('=')[1].strip())
+                 #   ysize = int(lines[3].split('=')[1].strip())
+
+                #f2 = mv.read(data=t,
+                 #           grid=[xinc,yinc],
+                  #          area=[yfirst,xfirst,yfirst+ysize*yinc,xfirst+xsize*xinc]) # S,W,N,E
+                #return
+
+            #remap_xarray(ifile,grids,weights)
+            remap(ifile,grids,weights)
+            #try:
+             ##   remap_with_timeout(ifile, grids, weights)
+            #except timeout_decorator.TimeoutError:
+               # print("Zeitüberschreitung: Der Vorgang wurde nach 5 Minuten abgebrochen.")
 
             #pbar.update()
 
@@ -167,18 +243,40 @@ def varrequest(number):
 
 
         os.chdir(dir_origin)
-        print(os.path.abspath(os.getcwd()) +" has completed at: ", cdt_date.strftime('%Y-%m-%d  %H:%M:%S'))
-    except Exception as err:
-        print(err)
+        #print(os.path.abspath(os.getcwd()) +" has completed at: ", cdt_date.strftime('%Y-%m-%d  %H:%M:%S'))
+    #except Exception as err:
+     #   print(err)
+
+        return
 
 #imuktools.archiving()
 
+def start_pool(cores=4):
+    # Anzahl der verfügbaren CPU-Kerne abrufen
+    num_cores = multiprocessing.cpu_count()
+    
+    # Entweder 3 Kerne oder alle Kerne - 1 verwenden, je nachdem, was kleiner ist
+    num_processes = min(cores, num_cores - 1)
 
+    # Pool mit der entsprechenden Anzahl von Prozessen erstellen
+    pool = multiprocessing.Pool(processes=num_processes)
+    
+    return pool
 
 if __name__ == "__main__":
     start_time = time.time()
-    with Pool() as pool:
-        pool.map(varrequest, number)
+    with concurrent.futures.ProcessPoolExecutor() as executor:
+        executor.map(varrequest, number, timeout=300)
+    
+    print("start secound vars")
+    #with concurrent.futures.ProcessPoolExecutor() as executor2:
+     #   executor2.map(varrequest, number2)
+
+    #with  start_pool(cores=10) as pool:
+     #   pool.map(varrequest, number)
+      #  print("start secound vars")
+       # pool.map(varrequest, number2)
+
     #varrequest(0)
     imuktools.cleaning_old_folders()
     print("--- %s seconds ---" % (time.time() - start_time))
