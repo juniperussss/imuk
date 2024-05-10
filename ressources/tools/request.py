@@ -23,7 +23,7 @@ import time
 import multiprocessing
 from multiprocessing import Pool
 import xarray as xr
-import xesmf as xe
+#import xesmf as xe
 import cfgrib
 parser = argparse.ArgumentParser()
 
@@ -268,7 +268,7 @@ if __name__ == "__main__":
     with concurrent.futures.ProcessPoolExecutor() as executor:
         executor.map(varrequest, number, timeout=300)
     
-    print("start secound vars")
+    #print("start secound vars")
     #with concurrent.futures.ProcessPoolExecutor() as executor2:
      #   executor2.map(varrequest, number2)
 

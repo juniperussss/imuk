@@ -20,7 +20,14 @@ xdim_3=350
 ydim_3=210
 
 python /localdata/weathermaps/imuk/ressources/tools/request.py /localdata/weathermaps/imuk /localdata/weathermaps/imuk/database/input/icon
-echo "data readed"
+echo "icon finished"
+
+python /localdata/weathermaps/imuk/ressources/tools/request_eu.py /localdata/weathermaps/imuk /localdata/weathermaps/imuk/database/input/icon-eu
+echo "icon-eu finished"
+
+python /localdata/weathermaps/imuk/ressources/tools/request_d2.py /localdata/weathermaps/imuk /localdata/weathermaps/imuk/database/input/icon-d2
+echo "icon-d2 finished"
+
 
 python /localdata/weathermaps/imuk/products/gph_maps/wind_300.py $xdim_1 $ydim_1 $path_output $path_input $start $end $stepsize
 
