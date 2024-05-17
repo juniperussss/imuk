@@ -6,6 +6,8 @@ end=168
 stepsize=3
 path_input=/localdata/weathermaps/imuk
 path_output=/localdata/weathermaps/webside/gross
+path_output_stationt=/localdata/weathermaps/stationmaps
+
 
 path_output_klein=/localdata/weathermaps/webside/klein
 path_output_4panel=/localdata/weathermaps/webside/4panel
@@ -45,4 +47,4 @@ python /localdata/weathermaps/imuk/ressources/tools/imageresizer.py $path_output
 echo "resizing  finished"
 
 ##Stationmaps
-python /localdata/weathermaps/imuk/products/stationmaps/stationmap_metpy.py" $path_input $path_output
+python /localdata/weathermaps/imuk/products/stationmaps/stationmap_metpy.py" $path_input $path_output_stationt
