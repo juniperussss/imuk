@@ -190,7 +190,7 @@ def metarrequest(dirorigin):
     print("Supplementing request finished")
     #metarcompare = duplicatedremove.to_csv(dirorigin+'/BUFR/metarcompare.csv', index = True)
     for i in tqdm(listofairportsfound):
-        pressure_after= df[df["station"] == i ].sl_pressure.squeeze()
+        pressure_after= df[df["station"] == i ].pressure.squeeze()
 
         if isinstance(icao_to_meteostat[icao_to_meteostat["identifiers.icao"] == i].id.squeeze(),str):
             try:

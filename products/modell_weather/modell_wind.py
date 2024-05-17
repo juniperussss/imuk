@@ -351,6 +351,7 @@ def main():
     parser.add_argument('timerangestepsize')
     parser.add_argument('model')
     args = parser.parse_args()  # gv[480#210    #480
+    print(args)
     resx = int(args.resx)
     resy = int(args.resy)
     dir_origin = args.inputpath

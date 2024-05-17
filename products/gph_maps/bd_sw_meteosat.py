@@ -20,7 +20,7 @@ from sklearn.cluster import KMeans, DBSCAN
 from shapely.geometry import Point
 
 ###
-#def picture(vara,varb,varc,vard,number,resx,resy,dir_origin,filenames,rain_parameter):
+#def picture(vara,varb,varc,vard,number,resx,resy,dir_origin,filenames,rain_parameter,model):
 def picture(number):
     vara=varap[number]
     varb = varbp[number]
@@ -30,6 +30,7 @@ def picture(number):
     resy= resys[number]
     dir_origin= dir_origins[number]
     rain_parameter=rain_parameters[number]
+    model =  models[number]
 
 
 
@@ -582,7 +583,7 @@ def picture(number):
                 txt = Ngl.add_text(wks, plot2, wwsym[i], lon5[i], lat5[i],txres)
             except TypeError:
                 pass
-    hour, weekday, datetime_object,delta = imuktools.dates_for_subtitles(vara, number, filenames)
+    hour, weekday, datetime_object,delta = imuktools.dates_for_subtitles(vara, number, filenames,model)
     left_string_2   = 'Bodendruck, sign. Wetter(gemeldet)'# +' & '+ f2.variables['GP_P0_L100_GLL0'].attributes['long_name'] #model output info
     left_string   = 'ICON-Lauf: '+  datetime_object.strftime('%a %d.%m.%Y %H')  +" UTC" +" (+"+delta+"h)"#model output info
     center_string = ''  # center information bar
@@ -623,7 +624,7 @@ def picture(number):
     return
 
 def main():
-    global varap,varbp, varcp, vardp ,numbers, resxs ,resys ,dir_origins ,filenames, rain_parameters
+    global varap,varbp, varcp, vardp ,numbers, resxs ,resys ,dir_origins ,filenames, rain_parameters,models
     ##Parsing Variable Values
     parser = argparse.ArgumentParser()
     parser.add_argument('resx')  # 350
@@ -633,11 +634,14 @@ def main():
     parser.add_argument('timerangestart')
     parser.add_argument('timerangestop')
     parser.add_argument('timerangestepsize')
+    parser.add_argument('model')
     args = parser.parse_args()  # gv[480#210    #480
     resx = int(args.resx)
     resy = int(args.resy)
     dir_origin = args.inputpath
     dir_Produkt = args.outputpath
+    model = args.model
+
     os.chdir(dir_Produkt)
 
     # for f in os.listdir(os.getcwd()):
@@ -653,23 +657,10 @@ def main():
     variablepaths = imuktools.varnames(varnumber, vars,
                                      varlevel,
                                      dir_origin,
-                                     filenames)  ##Getting every filepath in the directory like [[vara1,vara2],[varb1,varb2]]
+                                     filenames,model=model)  ##Getting every filepath in the directory like [[vara1,vara2],[varb1,varb2]]
 
     timestepnumber = len(variablepaths[0])
-    # print(variablepaths)
 
-    ## Main Process
-    """""
-    for i in range(0, len(timerange)):
-        # print(variablepaths[0][i])
-        if i == 0:
-            rain_parameter = np.array([])
-        else:
-            rain_parameter = variablepaths[2][i - 1]
-
-        picture(variablepaths[0][i], variablepaths[1][i], variablepaths[2][i], variablepaths[3][i], i, resx, resy,
-                dir_origin, filenames, rain_parameter)
-    """""
 
     rain_parameters=[]
     varap= variablepaths[0]
@@ -680,6 +671,7 @@ def main():
     resxs=[resx]*len(timerange)
     resys=[resy]*len(timerange)
     dir_origins= [dir_origin]*len(timerange)
+    models =[]
     #filenamess= [filenames]*len(timerange)
     for i in range(0, len(timerange)):
         # print(variablepaths[0][i])
@@ -688,16 +680,15 @@ def main():
         else:
             rain_parameters.append(variablepaths[2][i - 1])
         numbers.append(i)
+        models.append(model)
 
     #elements= varap + varbp +varcp+ vardp + numbers+ resxs +resys +dir_origins +filenamess+ rain_parameter
-    elements = list(zip(varap,varbp, varcp, vardp ,numbers, resxs ,resys ,dir_origins ,filenames, rain_parameters))
+    elements = list(zip(varap,varbp, varcp, vardp ,numbers, resxs ,resys ,dir_origins ,filenames, rain_parameters,models))
     print(elements)
     print(len(elements))
     with Pool() as pool:
         pool.map(picture,numbers)
-        #pool.close()
-        #pool.join()
-        #pool.starmap(picture,[varap,varbp,varcp,vardp,numbers,resx,resy,dir_origin,filenames,rain_parameter])
+
     return
 
 if __name__ == "__main__":

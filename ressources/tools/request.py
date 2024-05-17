@@ -16,16 +16,25 @@ import argparse
 from cdo import *
 import timeout_decorator
 import concurrent.futures
+from multiprocess import Pool
+import multiprocess
 
 #print(cdo.__version__())
 cdo = Cdo()
 import time
 import multiprocessing
-from multiprocessing import Pool
+#from multiprocessing import Pool
 import xarray as xr
 #import xesmf as xe
 import cfgrib
+
+import signal
+
 parser = argparse.ArgumentParser()
+
+
+def timeout_handler(signum, frame):
+   raise TimeoutError("Das Skript hat die maximale Laufzeit überschritten und wurde abgebrochen.")
 
 
 
@@ -120,19 +129,28 @@ url_base = 'https://opendata.dwd.de/weather/nwp/icon/grib/'
 
 
 
-grids= dir_origin +'/database/ICON_GLOBAL2EUAU_025_EASY/target_grid_EUAU_025.txt'
-weights= dir_origin +'/database/ICON_GLOBAL2EUAU_025_EASY/weights_icogl2world_025_EUAU.nc'
 
-#try:
- #   cdo = Cdo()
-#except:
-
-#cdo=Cdo("/home/alex/miniforge3/envs/imuk/bin/cdo")
-#cdo=Cdo()
 cdo.debug = False
+
+def fetch_data(url, max_retries=3, delay=2):
+    for attempt in range(max_retries):
+        try:
+            data_request = requests.get(url, stream=True)
+            if data_request.status_code == 200:
+                return data_request
+            else:
+                print(f"Attempt {attempt + 1} failed with status code {data_request.status_code}")
+        except requests.RequestException as e:
+            print(f"Attempt {attempt + 1} failed with error: {e}")
+        
+        if attempt < max_retries - 1:
+            print("Retrying download...")
+            time.sleep(delay)
+    
+    print("All attempts failed")
+    return None
+
 def varrequest(number):
-    #try: 
-        print(f'/_{variables[number][1]}'+variables[number][2][1:])
         var= variables[number][0]
 
         os.makedirs(dir_Nest + f'/{var}'+f'/{variables[number][2][1:]}')
@@ -140,143 +158,73 @@ def varrequest(number):
         os.chdir(dir_Nest + f'/{var}'+f'/{variables[number][2][1:]}')
 
         for hour in fcst_hrs:
-            if hour == 0 and var == "vmax_10m":  # vmax_10m is not available for 0 hour
-                continue
-            url_data = url_base +'{}/{}/icon_global_icosahedral_{}_{}{}_{}{}_{}.grib2.bz2'.format(
-                init_time_hr, var, variables[number][1], cdt_yrmoday, init_time_hr, str(hour).zfill(3), variables[number][2], str(var).upper())
-            #print(url_data)
-            data_request = requests.get(url_data, stream=True)
-            if data_request.status_code == 200:
-                print(url_data)
-                print('{}'.format(var), u'\u2714')
+            signal.signal(signal.SIGALRM, timeout_handler)
+            signal.alarm(180)  # Timeout in Sekunden
+            try:
+                if hour == 0 and var == "vmax_10m":  # vmax_10m is not available for 0 hour
+                    continue
+                url_data = url_base +'{}/{}/icon_global_icosahedral_{}_{}{}_{}{}_{}.grib2.bz2'.format(
+                    init_time_hr, var, variables[number][1], cdt_yrmoday, init_time_hr, str(hour).zfill(3), variables[number][2], str(var).upper())
 
-            with open('icon_global_icosahedral_{}_{}{}_{}{}_{}.grib2.bz2'.format(
-                    variables[number][1], cdt_yrmoday, init_time_hr, str(hour).zfill(3), variables[number][2], str(var).upper()), 'wb') as f:
-                f.write(data_request.content)
+                data_request = fetch_data(url_data)
+                if data_request:
+                   #print("Download succeeded")
+                   pass
+                else:
+                    print("Download failed")
 
-            zip_command = 'bzip2 -d *.bz2'
-            os.system(zip_command)
+                with open('icon_global_icosahedral_{}_{}{}_{}{}_{}.grib2.bz2'.format(
+                        variables[number][1], cdt_yrmoday, init_time_hr, str(hour).zfill(3), variables[number][2], str(var).upper()), 'wb') as f:
+                    f.write(data_request.content)
 
-            ifile = dir_Nest + '/{}/{}/icon_global_icosahedral_{}_{}{}_{}{}_{}.grib2'.format(
-                var, variables[number][2][1:], variables[number][1], cdt_yrmoday, init_time_hr, str(hour).zfill(3), variables[number][2], str(var).upper())
-            print(ifile)
-
-            # cdo.sellonlatbox('-75,75,5,80', input=ifile, output='haha.grib2') #not necessary for this step
-            #@timeout_decorator.timeout(300) # 300 Sekunden = 5 Minuten
-            def remap(ifile, grids, weights):
-                print("begin remapping of ", ifile)
-                cdo.remap(grids, weights, input=ifile, output='ofile_{}_{}_{}_{}'.format(
-                    ifile.split('_')[-4:][0], ifile.split('_')[-4:][1],
-                    ifile.split('_')[-4:][2], ifile.split('_')[-4:][3]),
-                    options='-f grb2')
-                return
-                
-            def remap_xarray(ifile, grids, weights):
-                # Laden des Eingabedatensatzes
-                ds = xr.open_dataset(ifile)
-                print(ds)
-                output_file_name ='ofile_{}_{}_{}_{}'.format(
-                    ifile.split('_')[-4:][0], ifile.split('_')[-4:][1],
-                    ifile.split('_')[-4:][2], ifile.split('_')[-4:][3])
-                # Laden des Gitter- und Gewichtsdatensatzes
-                with open(grids, 'r') as f:
-                    lines = f.readlines()
-                    xfirst = float(lines[3].split('=')[1].strip())
-                    xinc = float(lines[5].split('=')[1].strip())
-                    yfirst = float(lines[6].split('=')[1].strip())
-                    yinc = float(lines[7].split('=')[1].strip())
-                    xsize = int(lines[2].split('=')[1].strip())
-                    ysize = int(lines[3].split('=')[1].strip())
-                
-                # Erstellen des Zielgitters
-                ds_out = xr.Dataset({'lon': (['lon'], np.arange(xfirst, xfirst + xinc * xsize, xinc)),
-                                  'lat': (['lat'], np.arange(yfirst, yfirst + yinc * ysize, yinc))})
-                
-                regridder = xe.Regridder(ds, ds_out, 'bilinear', filename=weights)
-                
-                # Anwenden des Remappings
-                ds_remapped = regridder(ds)
-                
-                # Speichern des remappten Datensatzes im GRIB-Format
-                ds_remapped.to_netcdf(output_file_name +".nc", format='NETCDF3_CLASSIC')
-                
-                # Konvertieren der NetCDF-Datei in GRIB
-                with cfgrib.open_dataset(output_file_name +".nc", 'r') as ds_grib:
-                    ds_grib.to_grib(output_file_name +".grib2")
-                return
+                zip_command = 'bzip2 -d *.bz2'
             
-            #def remap_metview(ifile, grids, weights):
-                #ds = xr.open_dataset(ifile,engine="cfgrib")
-             #   t = mv.read(ifile)
-
-              #  output_file_name ='ofile_{}_{}_{}_{}'.format(
-                #    ifile.split('_')[-4:][0], ifile.split('_')[-4:][1],
-               #     ifile.split('_')[-4:][2], ifile.split('_')[-4:][3])
-                # Laden des Gitter- und Gewichtsdatensatzes
-                #with open(grids, 'r') as f:
-                 #   lines = f.readlines()
-                  #  xfirst = float(lines[3].split('=')[1].strip())
-                   # xinc = float(lines[5].split('=')[1].strip())
-                    #yfirst = float(lines[6].split('=')[1].strip())
-                   # yinc = float(lines[7].split('=')[1].strip())
-                  #  xsize = int(lines[2].split('=')[1].strip())
-                 #   ysize = int(lines[3].split('=')[1].strip())
-
-                #f2 = mv.read(data=t,
-                 #           grid=[xinc,yinc],
-                  #          area=[yfirst,xfirst,yfirst+ysize*yinc,xfirst+xsize*xinc]) # S,W,N,E
-                #return
-
-            #remap_xarray(ifile,grids,weights)
-            remap(ifile,grids,weights)
-            #try:
-             ##   remap_with_timeout(ifile, grids, weights)
-            #except timeout_decorator.TimeoutError:
-               # print("Zeitüberschreitung: Der Vorgang wurde nach 5 Minuten abgebrochen.")
-
-            #pbar.update()
+                os.system(zip_command)
 
 
-        for ifile in glob.glob('*icosahedral*', recursive=True):
-            print("Removing ", ifile)
-            os.remove(ifile)
-
+                grids= dir_origin +'/database/ICON_GLOBAL2EUAU_025_EASY/target_grid_EUAU_025.txt'
+                weights= dir_origin +'/database/ICON_GLOBAL2EUAU_025_EASY/weights_icogl2world_025_EUAU.nc'
+                ifile = dir_Nest + '/{}/{}/icon_global_icosahedral_{}_{}{}_{}{}_{}.grib2'.format(
+                    var, variables[number][2][1:], variables[number][1], cdt_yrmoday, init_time_hr, str(hour).zfill(3), variables[number][2], str(var).upper())
+                
+                def remap(ifile, grids, weights):
+                    #print("begin remapping of ", ifile)
+                    cdo.remap(grids, weights, input=ifile, output='ofile_{}_{}_{}_{}'.format(
+                        ifile.split('_')[-4:][0], ifile.split('_')[-4:][1],
+                        ifile.split('_')[-4:][2], ifile.split('_')[-4:][3]),
+                        options='-f grb2')
+                    return
+                remap(ifile,grids,weights)
+            
+            except Exception as err:
+                print(err)
+                print("Probleme bei", var, variables[number][1],variables[number][2])
+            finally:
+            # Deaktiviere den Alarm, falls das Skript vorher beendet wird
+                signal.alarm(0)
 
         os.chdir(dir_origin)
-        #print(os.path.abspath(os.getcwd()) +" has completed at: ", cdt_date.strftime('%Y-%m-%d  %H:%M:%S'))
-    #except Exception as err:
-     #   print(err)
+        print( var, variables[number][1],variables[number][2], "fertig")
+ 
+
 
         return
 
-#imuktools.archiving()
 
-def start_pool(cores=4):
-    # Anzahl der verfügbaren CPU-Kerne abrufen
-    num_cores = multiprocessing.cpu_count()
-    
-    # Entweder 3 Kerne oder alle Kerne - 1 verwenden, je nachdem, was kleiner ist
-    num_processes = min(cores, num_cores - 1)
-
-    # Pool mit der entsprechenden Anzahl von Prozessen erstellen
-    pool = multiprocessing.Pool(processes=num_processes)
-    
-    return pool
 
 if __name__ == "__main__":
     start_time = time.time()
-    with concurrent.futures.ProcessPoolExecutor() as executor:
-        executor.map(varrequest, number, timeout=300)
-    
-    #print("start secound vars")
-    #with concurrent.futures.ProcessPoolExecutor() as executor2:
-     #   executor2.map(varrequest, number2)
+   # number,variables,url_base,dir_Nest,cdt_yrmoday,dir_origin,fcst_hrs,init_time_hr =basics()
 
-    #with  start_pool(cores=10) as pool:
-     #   pool.map(varrequest, number)
-      #  print("start secound vars")
-       # pool.map(varrequest, number2)
-
-    #varrequest(0)
+   # pool = Pool()
+    #with Pool() as pool:
+    #pool.map(varrequest, number)
+    #pool.close()
+    #pool.join()
+    with Pool() as pool:
+            pool.map(varrequest, number)
+            pool.close()
+            pool.join()
+ 
     imuktools.cleaning_old_folders()
     print("--- %s seconds ---" % (time.time() - start_time))

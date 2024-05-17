@@ -43,3 +43,6 @@ python /localdata/weathermaps/imuk/products/gph_maps/bd_sw_meteosat.py $xdim_1 $
 
 python /localdata/weathermaps/imuk/ressources/tools/imageresizer.py $path_output_klein $path_output_4panel $path_output $xdim_3 $ydim_3 $xdim_2 $ydim_2
 echo "resizing  finished"
+
+##Stationmaps
+python /localdata/weathermaps/imuk/products/stationmaps/stationmap_metpy.py" $path_input $path_output
