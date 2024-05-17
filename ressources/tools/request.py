@@ -89,7 +89,7 @@ os.chdir( '{}/{}/{}/{}'.format(cdt_yr, cdt_mo, cdt_day, init_time_hr))
 dir_Nest = os.path.join(os.getcwd())
 print('entered into', dir_Nest)
 
-#metarrequest(dir_origin)
+metarrequest(dir_origin)
 
 import requests
 class p(object):
