@@ -1,7 +1,7 @@
     . ~/.bashrc_miniconda3
 conda activate imuk
 export PYTHONPATH=$PYTHONPATH:/localdata/weathermaps/imuk
-mamba install multiprocess -y 
+#mamba install multiprocess -y 
 start=0
 end=168
 stepsize=3
